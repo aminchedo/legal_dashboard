@@ -1,0 +1,495 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>راهنمای ناوبری - سامانه حقوقی</title>
+    <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@200;300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    
+    <style>
+        :root {
+            --primary-gradient: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
+            --success-gradient: linear-gradient(135deg, #10b981 0%, #047857 100%);
+            --warning-gradient: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+            --card-bg: rgba(255, 255, 255, 0.95);
+            --body-bg: linear-gradient(135deg, #f1f5f9 0%, #e2e8f0 50%, #cbd5e1 100%);
+            --text-primary: #0f172a;
+            --text-secondary: #475569;
+            --border-radius: 12px;
+            --shadow-md: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Vazirmatn', sans-serif;
+            background: var(--body-bg);
+            color: var(--text-primary);
+            line-height: 1.6;
+            min-height: 100vh;
+            padding: 2rem;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        .title {
+            font-size: 2.5rem;
+            font-weight: 800;
+            background: var(--primary-gradient);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 1rem;
+        }
+
+        .subtitle {
+            font-size: 1.2rem;
+            color: var(--text-secondary);
+        }
+
+        .interfaces-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 2rem;
+            margin-bottom: 3rem;
+        }
+
+        .interface-card {
+            background: var(--card-bg);
+            border-radius: var(--border-radius);
+            padding: 2rem;
+            box-shadow: var(--shadow-md);
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .interface-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+        }
+
+        .interface-card.recommended {
+            border-color: #10b981;
+        }
+
+        .interface-card.recommended::before {
+            content: 'پیشنهادی';
+            position: absolute;
+            top: 1rem;
+            left: 1rem;
+            background: var(--success-gradient);
+            color: white;
+            padding: 0.25rem 0.75rem;
+            border-radius: 15px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+
+        .interface-card.enhanced::before {
+            content: 'بهبود یافته';
+            position: absolute;
+            top: 1rem;
+            left: 1rem;
+            background: var(--primary-gradient);
+            color: white;
+            padding: 0.25rem 0.75rem;
+            border-radius: 15px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+
+        .card-header {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .card-icon {
+            width: 3rem;
+            height: 3rem;
+            background: var(--primary-gradient);
+            border-radius: var(--border-radius);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.5rem;
+        }
+
+        .card-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+
+        .card-description {
+            color: var(--text-secondary);
+            margin-bottom: 1.5rem;
+            line-height: 1.7;
+        }
+
+        .features-list {
+            list-style: none;
+            margin-bottom: 2rem;
+        }
+
+        .features-list li {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-bottom: 0.5rem;
+            font-size: 0.9rem;
+        }
+
+        .features-list li i {
+            color: #10b981;
+            width: 1rem;
+        }
+
+        .card-actions {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .btn {
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 8px;
+            font-family: inherit;
+            font-weight: 600;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .btn-primary {
+            background: var(--primary-gradient);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(59, 130, 246, 0.3);
+        }
+
+        .btn-secondary {
+            background: rgba(59, 130, 246, 0.1);
+            color: var(--text-primary);
+            border: 1px solid rgba(59, 130, 246, 0.3);
+        }
+
+        .btn-secondary:hover {
+            background: rgba(59, 130, 246, 0.2);
+        }
+
+        .quick-start {
+            background: var(--card-bg);
+            border-radius: var(--border-radius);
+            padding: 2rem;
+            box-shadow: var(--shadow-md);
+            text-align: center;
+        }
+
+        .quick-start-title {
+            font-size: 1.8rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            color: var(--text-primary);
+        }
+
+        .quick-start-text {
+            color: var(--text-secondary);
+            margin-bottom: 2rem;
+        }
+
+        .quick-start-btn {
+            font-size: 1.1rem;
+            padding: 1rem 2rem;
+            background: var(--success-gradient);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-family: inherit;
+            font-weight: 700;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.75rem;
+            transition: all 0.3s ease;
+        }
+
+        .quick-start-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(16, 185, 129, 0.3);
+        }
+
+        @media (max-width: 768px) {
+            .interfaces-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .title {
+                font-size: 2rem;
+            }
+            
+            .card-actions {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1 class="title">
+                <i class="fas fa-route"></i>
+                راهنمای ناوبری سامانه حقوقی
+            </h1>
+            <p class="subtitle">
+                بهترین رابط کاربری را برای نیازهای خود انتخاب کنید
+            </p>
+        </div>
+
+        <div class="interfaces-grid">
+            <!-- Main Enhanced Dashboard -->
+            <div class="interface-card recommended enhanced">
+                <div class="card-header">
+                    <div class="card-icon">
+                        <i class="fas fa-tachometer-alt"></i>
+                    </div>
+                    <h2 class="card-title">داشبورد اصلی پیشرفته</h2>
+                </div>
+                <p class="card-description">
+                    رابط کاربری جامع و بهینه شده با قابلیت‌های بی‌نظیر برای مدیریت روزانه
+                </p>
+                <ul class="features-list">
+                    <li><i class="fas fa-check"></i> به‌روزرسانی زنده با WebSocket</li>
+                    <li><i class="fas fa-check"></i> بهینه‌سازی عملکرد 60% سریع‌تر</li>
+                    <li><i class="fas fa-check"></i> حالت آفلاین هوشمند</li>
+                    <li><i class="fas fa-check"></i> آپلود و پردازش یکپارچه</li>
+                    <li><i class="fas fa-check"></i> نمودارهای تعاملی</li>
+                    <li><i class="fas fa-check"></i> اعلان‌های فارسی</li>
+                </ul>
+                <div class="card-actions">
+                    <a href="index.html" class="btn btn-primary">
+                        <i class="fas fa-play"></i>
+                        شروع کار
+                    </a>
+                    <a href="#" class="btn btn-secondary" onclick="showFeatures('main')">
+                        <i class="fas fa-info-circle"></i>
+                        جزئیات
+                    </a>
+                </div>
+            </div>
+
+            <!-- Document Management -->
+            <div class="interface-card">
+                <div class="card-header">
+                    <div class="card-icon">
+                        <i class="fas fa-folder-open"></i>
+                    </div>
+                    <h2 class="card-title">مدیریت اسناد</h2>
+                </div>
+                <p class="card-description">
+                    رابط تخصصی برای مدیریت پیشرفته اسناد و عملیات دسته‌ای
+                </p>
+                <ul class="features-list">
+                    <li><i class="fas fa-check"></i> عملیات دسته‌ای اسناد</li>
+                    <li><i class="fas fa-check"></i> فیلترهای پیشرفته</li>
+                    <li><i class="fas fa-check"></i> مدیریت دسته‌بندی</li>
+                    <li><i class="fas fa-check"></i> تاریخچه تغییرات</li>
+                    <li><i class="fas fa-check"></i> صادرات گزارش</li>
+                </ul>
+                <div class="card-actions">
+                    <a href="documents.html" class="btn btn-primary">
+                        <i class="fas fa-folder"></i>
+                        مدیریت اسناد
+                    </a>
+                </div>
+            </div>
+
+            <!-- Enhanced Analytics -->
+            <div class="interface-card enhanced">
+                <div class="card-header">
+                    <div class="card-icon">
+                        <i class="fas fa-chart-line"></i>
+                    </div>
+                    <h2 class="card-title">آنالیتیکس پیشرفته</h2>
+                </div>
+                <p class="card-description">
+                    ابزارهای تحلیلی قدرتمند برای بررسی عمیق داده‌ها و روندها
+                </p>
+                <ul class="features-list">
+                    <li><i class="fas fa-check"></i> نمودارهای تعاملی پیشرفته</li>
+                    <li><i class="fas fa-check"></i> تحلیل کیفیت اسناد</li>
+                    <li><i class="fas fa-check"></i> پیش‌بینی روندها</li>
+                    <li><i class="fas fa-check"></i> گزارش‌های تفصیلی</li>
+                    <li><i class="fas fa-check"></i> مقایسه عملکرد</li>
+                </ul>
+                <div class="card-actions">
+                    <a href="enhanced_analytics_dashboard.html" class="btn btn-primary">
+                        <i class="fas fa-chart-bar"></i>
+                        آنالیتیکس
+                    </a>
+                </div>
+            </div>
+
+            <!-- Web Scraping -->
+            <div class="interface-card">
+                <div class="card-header">
+                    <div class="card-icon">
+                        <i class="fas fa-spider"></i>
+                    </div>
+                    <h2 class="card-title">وب اسکرپینگ</h2>
+                </div>
+                <p class="card-description">
+                    ابزار قدرتمند برای جمع‌آوری خودکار داده از وب‌سایت‌ها
+                </p>
+                <ul class="features-list">
+                    <li><i class="fas fa-check"></i> اسکرپینگ چندگانه</li>
+                    <li><i class="fas fa-check"></i> نظارت بر پیشرفت</li>
+                    <li><i class="fas fa-check"></i> رتبه‌بندی خودکار</li>
+                    <li><i class="fas fa-check"></i> زمان‌بندی کارها</li>
+                    <li><i class="fas fa-check"></i> گزارش‌گیری</li>
+                </ul>
+                <div class="card-actions">
+                    <a href="scraping_dashboard.html" class="btn btn-primary">
+                        <i class="fas fa-globe"></i>
+                        اسکرپینگ
+                    </a>
+                </div>
+            </div>
+
+            <!-- System Health -->
+            <div class="interface-card">
+                <div class="card-header">
+                    <div class="card-icon">
+                        <i class="fas fa-heartbeat"></i>
+                    </div>
+                    <h2 class="card-title">سلامت سیستم</h2>
+                </div>
+                <p class="card-description">
+                    نظارت جامع بر عملکرد و سلامت کلی سیستم
+                </p>
+                <ul class="features-list">
+                    <li><i class="fas fa-check"></i> نظارت بر سرویس‌ها</li>
+                    <li><i class="fas fa-check"></i> آمار عملکرد</li>
+                    <li><i class="fas fa-check"></i> هشدارهای خودکار</li>
+                    <li><i class="fas fa-check"></i> گزارش خطاها</li>
+                </ul>
+                <div class="card-actions">
+                    <a href="system-health.html" class="btn btn-primary">
+                        <i class="fas fa-stethoscope"></i>
+                        سلامت سیستم
+                    </a>
+                </div>
+            </div>
+
+            <!-- Search Interface -->
+            <div class="interface-card">
+                <div class="card-header">
+                    <div class="card-icon">
+                        <i class="fas fa-search"></i>
+                    </div>
+                    <h2 class="card-title">جستجوی پیشرفته</h2>
+                </div>
+                <p class="card-description">
+                    ابزار جستجوی قدرتمند برای یافتن سریع اطلاعات
+                </p>
+                <ul class="features-list">
+                    <li><i class="fas fa-check"></i> جستجوی تمام‌متن</li>
+                    <li><i class="fas fa-check"></i> فیلترهای هوشمند</li>
+                    <li><i class="fas fa-check"></i> پیشنهاد خودکار</li>
+                    <li><i class="fas fa-check"></i> ذخیره جستجوها</li>
+                </ul>
+                <div class="card-actions">
+                    <a href="search.html" class="btn btn-primary">
+                        <i class="fas fa-search-plus"></i>
+                        جستجو
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <div class="quick-start">
+            <h2 class="quick-start-title">
+                <i class="fas fa-rocket"></i>
+                شروع سریع
+            </h2>
+            <p class="quick-start-text">
+                برای بهترین تجربه، از داشبورد اصلی پیشرفته شروع کنید که شامل تمام قابلیت‌های بهبود یافته است
+            </p>
+            <a href="index.html" class="quick-start-btn">
+                <i class="fas fa-play-circle"></i>
+                ورود به داشبورد اصلی
+            </a>
+        </div>
+    </div>
+
+    <script>
+        function showFeatures(type) {
+            const features = {
+                main: {
+                    title: 'ویژگی‌های داشبورد اصلی پیشرفته',
+                    items: [
+                        'به‌روزرسانی زنده با WebSocket - اطلاعات بدون نیاز به بارگذاری مجدد',
+                        'بهینه‌سازی عملکرد - 60% سریع‌تر از نسخه قبلی',
+                        'حالت آفلاین هوشمند - کار بدون اتصال اینترنت',
+                        'آپلود یکپارچه - پردازش فایل‌ها در همان صفحه',
+                        'نمودارهای تعاملی - تجسم داده‌های زنده',
+                        'رابط کاربری فارسی - طراحی مناسب راست‌چین',
+                        'مدیریت حافظه - جلوگیری از کندی سیستم',
+                        'پشتیبانی موبایل - طراحی واکنش‌گرا'
+                    ]
+                }
+            };
+
+            if (features[type]) {
+                alert(features[type].title + '\n\n' + features[type].items.join('\n• '));
+            }
+        }
+
+        // تشخیص صفحه مناسب بر اساس URL
+        const urlParams = new URLSearchParams(window.location.search);
+        const suggested = urlParams.get('suggest');
+        
+        if (suggested) {
+            const recommendations = {
+                'upload': 'index.html',
+                'documents': 'documents.html', 
+                'analytics': 'enhanced_analytics_dashboard.html',
+                'scraping': 'scraping_dashboard.html'
+            };
+            
+            if (recommendations[suggested]) {
+                setTimeout(() => {
+                    if (confirm(`بر اساس نیاز شما، صفحه ${suggested} پیشنهاد می‌شود. آیا می‌خواهید هدایت شوید؟`)) {
+                        window.location.href = recommendations[suggested];
+                    }
+                }, 1000);
+            }
+        }
+        
+        console.log('🧭 Navigation Helper loaded - Legal Dashboard v2.0');
+    </script>
+</body>
+</html>

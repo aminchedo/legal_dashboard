@@ -771,6 +771,148 @@
             100% { transform: rotate(360deg); }
         }
 
+        /* File Upload Styles */
+        .upload-zone {
+            border: 2px dashed #3b82f6;
+            border-radius: 12px;
+            padding: 2rem;
+            text-align: center;
+            background: rgba(59, 130, 246, 0.05);
+            transition: var(--transition-smooth);
+            cursor: pointer;
+        }
+
+        .upload-zone:hover {
+            background: rgba(59, 130, 246, 0.1);
+            border-color: #1d4ed8;
+        }
+
+        .upload-zone.dragover {
+            background: rgba(59, 130, 246, 0.15);
+            border-color: #1d4ed8;
+        }
+
+        .upload-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+
+        .upload-text h3 {
+            margin-bottom: 0.5rem;
+            color: var(--text-primary);
+        }
+
+        .upload-text p {
+            color: var(--text-secondary);
+            margin-bottom: 1rem;
+        }
+
+        .upload-button {
+            background: var(--primary-gradient);
+            color: white;
+            border: none;
+            padding: 0.8rem 1.5rem;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: var(--transition-smooth);
+        }
+
+        .upload-button:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-md);
+        }
+
+        .results-area {
+            background: var(--glass-bg);
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-top: 1rem;
+            border: 1px solid var(--glass-border);
+        }
+
+        .results-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 1rem;
+        }
+
+        .results-title {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: var(--text-primary);
+            font-weight: 600;
+        }
+
+        .results-actions {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .results-text {
+            background: white;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            padding: 1rem;
+            min-height: 200px;
+            font-family: 'Courier New', monospace;
+            white-space: pre-wrap;
+            overflow-y: auto;
+            max-height: 400px;
+            font-size: var(--font-size-sm);
+            line-height: 1.5;
+        }
+
+        .metadata-info {
+            margin-bottom: 1rem;
+            padding: 0.8rem;
+            background: rgba(59, 130, 246, 0.1);
+            border-radius: 8px;
+            font-size: var(--font-size-sm);
+            border-left: 4px solid #3b82f6;
+        }
+
+        .metadata-title {
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .metadata-details {
+            margin-top: 0.3rem;
+            font-size: var(--font-size-xs);
+            color: var(--text-secondary);
+        }
+
+        /* Breadcrumb styles */
+        .breadcrumb {
+            display: flex;
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            font-size: var(--font-size-sm);
+        }
+
+        .breadcrumb-item {
+            display: flex;
+            align-items: center;
+        }
+
+        .breadcrumb-item + .breadcrumb-item::before {
+            content: "/";
+            margin: 0 0.5rem;
+            color: var(--text-muted);
+        }
+
+        .breadcrumb-item.active {
+            color: var(--text-primary);
+            font-weight: 600;
+        }
+
         /* واکنش‌گرایی */
         @media (max-width: 992px) {
             .mobile-menu-toggle {
@@ -821,6 +963,10 @@
             .charts-section {
                 grid-template-columns: 1fr;
             }
+
+            .upload-grid {
+                grid-template-columns: 1fr !important;
+            }
         }
 
         @media (max-width: 768px) {
@@ -845,6 +991,50 @@
             .chart-container {
                 height: 220px;
             }
+        }
+
+        /* Upload Grid */
+        .upload-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .upload-zone.pdf {
+            border-color: #ef4444;
+            background: rgba(239, 68, 68, 0.05);
+        }
+
+        .upload-zone.pdf:hover {
+            background: rgba(239, 68, 68, 0.1);
+            border-color: #dc2626;
+        }
+
+        .upload-zone.image {
+            border-color: #10b981;
+            background: rgba(16, 185, 129, 0.05);
+        }
+
+        .upload-zone.image:hover {
+            background: rgba(16, 185, 129, 0.1);
+            border-color: #047857;
+        }
+
+        .upload-icon.pdf {
+            color: #ef4444;
+        }
+
+        .upload-icon.image {
+            color: #10b981;
+        }
+
+        .upload-button.pdf {
+            background: var(--danger-gradient);
+        }
+
+        .upload-button.image {
+            background: var(--success-gradient);
         }
     </style>
 </head>
@@ -872,6 +1062,12 @@
                             </a>
                         </li>
                         <li class="nav-item">
+                            <a href="improved_legal_dashboard.html" class="nav-link">
+                                <i class="fas fa-tachometer-alt nav-icon"></i>
+                                <span>داشبورد بهبود یافته</span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
                             <a href="analytics.html" class="nav-link">
                                 <i class="fas fa-chart-line nav-icon"></i>
                                 <span>آنالیتیکس</span>
@@ -881,6 +1077,14 @@
                             <a href="enhanced_analytics_dashboard.html" class="nav-link">
                                 <i class="fas fa-chart-bar nav-icon"></i>
                                 <span>آنالیتیکس پیشرفته</span>
+                                <span class="nav-badge" style="background: var(--success-gradient);">Pro</span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="recent-activity.html" class="nav-link">
+                                <i class="fas fa-clock nav-icon"></i>
+                                <span>فعالیت‌های اخیر</span>
+                                <span class="nav-badge" style="background: var(--warning-gradient);" id="activityBadge">0</span>
                             </a>
                         </li>
                     </ul>
@@ -930,7 +1134,7 @@
                 </div>
 
                 <div class="nav-section">
-                    <h6 class="nav-title">گزارشات</h6>
+                    <h6 class="nav-title">گزارشات و تحلیل</h6>
                     <ul class="nav-menu">
                         <li class="nav-item">
                             <a href="reports.html" class="nav-link">
@@ -938,28 +1142,28 @@
                                 <span>گزارشات</span>
                             </a>
                         </li>
+                        <li class="nav-item">
+                            <a href="system-health.html" class="nav-link">
+                                <i class="fas fa-heartbeat nav-icon"></i>
+                                <span>سلامت سیستم</span>
+                            </a>
+                        </li>
                     </ul>
                 </div>
 
                 <div class="nav-section">
-                    <h6 class="nav-title">تنظیمات</h6>
+                    <h6 class="nav-title">ابزارها</h6>
                     <ul class="nav-menu">
+                        <li class="nav-item">
+                            <a href="navigation-helper.html" class="nav-link">
+                                <i class="fas fa-compass nav-icon"></i>
+                                <span>راهنمای ناوبری</span>
+                            </a>
+                        </li>
                         <li class="nav-item">
                             <a href="settings.html" class="nav-link">
                                 <i class="fas fa-cog nav-icon"></i>
                                 <span>تنظیمات</span>
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a href="/api/docs" class="nav-link">
-                                <i class="fas fa-code nav-icon"></i>
-                                <span>مستندات API</span>
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a href="/health" class="nav-link">
-                                <i class="fas fa-heartbeat nav-icon"></i>
-                                <span>وضعیت سیستم</span>
                             </a>
                         </li>
                     </ul>
@@ -969,15 +1173,15 @@
                     <h6 class="nav-title">توسعه</h6>
                     <ul class="nav-menu">
                         <li class="nav-item">
-                            <a href="dev/real-api-test.html" class="nav-link">
-                                <i class="fas fa-flask nav-icon"></i>
-                                <span>تست API</span>
+                            <a href="/api/docs" class="nav-link" target="_blank">
+                                <i class="fas fa-code nav-icon"></i>
+                                <span>مستندات API</span>
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a href="dev/comprehensive-test.html" class="nav-link">
-                                <i class="fas fa-vials nav-icon"></i>
-                                <span>تست جامع</span>
+                            <a href="/api/health" class="nav-link" target="_blank">
+                                <i class="fas fa-server nav-icon"></i>
+                                <span>API Health</span>
                             </a>
                         </li>
                     </ul>
@@ -994,6 +1198,18 @@
                         <i class="fas fa-chart-pie"></i>
                         <span>داشبورد مدیریتی حقوقی</span>
                     </h1>
+                    <!-- Breadcrumb Navigation -->
+                    <nav aria-label="breadcrumb" style="margin-top: 0.5rem;">
+                        <ol class="breadcrumb" style="background: none; padding: 0; margin: 0; font-size: var(--font-size-sm);">
+                            <li class="breadcrumb-item" style="color: var(--text-secondary);">
+                                <i class="fas fa-home" style="margin-left: 0.3rem;"></i>
+                                خانه
+                            </li>
+                            <li class="breadcrumb-item active" aria-current="page" style="color: var(--text-primary); font-weight: 600;" id="currentPageBreadcrumb">
+                                نمای کلی
+                            </li>
+                        </ol>
+                    </nav>
                 </div>
 
                 <div class="header-actions">
@@ -1006,7 +1222,7 @@
                         <i class="fas fa-search search-icon"></i>
                     </div>
 
-                    <div class="user-profile">
+                    <div class="user-profile" id="userProfile">
                         <div class="user-avatar">ح</div>
                         <div class="user-info">
                             <span class="user-name">حسین محمدی</span>
@@ -1024,46 +1240,8 @@
                     <div class="stat-card primary">
                         <div class="stat-header">
                             <div class="stat-content">
-                                <div class="stat-title">اتصال API</div>
-                                <div class="stat-value" id="apiStatus">
-                                    <span class="loading-spinner"></span>
-                                </div>
-                                <div class="stat-extra">وضعیت سرور</div>
-                                <div class="stat-change" id="apiChange">
-                                    <i class="fas fa-clock"></i>
-                                    <span>در حال بررسی...</span>
-                                </div>
-                            </div>
-                            <div class="stat-icon primary">
-                                <i class="fas fa-server"></i>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="stat-card success">
-                        <div class="stat-header">
-                            <div class="stat-content">
-                                <div class="stat-title">OCR آماده</div>
-                                <div class="stat-value" id="ocrStatus">
-                                    <span class="loading-spinner"></span>
-                                </div>
-                                <div class="stat-extra">TrOCR Model</div>
-                                <div class="stat-change" id="ocrChange">
-                                    <i class="fas fa-clock"></i>
-                                    <span>در حال بررسی...</span>
-                                </div>
-                            </div>
-                            <div class="stat-icon success">
-                                <i class="fas fa-eye"></i>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="stat-card warning">
-                        <div class="stat-header">
-                            <div class="stat-content">
-                                <div class="stat-title">اسناد پردازش شده</div>
-                                <div class="stat-value" id="documentsCount">
+                                <div class="stat-title">کل اسناد</div>
+                                <div class="stat-value" id="totalDocuments">
                                     <span class="loading-spinner"></span>
                                 </div>
                                 <div class="stat-extra">مجموع فایل‌ها</div>
@@ -1072,8 +1250,46 @@
                                     <span>در حال بررسی...</span>
                                 </div>
                             </div>
+                            <div class="stat-icon primary">
+                                <i class="fas fa-file-alt"></i>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="stat-card success">
+                        <div class="stat-header">
+                            <div class="stat-content">
+                                <div class="stat-title">پردازش موفق</div>
+                                <div class="stat-value" id="successRate">
+                                    <span class="loading-spinner"></span>
+                                </div>
+                                <div class="stat-extra">نرخ موفقیت</div>
+                                <div class="stat-change" id="successChange">
+                                    <i class="fas fa-clock"></i>
+                                    <span>در حال بررسی...</span>
+                                </div>
+                            </div>
+                            <div class="stat-icon success">
+                                <i class="fas fa-check-circle"></i>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="stat-card warning">
+                        <div class="stat-header">
+                            <div class="stat-content">
+                                <div class="stat-title">متوسط امتیاز</div>
+                                <div class="stat-value" id="averageScore">
+                                    <span class="loading-spinner"></span>
+                                </div>
+                                <div class="stat-extra">کیفیت اسناد</div>
+                                <div class="stat-change" id="scoreChange">
+                                    <i class="fas fa-clock"></i>
+                                    <span>در حال بررسی...</span>
+                                </div>
+                            </div>
                             <div class="stat-icon warning">
-                                <i class="fas fa-file-pdf"></i>
+                                <i class="fas fa-star"></i>
                             </div>
                         </div>
                     </div>
@@ -1081,18 +1297,18 @@
                     <div class="stat-card danger">
                         <div class="stat-header">
                             <div class="stat-content">
-                                <div class="stat-title">زمان پاسخ</div>
-                                <div class="stat-value" id="responseTime">
+                                <div class="stat-title">وضعیت سیستم</div>
+                                <div class="stat-value" id="systemHealth">
                                     <span class="loading-spinner"></span>
                                 </div>
-                                <div class="stat-extra">میلی ثانیه</div>
-                                <div class="stat-change" id="timeChange">
+                                <div class="stat-extra">سلامت سیستم</div>
+                                <div class="stat-change" id="healthChange">
                                     <i class="fas fa-clock"></i>
                                     <span>اندازه‌گیری...</span>
                                 </div>
                             </div>
                             <div class="stat-icon danger">
-                                <i class="fas fa-tachometer-alt"></i>
+                                <i class="fas fa-heartbeat"></i>
                             </div>
                         </div>
                     </div>
@@ -1103,15 +1319,15 @@
             <section class="charts-section">
                 <div class="chart-card">
                     <div class="chart-header">
-                        <h2 class="chart-title">عملکرد سیستم</h2>
+                        <h2 class="chart-title">روند پردازش اسناد</h2>
                         <div class="chart-filters">
-                            <button type="button" class="chart-filter" onclick="updatePerformanceChart('daily')">روزانه</button>
-                            <button type="button" class="chart-filter active" onclick="updatePerformanceChart('weekly')">هفتگی</button>
-                            <button type="button" class="chart-filter" onclick="updatePerformanceChart('monthly')">ماهانه</button>
+                            <button type="button" class="chart-filter" onclick="updateDocumentChart('daily')">روزانه</button>
+                            <button type="button" class="chart-filter active" onclick="updateDocumentChart('weekly')">هفتگی</button>
+                            <button type="button" class="chart-filter" onclick="updateDocumentChart('monthly')">ماهانه</button>
                         </div>
                     </div>
-                    <div class="chart-container" id="performanceChart">
-                        <canvas id="performanceChartCanvas"></canvas>
+                    <div class="chart-container" id="documentChart">
+                        <canvas id="documentChartCanvas"></canvas>
                         <div class="chart-placeholder" style="display: none;">
                             <i class="fas fa-chart-line"></i>
                             <p>در حال بارگذاری نمودار...</p>
@@ -1121,14 +1337,14 @@
 
                 <div class="chart-card">
                     <div class="chart-header">
-                        <h2 class="chart-title">وضعیت سرویس‌ها</h2>
+                        <h2 class="chart-title">توزیع دسته‌بندی</h2>
                         <div class="chart-filters">
-                            <button type="button" class="chart-filter active" onclick="updateStatusChart('services')">سرویس‌ها</button>
-                            <button type="button" class="chart-filter" onclick="updateStatusChart('endpoints')">API ها</button>
+                            <button type="button" class="chart-filter active" onclick="updateCategoryChart('categories')">دسته‌ها</button>
+                            <button type="button" class="chart-filter" onclick="updateCategoryChart('sources')">منابع</button>
                         </div>
                     </div>
-                    <div class="chart-container" id="statusChart">
-                        <canvas id="statusChartCanvas"></canvas>
+                    <div class="chart-container" id="categoryChart">
+                        <canvas id="categoryChartCanvas"></canvas>
                         <div class="chart-placeholder" style="display: none;">
                             <i class="fas fa-chart-pie"></i>
                             <p>در حال بارگذاری نمودار...</p>
@@ -1147,51 +1363,55 @@
                         </h2>
                     </div>
                     
-                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; margin-bottom: 2rem;">
+                    <div class="upload-grid">
                         <!-- PDF Upload -->
-                        <div style="border: 2px dashed #3b82f6; border-radius: 12px; padding: 2rem; text-align: center; background: rgba(59, 130, 246, 0.05);">
-                            <div style="margin-bottom: 1rem;">
-                                <i class="fas fa-file-pdf" style="font-size: 3rem; color: #ef4444; margin-bottom: 1rem;"></i>
+                        <div class="upload-zone pdf" onclick="triggerFileInput('pdf')">
+                            <div class="upload-icon pdf">
+                                <i class="fas fa-file-pdf"></i>
+                            </div>
+                            <div class="upload-text">
                                 <h3>آپلود فایل PDF</h3>
-                                <p style="color: var(--text-secondary); margin-bottom: 1rem;">فایل PDF خود را برای استخراج متن آپلود کنید</p>
+                                <p>فایل PDF خود را برای استخراج متن آپلود کنید</p>
                             </div>
                             <input type="file" id="pdfFileInput" accept=".pdf" style="display: none;" onchange="handlePDFUpload(event)">
-                            <button onclick="document.getElementById('pdfFileInput').click()" 
-                                    style="background: var(--danger-gradient); color: white; border: none; padding: 0.8rem 1.5rem; border-radius: 8px; cursor: pointer; font-weight: 600;">
+                            <button type="button" class="upload-button pdf">
                                 <i class="fas fa-file-pdf"></i> انتخاب فایل PDF
                             </button>
                         </div>
 
                         <!-- Image Upload -->
-                        <div style="border: 2px dashed #10b981; border-radius: 12px; padding: 2rem; text-align: center; background: rgba(16, 185, 129, 0.05);">
-                            <div style="margin-bottom: 1rem;">
-                                <i class="fas fa-image" style="font-size: 3rem; color: #10b981; margin-bottom: 1rem;"></i>
+                        <div class="upload-zone image" onclick="triggerFileInput('image')">
+                            <div class="upload-icon image">
+                                <i class="fas fa-image"></i>
+                            </div>
+                            <div class="upload-text">
                                 <h3>آپلود تصویر</h3>
-                                <p style="color: var(--text-secondary); margin-bottom: 1rem;">تصویر سند را برای OCR آپلود کنید</p>
+                                <p>تصویر سند را برای OCR آپلود کنید</p>
                             </div>
                             <input type="file" id="imageFileInput" accept=".jpg,.jpeg,.png,.bmp,.tiff" style="display: none;" onchange="handleImageUpload(event)">
-                            <button onclick="document.getElementById('imageFileInput').click()" 
-                                    style="background: var(--success-gradient); color: white; border: none; padding: 0.8rem 1.5rem; border-radius: 8px; cursor: pointer; font-weight: 600;">
+                            <button type="button" class="upload-button image">
                                 <i class="fas fa-image"></i> انتخاب تصویر
                             </button>
                         </div>
                     </div>
 
                     <!-- Results Area -->
-                    <div id="resultsArea" style="display: none; background: var(--glass-bg); border-radius: 12px; padding: 1.5rem; margin-top: 1rem;">
-                        <h3 style="margin-bottom: 1rem; color: var(--text-primary);">
-                            <i class="fas fa-file-alt"></i> نتیجه استخراج متن
-                        </h3>
-                        <div id="extractedText" style="background: white; border: 1px solid #e2e8f0; border-radius: 8px; padding: 1rem; min-height: 200px; font-family: 'Courier New', monospace; white-space: pre-wrap; overflow-y: auto; max-height: 400px;">
+                    <div id="resultsArea" class="results-area" style="display: none;">
+                        <div class="results-header">
+                            <h3 class="results-title">
+                                <i class="fas fa-file-alt"></i>
+                                نتیجه استخراج متن
+                            </h3>
+                            <div class="results-actions">
+                                <button type="button" onclick="copyToClipboard()" class="upload-button" style="padding: 0.5rem 1rem; font-size: 0.8rem;">
+                                    <i class="fas fa-copy"></i> کپی
+                                </button>
+                                <button type="button" onclick="clearResults()" class="upload-button" style="padding: 0.5rem 1rem; font-size: 0.8rem; background: var(--text-secondary);">
+                                    <i class="fas fa-trash"></i> پاک
+                                </button>
+                            </div>
                         </div>
-                        <div style="margin-top: 1rem; display: flex; gap: 1rem;">
-                            <button onclick="copyToClipboard()" style="background: var(--primary-gradient); color: white; border: none; padding: 0.5rem 1rem; border-radius: 6px; cursor: pointer;">
-                                <i class="fas fa-copy"></i> کپی متن
-                            </button>
-                            <button onclick="clearResults()" style="background: var(--text-secondary); color: white; border: none; padding: 0.5rem 1rem; border-radius: 6px; cursor: pointer;">
-                                <i class="fas fa-trash"></i> پاک کردن
-                            </button>
-                        </div>
+                        <div id="extractedText" class="results-text"></div>
                     </div>
                 </div>
             </section>
@@ -1236,7 +1456,7 @@
                             </div>
                         </a>
 
-                        <a href="scraping.html" class="quick-access-item">
+                        <a href="scraping_dashboard.html" class="quick-access-item">
                             <div class="quick-access-icon">
                                 <i class="fas fa-spider"></i>
                             </div>
@@ -1256,6 +1476,16 @@
                             </div>
                         </a>
 
+                        <a href="enhanced_analytics_dashboard.html" class="quick-access-item">
+                            <div class="quick-access-icon">
+                                <i class="fas fa-chart-bar"></i>
+                            </div>
+                            <div class="quick-access-content">
+                                <h3>آنالیتیکس پیشرفته</h3>
+                                <p>تحلیل‌های عمیق و پیش‌بینی‌ها</p>
+                            </div>
+                        </a>
+
                         <a href="reports.html" class="quick-access-item">
                             <div class="quick-access-icon">
                                 <i class="fas fa-file-alt"></i>
@@ -1263,6 +1493,26 @@
                             <div class="quick-access-content">
                                 <h3>گزارشات</h3>
                                 <p>تولید و مشاهده گزارش‌های سیستم</p>
+                            </div>
+                        </a>
+
+                        <a href="system-health.html" class="quick-access-item">
+                            <div class="quick-access-icon">
+                                <i class="fas fa-heartbeat"></i>
+                            </div>
+                            <div class="quick-access-content">
+                                <h3>سلامت سیستم</h3>
+                                <p>نظارت بر عملکرد و وضعیت سرویس‌ها</p>
+                            </div>
+                        </a>
+
+                        <a href="recent-activity.html" class="quick-access-item">
+                            <div class="quick-access-icon">
+                                <i class="fas fa-clock"></i>
+                            </div>
+                            <div class="quick-access-content">
+                                <h3>فعالیت‌های اخیر</h3>
+                                <p>مشاهده آخرین تغییرات و فعالیت‌ها</p>
                             </div>
                         </a>
                     </div>
@@ -1280,34 +1530,20 @@
         <span>در حال اتصال...</span>
     </div>
 
-    <!-- Load JavaScript Files -->
-    <script src="js/notifications.js"></script>
-    <script src="js/api-client.js"></script>
-    <script src="js/core.js"></script>
-    <script src="js/file-upload-handler.js"></script>
-    <script src="js/document-crud.js"></script>
-    <script src="js/scraping-control.js"></script>
-
     <script>
-        // Global Dashboard Controller - Enhanced Version
-        class EnhancedDashboardController {
+        // Enhanced Legal Dashboard Controller - Fully Integrated
+        class LegalDashboardController {
             constructor() {
                 this.apiClient = null;
                 this.isOnline = false;
-                this.systemHealth = {};
-                this.lastExtractedText = '';
-                this.realTimeData = {
-                    documents: 0,
-                    processing: 0,
-                    success: 0,
-                    errors: 0
-                };
                 this.charts = {
-                    performance: null,
-                    status: null
+                    documents: null,
+                    categories: null
                 };
-                this.isChartJSLoaded = false;
+                this.lastExtractedText = '';
                 this.updateInterval = null;
+                this.retryCount = 0;
+                this.maxRetries = 3;
                 
                 // Initialize when DOM is ready
                 if (document.readyState === 'loading') {
@@ -1318,62 +1554,52 @@
             }
 
             async initialize() {
-                console.log('🏠 Enhanced Dashboard initializing...');
+                console.log('🏛️ Legal Dashboard initializing...');
                 
                 try {
-                    // Initialize API Client (use global instance if available)
-                    this.apiClient = window.legalAPI || new LegalDashboardAPI();
+                    // Initialize API Client
+                    this.apiClient = new LegalDashboardAPI();
                     
-                    // Initialize core dashboard
-                    if (window.dashboardCore) {
-                        this.setupCoreEventListeners();
-                    }
-
-                    // Initialize notifications
-                    if (window.notificationManager) {
-                        window.notificationManager.showInfo('سیستم آماده شد', 'داشبورد با موفقیت بارگذاری شد');
-                    }
-
-                    // Setup Chart.js
-                    this.waitForChartJS();
-                    
-                    // Setup event listeners
+                    // Setup event listeners first
                     this.setupEventListeners();
                     
-                    // Load real data
+                    // Show initial loading state
+                    this.showLoadingState();
+                    
+                    // Test API connection
+                    await this.testApiConnection();
+                    
+                    // Load dashboard data
                     await this.loadDashboardData();
+                    
+                    // Initialize charts
+                    this.waitForChartJS();
                     
                     // Start real-time updates
                     this.startRealTimeUpdates();
                     
-                    console.log('✅ Enhanced Dashboard initialized successfully');
+                    console.log('✅ Legal Dashboard initialized successfully');
+                    this.showToast('سیستم آماده شد', 'داشبورد با موفقیت بارگذاری شد', 'success');
                     
                 } catch (error) {
                     console.error('❌ Dashboard initialization failed:', error);
-                    this.showFallbackMode();
+                    this.handleInitializationError(error);
                 }
             }
 
-            setupCoreEventListeners() {
-                // Listen for document uploads
-                window.dashboardCore.listen('documentUploaded', (data) => {
-                    this.handleDocumentEvent('uploaded', data);
-                });
-
-                // Listen for document updates
-                window.dashboardCore.listen('documentUpdated', (data) => {
-                    this.handleDocumentEvent('updated', data);
-                });
-
-                // Listen for scraping updates
-                window.dashboardCore.listen('scrapingUpdate', (data) => {
-                    this.handleScrapingUpdate(data);
-                });
-
-                // Listen for health updates
-                window.dashboardCore.listen('healthUpdate', (data) => {
-                    this.updateSystemHealth(data);
-                });
+            async testApiConnection() {
+                try {
+                    const health = await this.apiClient.healthCheck();
+                    this.isOnline = true;
+                    this.updateConnectionStatus(true);
+                    this.retryCount = 0;
+                    console.log('✅ API connection successful');
+                } catch (error) {
+                    this.isOnline = false;
+                    this.updateConnectionStatus(false);
+                    console.error('❌ API connection failed:', error);
+                    throw error;
+                }
             }
 
             async loadDashboardData() {
@@ -1382,172 +1608,164 @@
                     const summary = await this.apiClient.getDashboardSummary();
                     this.updateStatsFromSummary(summary);
                     
-                    // Load system health
-                    const health = await this.apiClient.healthCheck();
-                    this.updateSystemHealth(health);
+                    // Load charts data
+                    const chartsData = await this.apiClient.getChartsData();
+                    this.updateChartsData(chartsData);
                     
-                    // Load recent documents count
-                    const documents = await this.apiClient.getDocuments({ limit: 1 });
-                    this.realTimeData.documents = documents.total || 0;
+                    // Update navigation badges
+                    this.updateNavigationBadges(summary);
                     
                     console.log('📊 Dashboard data loaded successfully');
                 } catch (error) {
                     console.error('Failed to load dashboard data:', error);
-                    this.loadFallbackData();
+                    if (this.retryCount < this.maxRetries) {
+                        this.retryCount++;
+                        this.showToast('تلاش مجدد', `تلاش ${this.retryCount} برای بارگذاری داده‌ها...`, 'warning');
+                        setTimeout(() => this.loadDashboardData(), 2000 * this.retryCount);
+                    } else {
+                        this.loadFallbackData();
+                    }
                 }
             }
 
-            loadFallbackData() {
-                // Use mock data when API is not available
-                this.realTimeData = {
-                    documents: 847,
-                    processing: 12,
-                    success: 98.5,
-                    errors: 3
-                };
-                
-                this.systemHealth = {
-                    status: 'healthy',
-                    services: {
-                        ocr_model_loaded: true,
-                        pdf_processing: true,
-                        cache_active: true
+            updateNavigationBadges(summary) {
+                try {
+                    // Update upload badge based on recent uploads
+                    const uploadBadge = document.getElementById('uploadBadge');
+                    if (uploadBadge && summary) {
+                        const recentUploads = summary.documents_today || 0;
+                        if (recentUploads > 0) {
+                            uploadBadge.textContent = recentUploads;
+                            uploadBadge.style.display = 'inline-block';
+                        } else {
+                            uploadBadge.textContent = 'جدید';
+                        }
                     }
-                };
-                
-                this.updateHealthStats(this.systemHealth, 180);
-                console.log('📊 Using fallback data');
+
+                    // Update activity badge
+                    const activityBadge = document.getElementById('activityBadge');
+                    if (activityBadge && summary) {
+                        const recentActivity = summary.recent_activity_count || 0;
+                        activityBadge.textContent = recentActivity;
+                        if (recentActivity > 0) {
+                            activityBadge.style.background = 'var(--danger-gradient)';
+                        } else {
+                            activityBadge.style.background = 'var(--text-secondary)';
+                        }
+                    }
+
+                } catch (error) {
+                    console.error('Error updating navigation badges:', error);
+                }
             }
 
             updateStatsFromSummary(summary) {
                 if (!summary) return;
                 
-                // Update document count
-                const docCount = summary.total_documents || this.realTimeData.documents;
-                this.updateStatCard('documentsCount', 'documentsChange', 
-                    docCount.toLocaleString('fa-IR'),
-                    { icon: 'fas fa-arrow-up', text: `${summary.documents_today || 0} امروز`, type: 'positive' }
+                // Total Documents
+                this.updateStatCard('totalDocuments', 'documentsChange', 
+                    (summary.total_documents || 0).toLocaleString('fa-IR'),
+                    this.getChangeIndicator(summary.documents_today || 0, 'documents')
                 );
                 
-                // Update processing stats if available
-                if (summary.processing_stats) {
-                    this.realTimeData.processing = summary.processing_stats.in_progress || 0;
-                    this.realTimeData.success = summary.processing_stats.success_rate || 0;
+                // Success Rate
+                const successRate = summary.success_rate || 0;
+                this.updateStatCard('successRate', 'successChange',
+                    `${successRate.toFixed(1)}%`,
+                    this.getChangeIndicator(successRate, 'percentage')
+                );
+                
+                // Average Score
+                const avgScore = summary.average_score || 0;
+                this.updateStatCard('averageScore', 'scoreChange',
+                    avgScore.toFixed(2),
+                    this.getChangeIndicator(avgScore, 'score')
+                );
+                
+                // System Health
+                const systemHealth = summary.system_health || 0;
+                this.updateStatCard('systemHealth', 'healthChange',
+                    `${systemHealth.toFixed(0)}%`,
+                    this.getChangeIndicator(systemHealth, 'health')
+                );
+            }
+
+            getChangeIndicator(value, type) {
+                switch (type) {
+                    case 'documents':
+                        return value > 0 ? 
+                            { icon: 'fas fa-arrow-up', text: `${value} امروز`, type: 'positive' } :
+                            { icon: 'fas fa-minus', text: 'بدون تغییر', type: '' };
+                    case 'percentage':
+                        return value >= 90 ?
+                            { icon: 'fas fa-check', text: 'عالی', type: 'positive' } :
+                            value >= 70 ?
+                            { icon: 'fas fa-exclamation', text: 'متوسط', type: '' } :
+                            { icon: 'fas fa-times', text: 'ضعیف', type: 'negative' };
+                    case 'score':
+                        return value >= 0.8 ?
+                            { icon: 'fas fa-star', text: 'بالا', type: 'positive' } :
+                            value >= 0.6 ?
+                            { icon: 'fas fa-star-half-alt', text: 'متوسط', type: '' } :
+                            { icon: 'fas fa-star', text: 'پایین', type: 'negative' };
+                    case 'health':
+                        return value >= 90 ?
+                            { icon: 'fas fa-heart', text: 'سالم', type: 'positive' } :
+                            value >= 70 ?
+                            { icon: 'fas fa-exclamation-triangle', text: 'هشدار', type: '' } :
+                            { icon: 'fas fa-times-circle', text: 'خطر', type: 'negative' };
+                    default:
+                        return { icon: 'fas fa-info', text: 'نامشخص', type: '' };
                 }
             }
 
-            handleDocumentEvent(eventType, data) {
-                switch (eventType) {
-                    case 'uploaded':
-                        this.realTimeData.documents++;
-                        this.updateDocumentStats();
-                        if (window.notificationManager) {
-                            window.notificationManager.showSuccess('آپلود موفق', `فایل ${data.fileName} آپلود شد`);
-                        }
-                        break;
-                    case 'updated':
-                        this.updateDocumentStats();
-                        break;
+            updateStatCard(valueId, changeId, value, change) {
+                const valueEl = document.getElementById(valueId);
+                const changeEl = document.getElementById(changeId);
+                
+                if (valueEl) {
+                    // Add smooth transition
+                    valueEl.style.opacity = '0.5';
+                    setTimeout(() => {
+                        valueEl.innerHTML = value;
+                        valueEl.style.opacity = '1';
+                    }, 150);
                 }
                 
-                // Refresh charts with new data
-                this.updateChartsWithRealData();
+                if (changeEl) {
+                    changeEl.innerHTML = `<i class="${change.icon}"></i><span>${change.text}</span>`;
+                    changeEl.className = `stat-change ${change.type}`;
+                }
             }
 
-            handleScrapingUpdate(data) {
-                // Update scraping status indicator
-                const scrapingIndicator = document.querySelector('.scraping-status');
-                if (scrapingIndicator) {
-                    scrapingIndicator.textContent = data.status;
-                    scrapingIndicator.className = `scraping-status ${data.status}`;
-                }
+            loadFallbackData() {
+                console.log('📊 Loading fallback data...');
+                this.showToast('حالت آفلاین', 'از داده‌های محلی استفاده می‌شود', 'warning');
                 
-                if (window.notificationManager) {
-                    window.notificationManager.showInfo('وضعیت اسکرپینگ', `وضعیت: ${data.status}`);
-                }
+                // Mock data
+                this.updateStatCard('totalDocuments', 'documentsChange', '1,247', 
+                    { icon: 'fas fa-arrow-up', text: '23 امروز', type: 'positive' });
+                this.updateStatCard('successRate', 'successChange', '92.5%',
+                    { icon: 'fas fa-check', text: 'عالی', type: 'positive' });
+                this.updateStatCard('averageScore', 'scoreChange', '0.87',
+                    { icon: 'fas fa-star', text: 'بالا', type: 'positive' });
+                this.updateStatCard('systemHealth', 'healthChange', '95%',
+                    { icon: 'fas fa-heart', text: 'سالم', type: 'positive' });
             }
 
-            updateDocumentStats() {
-                this.updateStatCard('documentsCount', 'documentsChange',
-                    this.realTimeData.documents.toLocaleString('fa-IR'),
-                    { icon: 'fas fa-arrow-up', text: 'به‌روزرسانی شد', type: 'positive' }
-                );
+            showLoadingState() {
+                // Show loading spinners in stat cards
+                ['totalDocuments', 'successRate', 'averageScore', 'systemHealth'].forEach(id => {
+                    const el = document.getElementById(id);
+                    if (el) el.innerHTML = '<span class="loading-spinner"></span>';
+                });
+                
+                ['documentsChange', 'successChange', 'scoreChange', 'healthChange'].forEach(id => {
+                    const el = document.getElementById(id);
+                    if (el) el.innerHTML = '<i class="fas fa-clock"></i><span>در حال بررسی...</span>';
+                });
             }
 
-            startRealTimeUpdates() {
-                // Update every 30 seconds
-                this.updateInterval = setInterval(async () => {
-                    try {
-                        await this.checkSystemHealth();
-                        await this.updateRealTimeStats();
-                    } catch (error) {
-                        console.error('Real-time update failed:', error);
-                    }
-                }, 30000);
-            }
-
-            async updateRealTimeStats() {
-                try {
-                    // Get latest stats from API
-                    const summary = await this.apiClient.getDashboardSummary();
-                    if (summary) {
-                        this.updateStatsFromSummary(summary);
-                    }
-                } catch (error) {
-                    // Simulate some changes for demo
-                    this.simulateDataChanges();
-                }
-            }
-
-            simulateDataChanges() {
-                // Add some randomness to show live updates
-                const change = Math.floor(Math.random() * 3) - 1; // -1, 0, or 1
-                if (change !== 0) {
-                    this.realTimeData.documents += change;
-                    this.updateDocumentStats();
-                }
-            }
-
-            updateChartsWithRealData() {
-                if (!this.isChartJSLoaded || !this.charts.performance) return;
-
-                // Update performance chart with real data
-                const currentHour = new Date().getHours();
-                const responseTimeData = this.generateRealisticResponseTimes();
-                const cpuUsageData = this.generateRealisticCPUUsage();
-
-                this.charts.performance.data.datasets[0].data = responseTimeData;
-                this.charts.performance.data.datasets[1].data = cpuUsageData;
-                this.charts.performance.update('none'); // Smooth update
-            }
-
-            generateRealisticResponseTimes() {
-                // Generate realistic response times based on current system load
-                const baseTime = 120;
-                const variance = 50;
-                return Array.from({length: 7}, () => 
-                    Math.max(50, baseTime + Math.random() * variance - variance/2)
-                );
-            }
-
-            generateRealisticCPUUsage() {
-                // Generate realistic CPU usage
-                const baseUsage = 30;
-                const variance = 20;
-                return Array.from({length: 7}, () => 
-                    Math.max(10, Math.min(90, baseUsage + Math.random() * variance - variance/2))
-                );
-            }
-
-            showFallbackMode() {
-                this.loadFallbackData();
-                this.setupEventListeners();
-                if (window.notificationManager) {
-                    window.notificationManager.showWarning('حالت آفلاین', 'اتصال به سرور برقرار نشد - از داده‌های محلی استفاده می‌شود');
-                }
-            }
-
-            // Rest of the methods remain the same but enhanced...
             waitForChartJS() {
                 let attempts = 0;
                 const maxAttempts = 20;
@@ -1556,138 +1774,39 @@
                     attempts++;
                     
                     if (typeof Chart !== 'undefined') {
-                        this.isChartJSLoaded = true;
                         clearInterval(checkInterval);
                         console.log('✅ Chart.js loaded');
                         this.initializeCharts();
-                        if (window.notificationManager) {
-                            window.notificationManager.showSuccess('نمودارها آماده', 'Chart.js بارگذاری شد');
-                        }
+                        this.showToast('نمودارها آماده', 'Chart.js بارگذاری شد', 'success');
                     } else if (attempts >= maxAttempts) {
                         clearInterval(checkInterval);
                         console.warn('⚠️ Chart.js failed to load');
                         this.showChartPlaceholders();
-                        if (window.notificationManager) {
-                            window.notificationManager.showWarning('خطا در نمودارها', 'Chart.js بارگذاری نشد');
-                        }
+                        this.showToast('خطا در نمودارها', 'Chart.js بارگذاری نشد', 'error');
                     }
                 }, 500);
             }
 
-            async checkSystemHealth() {
-                const startTime = Date.now();
-                
-                try {
-                    const healthData = await this.apiClient.healthCheck();
-                    const responseTime = Date.now() - startTime;
-                    
-                    this.isOnline = true;
-                    this.systemHealth = healthData;
-                    
-                    this.updateConnectionStatus(true);
-                    this.updateHealthStats(healthData, responseTime);
-                    
-                } catch (error) {
-                    console.error('Health check failed:', error);
-                    this.isOnline = false;
-                    this.updateConnectionStatus(false);
-                    this.updateHealthStats(null, null);
-                }
-            }
-
-            updateConnectionStatus(online) {
-                const status = document.getElementById('connectionStatus');
-                if (status) {
-                    if (online) {
-                        status.className = 'connection-status online';
-                        status.innerHTML = `
-                            <div class="status-indicator"></div>
-                            <span>متصل به سرور</span>
-                        `;
-                    } else {
-                        status.className = 'connection-status offline';
-                        status.innerHTML = `
-                            <div class="status-indicator"></div>
-                            <span>خطا در اتصال</span>
-                        `;
-                    }
-                }
-            }
-
-            updateHealthStats(data, responseTime) {
-                // API Status
-                this.updateStatCard('apiStatus', 'apiChange', 
-                    data ? '✅ آنلاین' : '❌ آفلاین',
-                    data ? { icon: 'fas fa-arrow-up', text: 'فعال', type: 'positive' } : 
-                           { icon: 'fas fa-arrow-down', text: 'قطع', type: 'negative' }
-                );
-
-                // OCR Status
-                const ocrReady = data && data.services && data.services.ocr_model_loaded;
-                this.updateStatCard('ocrStatus', 'ocrChange',
-                    ocrReady ? '✅ آماده' : data ? '⏳ بارگذاری' : '❌ خطا',
-                    ocrReady ? { icon: 'fas fa-check', text: 'بارگذاری شده', type: 'positive' } :
-                    data ? { icon: 'fas fa-clock', text: 'در حال آماده‌سازی', type: '' } :
-                           { icon: 'fas fa-times', text: 'غیرفعال', type: 'negative' }
-                );
-
-                // Response Time
-                if (responseTime !== null) {
-                    this.updateStatCard('responseTime', 'timeChange',
-                        `${responseTime}ms`,
-                        responseTime < 500 ? { icon: 'fas fa-arrow-up', text: 'سریع', type: 'positive' } :
-                        responseTime < 1000 ? { icon: 'fas fa-minus', text: 'متوسط', type: '' } :
-                                            { icon: 'fas fa-arrow-down', text: 'کند', type: 'negative' }
-                    );
-                } else {
-                    this.updateStatCard('responseTime', 'timeChange', 'N/A',
-                        { icon: 'fas fa-times', text: 'خطا', type: 'negative' }
-                    );
-                }
-            }
-
-            updateStatCard(valueId, changeId, value, change) {
-                const valueEl = document.getElementById(valueId);
-                const changeEl = document.getElementById(changeId);
-                
-                if (valueEl) valueEl.innerHTML = value;
-                if (changeEl) {
-                    changeEl.innerHTML = `<i class="${change.icon}"></i><span>${change.text}</span>`;
-                    changeEl.className = `stat-change ${change.type}`;
-                }
-            }
-
             initializeCharts() {
-                if (!this.isChartJSLoaded) return;
-
                 try {
-                    // Performance Chart with real-time capability
-                    const performanceCtx = document.getElementById('performanceChartCanvas');
-                    if (performanceCtx) {
-                        this.charts.performance = new Chart(performanceCtx, {
+                    // Documents trend chart
+                    const docCtx = document.getElementById('documentChartCanvas');
+                    if (docCtx) {
+                        this.charts.documents = new Chart(docCtx, {
                             type: 'line',
                             data: {
                                 labels: ['شنبه', 'یکشنبه', 'دوشنبه', 'سه‌شنبه', 'چهارشنبه', 'پنج‌شنبه', 'جمعه'],
                                 datasets: [
                                     {
-                                        label: 'زمان پاسخ (ms)',
-                                        data: this.generateRealisticResponseTimes(),
+                                        label: 'اسناد پردازش شده',
+                                        data: [45, 52, 38, 67, 71, 58, 43],
                                         borderColor: '#10b981',
                                         backgroundColor: 'rgba(16, 185, 129, 0.1)',
                                         tension: 0.4,
                                         borderWidth: 3,
                                         pointRadius: 6,
-                                        pointHoverRadius: 8
-                                    },
-                                    {
-                                        label: 'استفاده CPU (%)',
-                                        data: this.generateRealisticCPUUsage(),
-                                        borderColor: '#3b82f6',
-                                        backgroundColor: 'rgba(59, 130, 246, 0.1)',
-                                        tension: 0.4,
-                                        borderWidth: 3,
-                                        pointRadius: 6,
-                                        pointHoverRadius: 8
+                                        pointHoverRadius: 8,
+                                        fill: true
                                     }
                                 ]
                             },
@@ -1724,16 +1843,22 @@
                         });
                     }
 
-                    // Status Chart with real data
-                    const statusCtx = document.getElementById('statusChartCanvas');
-                    if (statusCtx) {
-                        this.charts.status = new Chart(statusCtx, {
+                    // Categories chart
+                    const catCtx = document.getElementById('categoryChartCanvas');
+                    if (catCtx) {
+                        this.charts.categories = new Chart(catCtx, {
                             type: 'doughnut',
                             data: {
-                                labels: ['API آنلاین', 'OCR آماده', 'PDF فعال', 'Cache فعال'],
+                                labels: ['قانون', 'قرارداد', 'حکم', 'درخواست', 'سایر'],
                                 datasets: [{
-                                    data: [1, 1, 1, 1],
-                                    backgroundColor: ['#10b981', '#3b82f6', '#f59e0b', '#ef4444'],
+                                    data: [40, 25, 15, 12, 8],
+                                    backgroundColor: [
+                                        '#3b82f6',
+                                        '#10b981', 
+                                        '#f59e0b',
+                                        '#ef4444',
+                                        '#6b7280'
+                                    ],
                                     borderColor: '#ffffff',
                                     borderWidth: 3,
                                     hoverBorderWidth: 5
@@ -1761,7 +1886,7 @@
                         });
                     }
 
-                    console.log('📊 Charts initialized with real-time capability');
+                    console.log('📊 Charts initialized successfully');
 
                 } catch (error) {
                     console.error('❌ Chart initialization failed:', error);
@@ -1769,19 +1894,96 @@
                 }
             }
 
+            updateChartsData(data) {
+                if (!data || !this.charts.documents || !this.charts.categories) return;
+
+                try {
+                    // Update document chart if we have recent activity data
+                    if (data.recent_activity && this.charts.documents) {
+                        // Process recent activity for chart
+                        const last7Days = this.getLast7DaysData(data.recent_activity);
+                        this.charts.documents.data.datasets[0].data = last7Days;
+                        this.charts.documents.update('none');
+                    }
+
+                    // Update category chart
+                    if (data.category_distribution && this.charts.categories) {
+                        const categories = data.category_distribution;
+                        this.charts.categories.data.labels = categories.map(c => c.category);
+                        this.charts.categories.data.datasets[0].data = categories.map(c => c.count);
+                        this.charts.categories.update('none');
+                    }
+
+                } catch (error) {
+                    console.error('Error updating charts:', error);
+                }
+            }
+
+            getLast7DaysData(recentActivity) {
+                // Generate data for last 7 days based on recent activity
+                const today = new Date();
+                const last7Days = [];
+                
+                for (let i = 6; i >= 0; i--) {
+                    const date = new Date(today);
+                    date.setDate(date.getDate() - i);
+                    
+                    // Count documents for this date (simplified)
+                    const count = recentActivity.filter(doc => {
+                        const docDate = new Date(doc.created_at);
+                        return docDate.toDateString() === date.toDateString();
+                    }).length;
+                    
+                    last7Days.push(count || Math.floor(Math.random() * 20) + 10); // Fallback to random
+                }
+                
+                return last7Days;
+            }
+
             showChartPlaceholders() {
                 document.querySelectorAll('.chart-placeholder').forEach(placeholder => {
                     placeholder.style.display = 'flex';
                     placeholder.innerHTML = `
                         <i class="fas fa-exclamation-triangle" style="color: #f59e0b;"></i>
-                        <p>Chart.js بارگذاری نشد</p>
-                        <small>نمودارها در دسترس نیستند</small>
+                        <p>نمودار در دسترس نیست</p>
                     `;
                 });
                 
                 document.querySelectorAll('canvas[id$="Canvas"]').forEach(canvas => {
                     canvas.style.display = 'none';
                 });
+            }
+
+            startRealTimeUpdates() {
+                // Update every 30 seconds
+                this.updateInterval = setInterval(async () => {
+                    try {
+                        if (this.isOnline) {
+                            await this.loadDashboardData();
+                        }
+                    } catch (error) {
+                        console.error('Real-time update failed:', error);
+                    }
+                }, 30000);
+            }
+
+            updateConnectionStatus(online) {
+                const status = document.getElementById('connectionStatus');
+                if (status) {
+                    if (online) {
+                        status.className = 'connection-status online';
+                        status.innerHTML = `
+                            <div class="status-indicator"></div>
+                            <span>متصل به سرور</span>
+                        `;
+                    } else {
+                        status.className = 'connection-status offline';
+                        status.innerHTML = `
+                            <div class="status-indicator"></div>
+                            <span>خطا در اتصال</span>
+                        `;
+                    }
+                }
             }
 
             setupEventListeners() {
@@ -1805,7 +2007,10 @@
                     });
                 }
 
-                // Enhanced search functionality
+                // Set active navigation
+                this.setActiveNavigation();
+
+                // Search functionality
                 const searchInput = document.getElementById('searchInput');
                 if (searchInput) {
                     let searchTimeout;
@@ -1830,7 +2035,7 @@
                     });
                 }
 
-                // Add keyboard shortcuts
+                // Keyboard shortcuts
                 document.addEventListener('keydown', (e) => {
                     // Ctrl+K for search
                     if (e.ctrlKey && e.key === 'k') {
@@ -1844,6 +2049,110 @@
                         this.refreshAllData();
                     }
                 });
+
+                // Upload zone drag and drop
+                this.setupDragAndDrop();
+            }
+
+            setActiveNavigation() {
+                // Get current page filename
+                const currentPage = window.location.pathname.split('/').pop() || 'index.html';
+                
+                // Remove all active classes
+                document.querySelectorAll('.nav-link').forEach(link => {
+                    link.classList.remove('active');
+                });
+                
+                // Find and set active link
+                const navLinks = document.querySelectorAll('.nav-link');
+                navLinks.forEach(link => {
+                    const href = link.getAttribute('href');
+                    if (href) {
+                        // Handle different scenarios
+                        if ((href === 'index.html' || href === '/') && (currentPage === 'index.html' || currentPage === '')) {
+                            link.classList.add('active');
+                        } else if (href === currentPage) {
+                            link.classList.add('active');
+                        } else if (href.includes(currentPage) && currentPage !== 'index.html') {
+                            link.classList.add('active');
+                        }
+                    }
+                });
+
+                // If no active link found, set index as active (fallback)
+                if (!document.querySelector('.nav-link.active')) {
+                    const indexLink = document.querySelector('.nav-link[href="index.html"]') || 
+                                     document.querySelector('.nav-link[href="/"]');
+                    if (indexLink) {
+                        indexLink.classList.add('active');
+                    }
+                }
+
+                // Update breadcrumb
+                this.updateBreadcrumb(currentPage);
+            }
+
+            updateBreadcrumb(currentPage) {
+                const breadcrumbElement = document.getElementById('currentPageBreadcrumb');
+                if (!breadcrumbElement) return;
+
+                const pageNames = {
+                    'index.html': 'نمای کلی',
+                    'analytics.html': 'آنالیتیکس',
+                    'enhanced_analytics_dashboard.html': 'آنالیتیکس پیشرفته',
+                    'improved_legal_dashboard.html': 'داشبورد بهبود یافته',
+                    'documents.html': 'مدیریت اسناد',
+                    'upload.html': 'آپلود فایل',
+                    'search.html': 'جستجو در اسناد',
+                    'scraping.html': 'وب اسکرپینگ',
+                    'scraping_dashboard.html': 'داشبورد اسکرپینگ',
+                    'reports.html': 'گزارشات',
+                    'settings.html': 'تنظیمات',
+                    'system-health.html': 'سلامت سیستم',
+                    'recent-activity.html': 'فعالیت‌های اخیر',
+                    'navigation-helper.html': 'راهنمای ناوبری'
+                };
+
+                const pageName = pageNames[currentPage] || pageNames['index.html'];
+                breadcrumbElement.textContent = pageName;
+
+                // Update page title as well
+                const currentTitle = document.title;
+                if (!currentTitle.includes(pageName)) {
+                    document.title = `${pageName} | داشبورد مدیریتی حقوقی`;
+                }
+            }
+
+            setupDragAndDrop() {
+                const uploadZones = document.querySelectorAll('.upload-zone');
+                
+                uploadZones.forEach(zone => {
+                    zone.addEventListener('dragover', (e) => {
+                        e.preventDefault();
+                        zone.classList.add('dragover');
+                    });
+                    
+                    zone.addEventListener('dragleave', () => {
+                        zone.classList.remove('dragover');
+                    });
+                    
+                    zone.addEventListener('drop', (e) => {
+                        e.preventDefault();
+                        zone.classList.remove('dragover');
+                        
+                        const files = e.dataTransfer.files;
+                        if (files.length > 0) {
+                            const file = files[0];
+                            if (zone.classList.contains('pdf') && file.type === 'application/pdf') {
+                                this.handleFileUpload(file, 'pdf');
+                            } else if (zone.classList.contains('image') && file.type.startsWith('image/')) {
+                                this.handleFileUpload(file, 'image');
+                            } else {
+                                this.showToast('فرمت نامعتبر', 'لطفاً فایل مناسب انتخاب کنید', 'error');
+                            }
+                        }
+                    });
+                });
             }
 
             async performSearch(term) {
@@ -1852,30 +2161,147 @@
                     window.location.href = `search.html?q=${encodeURIComponent(term)}`;
                 } catch (error) {
                     console.error('Search failed:', error);
-                    if (window.notificationManager) {
-                        window.notificationManager.showError('خطا در جستجو', 'جستجو امکان‌پذیر نیست');
-                    }
+                    this.showToast('خطا در جستجو', 'جستجو امکان‌پذیر نیست', 'error');
                 }
             }
 
             async refreshAllData() {
                 try {
-                    if (window.notificationManager) {
-                        window.notificationManager.showInfo('بروزرسانی', 'در حال بروزرسانی داده‌ها...');
-                    }
+                    this.showToast('بروزرسانی', 'در حال بروزرسانی داده‌ها...', 'info');
                     
                     await this.loadDashboardData();
-                    this.updateChartsWithRealData();
                     
-                    if (window.notificationManager) {
-                        window.notificationManager.showSuccess('بروزرسانی موفق', 'داده‌ها به‌روزرسانی شدند');
-                    }
+                    this.showToast('بروزرسانی موفق', 'داده‌ها به‌روزرسانی شدند', 'success');
                 } catch (error) {
                     console.error('Refresh failed:', error);
-                    if (window.notificationManager) {
-                        window.notificationManager.showError('خطا در بروزرسانی', 'نتوانستیم داده‌ها را بروزرسانی کنیم');
-                    }
+                    this.showToast('خطا در بروزرسانی', 'نتوانستیم داده‌ها را بروزرسانی کنیم', 'error');
                 }
+            }
+
+            async handleFileUpload(file, type) {
+                this.showToast('آپلود شروع شد', `در حال آپلود ${type === 'pdf' ? 'PDF' : 'تصویر'}...`, 'info');
+                
+                try {
+                    const formData = new FormData();
+                    formData.append('file', file);
+
+                    const endpoint = type === 'pdf' ? '/api/ocr/extract-pdf' : '/api/ocr/extract-image';
+                    
+                    const response = await fetch(endpoint, {
+                        method: 'POST',
+                        body: formData
+                    });
+
+                    if (!response.ok) {
+                        throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+                    }
+
+                    const result = await response.json();
+                    
+                    if (result.success && result.text) {
+                        this.displayResults(result.text, result.method, result.metadata);
+                        this.showToast('استخراج موفق', 'متن با موفقیت استخراج شد', 'success');
+                        
+                        // Refresh dashboard stats
+                        await this.loadDashboardData();
+                    } else {
+                        throw new Error(result.metadata?.error || 'خطا در پردازش فایل');
+                    }
+
+                } catch (error) {
+                    console.error('File upload error:', error);
+                    this.showToast('خطا در آپلود', `خطا در پردازش فایل: ${error.message}`, 'error');
+                }
+            }
+
+            displayResults(text, method, metadata) {
+                const resultsArea = document.getElementById('resultsArea');
+                const extractedText = document.getElementById('extractedText');
+                
+                if (resultsArea && extractedText) {
+                    this.lastExtractedText = text;
+                    extractedText.textContent = text;
+                    resultsArea.style.display = 'block';
+                    
+                    // Add metadata info
+                    const existingMetadata = resultsArea.querySelector('.metadata-info');
+                    if (existingMetadata) existingMetadata.remove();
+                    
+                    const metadataInfo = document.createElement('div');
+                    metadataInfo.className = 'metadata-info';
+                    
+                    const confidence = metadata?.confidence ? ` | اعتماد: ${Math.round(metadata.confidence * 100)}%` : '';
+                    const quality = metadata?.quality ? ` | کیفیت: ${Math.round(metadata.quality * 100)}%` : '';
+                    const processingTime = metadata?.processing_time ? ` | زمان: ${metadata.processing_time}s` : '';
+                    
+                    metadataInfo.innerHTML = `
+                        <div class="metadata-title">
+                            <i class="fas fa-info-circle" style="color: #3b82f6;"></i>
+                            اطلاعات پردازش
+                        </div>
+                        <div>
+                            <strong>روش:</strong> ${method}${confidence}${quality}${processingTime}
+                        </div>
+                        <div class="metadata-details">
+                            تعداد کلمات: ${text.split(' ').filter(word => word.length > 0).length} | 
+                            تعداد کاراکتر: ${text.length}
+                        </div>
+                    `;
+                    
+                    resultsArea.insertBefore(metadataInfo, extractedText);
+                    
+                    // Smooth scroll to results
+                    resultsArea.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }
+            }
+
+            showToast(title, message, type = 'info') {
+                const container = document.getElementById('toastContainer');
+                if (!container) return;
+
+                const toast = document.createElement('div');
+                toast.className = `toast ${type}`;
+                
+                const iconMap = {
+                    success: 'check-circle',
+                    error: 'times-circle',
+                    warning: 'exclamation-triangle',
+                    info: 'info-circle'
+                };
+
+                toast.innerHTML = `
+                    <div class="toast-icon">
+                        <i class="fas fa-${iconMap[type] || 'info-circle'}"></i>
+                    </div>
+                    <div class="toast-content">
+                        <div class="toast-title">${title}</div>
+                        <div class="toast-message">${message}</div>
+                    </div>
+                    <button type="button" class="toast-close" onclick="this.parentElement.remove()">
+                        <i class="fas fa-times"></i>
+                    </button>
+                `;
+                
+                container.appendChild(toast);
+                
+                setTimeout(() => {
+                    toast.classList.add('show');
+                }, 100);
+                
+                setTimeout(() => {
+                    toast.classList.remove('show');
+                    setTimeout(() => {
+                        if (toast.parentElement) {
+                            toast.parentElement.removeChild(toast);
+                        }
+                    }, 300);
+                }, 5000);
+            }
+
+            handleInitializationError(error) {
+                this.loadFallbackData();
+                this.setupEventListeners();
+                this.showToast('حالت آفلاین', 'اتصال به سرور برقرار نشد - از داده‌های محلی استفاده می‌شود', 'warning');
             }
 
             // Cleanup method
@@ -1892,12 +2318,54 @@
             }
         }
 
-        // Chart update functions (global scope for onclick handlers)
-        function updatePerformanceChart(period) {
-            if (!window.dashboard || !window.dashboard.isChartJSLoaded || !window.dashboard.charts.performance) {
-                if (window.notificationManager) {
-                    window.notificationManager.showWarning('خطا در نمودار', 'نمودارها در دسترس نیستند');
+        // API Client Class (simplified version)
+        class LegalDashboardAPI {
+            constructor(baseUrl = '') {
+                this.baseUrl = baseUrl || window.location.origin;
+                this.apiBase = `${this.baseUrl}/api`;
+                this.defaultHeaders = { 'Content-Type': 'application/json' };
+            }
+
+            async request(endpoint, options = {}) {
+                const url = `${this.apiBase}${endpoint}`;
+                const config = { ...options, headers: { ...this.defaultHeaders, ...options.headers } };
+
+                try {
+                    const response = await fetch(url, config);
+                    if (!response.ok) {
+                        const errorData = await response.json().catch(() => ({}));
+                        throw new Error(errorData.detail || `HTTP ${response.status}: ${response.statusText}`);
+                    }
+                    const contentType = response.headers.get('content-type');
+                    return contentType?.includes('application/json') ? response.json() : response.text();
+                } catch (error) {
+                    console.error(`API Request failed: ${endpoint}`, error);
+                    throw error;
                 }
+            }
+
+            async healthCheck() { 
+                return this.request('/health'); 
+            }
+
+            async getDashboardSummary() { 
+                return this.request('/dashboard/summary'); 
+            }
+
+            async getChartsData() { 
+                return this.request('/dashboard/charts-data'); 
+            }
+
+            async getDocuments(filters = {}) { 
+                const queryString = new URLSearchParams(filters).toString();
+                return this.request(`/documents${queryString ? '?' + queryString : ''}`); 
+            }
+        }
+
+        // Global functions for chart updates
+        function updateDocumentChart(period) {
+            if (!window.dashboard || !window.dashboard.charts.documents) {
+                console.warn('Document chart not available');
                 return;
             }
 
@@ -1909,40 +2377,31 @@
 
             const data = {
                 daily: {
-                    labels: ['ساعت 6', 'ساعت 9', 'ساعت 12', 'ساعت 15', 'ساعت 18', 'ساعت 21', 'ساعت 24'],
-                    responseTime: window.dashboard.generateRealisticResponseTimes(),
-                    cpuUsage: window.dashboard.generateRealisticCPUUsage()
+                    labels: ['6:00', '9:00', '12:00', '15:00', '18:00', '21:00', '24:00'],
+                    data: [12, 19, 15, 22, 28, 18, 14]
                 },
                 weekly: {
                     labels: ['شنبه', 'یکشنبه', 'دوشنبه', 'سه‌شنبه', 'چهارشنبه', 'پنج‌شنبه', 'جمعه'],
-                    responseTime: window.dashboard.generateRealisticResponseTimes(),
-                    cpuUsage: window.dashboard.generateRealisticCPUUsage()
+                    data: [45, 52, 38, 67, 71, 58, 43]
                 },
                 monthly: {
                     labels: ['هفته 1', 'هفته 2', 'هفته 3', 'هفته 4'],
-                    responseTime: [180, 220, 190, 210],
-                    cpuUsage: [35, 42, 38, 40]
+                    data: [180, 220, 190, 210]
                 }
             };
 
             const selectedData = data[period] || data.weekly;
             
-            window.dashboard.charts.performance.data.labels = selectedData.labels;
-            window.dashboard.charts.performance.data.datasets[0].data = selectedData.responseTime;
-            window.dashboard.charts.performance.data.datasets[1].data = selectedData.cpuUsage;
-            window.dashboard.charts.performance.update('active');
+            window.dashboard.charts.documents.data.labels = selectedData.labels;
+            window.dashboard.charts.documents.data.datasets[0].data = selectedData.data;
+            window.dashboard.charts.documents.update('active');
 
-            if (window.notificationManager) {
-                const periodText = period === 'daily' ? 'روزانه' : period === 'weekly' ? 'هفتگی' : 'ماهانه';
-                window.notificationManager.showInfo('نمودار بروزرسانی شد', `نمودار به حالت ${periodText} تغییر کرد`);
-            }
+            window.dashboard.showToast('نمودار بروزرسانی شد', `نمودار به حالت ${period === 'daily' ? 'روزانه' : period === 'weekly' ? 'هفتگی' : 'ماهانه'} تغییر کرد`, 'info');
         }
 
-        function updateStatusChart(type) {
-            if (!window.dashboard || !window.dashboard.isChartJSLoaded || !window.dashboard.charts.status) {
-                if (window.notificationManager) {
-                    window.notificationManager.showWarning('خطا در نمودار', 'نمودارها در دسترس نیستند');
-                }
+        function updateCategoryChart(type) {
+            if (!window.dashboard || !window.dashboard.charts.categories) {
+                console.warn('Category chart not available');
                 return;
             }
 
@@ -1953,95 +2412,45 @@
             button.classList.add('active');
 
             const data = {
-                services: {
-                    labels: ['API آنلاین', 'OCR آماده', 'PDF فعال', 'Cache فعال'],
-                    data: [1, 1, 1, 1],
-                    colors: ['#10b981', '#3b82f6', '#f59e0b', '#ef4444']
+                categories: {
+                    labels: ['قانون', 'قرارداد', 'حکم', 'درخواست', 'سایر'],
+                    data: [40, 25, 15, 12, 8],
+                    colors: ['#3b82f6', '#10b981', '#f59e0b', '#ef4444', '#6b7280']
                 },
-                endpoints: {
-                    labels: ['/health', '/api/ocr/*', '/system/status', '/api/docs'],
-                    data: [1, 1, 1, 1],
-                    colors: ['#10b981', '#3b82f6', '#f59e0b', '#8b5cf6']
+                sources: {
+                    labels: ['دادگاه', 'اداره', 'شرکت', 'شخصی', 'آنلاین'],
+                    data: [35, 20, 18, 15, 12],
+                    colors: ['#8b5cf6', '#06b6d4', '#f59e0b', '#ef4444', '#10b981']
                 }
             };
 
-            const selectedData = data[type] || data.services;
+            const selectedData = data[type] || data.categories;
             
-            window.dashboard.charts.status.data.labels = selectedData.labels;
-            window.dashboard.charts.status.data.datasets[0].data = selectedData.data;
-            window.dashboard.charts.status.data.datasets[0].backgroundColor = selectedData.colors;
-            window.dashboard.charts.status.update('active');
+            window.dashboard.charts.categories.data.labels = selectedData.labels;
+            window.dashboard.charts.categories.data.datasets[0].data = selectedData.data;
+            window.dashboard.charts.categories.data.datasets[0].backgroundColor = selectedData.colors;
+            window.dashboard.charts.categories.update('active');
 
-            if (window.notificationManager) {
-                const typeText = type === 'services' ? 'سرویس‌ها' : 'endpoint ها';
-                window.notificationManager.showInfo('نمودار بروزرسانی شد', `نمودار به حالت ${typeText} تغییر کرد`);
-            }
+            window.dashboard.showToast('نمودار بروزرسانی شد', `نمودار به حالت ${type === 'categories' ? 'دسته‌ها' : 'منابع'} تغییر کرد`, 'info');
         }
 
-        // File upload handlers (enhanced with better error handling)
+        // File upload functions
+        function triggerFileInput(type) {
+            const input = document.getElementById(type === 'pdf' ? 'pdfFileInput' : 'imageFileInput');
+            if (input) input.click();
+        }
+
         async function handlePDFUpload(event) {
             const file = event.target.files[0];
             if (!file) return;
 
             if (!file.name.toLowerCase().endsWith('.pdf')) {
-                if (window.notificationManager) {
-                    window.notificationManager.showError('فرمت نامعتبر', 'لطفاً فایل PDF انتخاب کنید');
-                }
+                window.dashboard.showToast('فرمت نامعتبر', 'لطفاً فایل PDF انتخاب کنید', 'error');
                 return;
             }
 
-            if (window.notificationManager) {
-                window.notificationManager.showInfo('آپلود شروع شد', 'در حال آپلود فایل PDF...');
-            }
-            
-            try {
-                // Use FileUploadHandler if available
-                if (window.fileUploadHandler) {
-                    await window.fileUploadHandler.handlePDFUpload(event);
-                } else {
-                    // Fallback implementation
-                    const formData = new FormData();
-                    formData.append('file', file);
-
-                    const response = await fetch('/api/ocr/extract-pdf', {
-                        method: 'POST',
-                        body: formData
-                    });
-
-                    if (!response.ok) {
-                        throw new Error(`HTTP ${response.status}: ${response.statusText}`);
-                    }
-
-                    const result = await response.json();
-                    
-                    if (result.success && result.text) {
-                        displayResults(result.text, result.method, result.metadata);
-                        if (window.notificationManager) {
-                            window.notificationManager.showSuccess('استخراج موفق', 'متن با موفقیت استخراج شد');
-                        }
-                        
-                        // Notify dashboard core
-                        if (window.dashboardCore) {
-                            window.dashboardCore.broadcast('documentUploaded', {
-                                fileName: file.name,
-                                fileSize: file.size,
-                                fileType: 'pdf'
-                            });
-                        }
-                    } else {
-                        throw new Error(result.metadata?.error || 'خطا در پردازش فایل');
-                    }
-                }
-
-            } catch (error) {
-                console.error('PDF upload error:', error);
-                if (window.notificationManager) {
-                    window.notificationManager.showError('خطا در آپلود', `خطا در پردازش PDF: ${error.message}`);
-                }
-            } finally {
-                // Reset file input
-                event.target.value = '';
-            }
+            await window.dashboard.handleFileUpload(file, 'pdf');
+            event.target.value = ''; // Reset input
         }
 
         async function handleImageUpload(event) {
@@ -2050,134 +2459,25 @@
 
             const allowedTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/bmp', 'image/tiff'];
             if (!allowedTypes.includes(file.type)) {
-                if (window.notificationManager) {
-                    window.notificationManager.showError('فرمت نامعتبر', 'لطفاً فایل تصویری معتبر انتخاب کنید');
-                }
+                window.dashboard.showToast('فرمت نامعتبر', 'لطفاً فایل تصویری معتبر انتخاب کنید', 'error');
                 return;
             }
 
-            if (window.notificationManager) {
-                window.notificationManager.showInfo('آپلود شروع شد', 'در حال آپلود تصویر...');
-            }
-            
-            try {
-                // Use FileUploadHandler if available
-                if (window.fileUploadHandler) {
-                    await window.fileUploadHandler.handleImageUpload(event);
-                } else {
-                    // Fallback implementation
-                    const formData = new FormData();
-                    formData.append('file', file);
-
-                    const response = await fetch('/api/ocr/extract-image', {
-                        method: 'POST',
-                        body: formData
-                    });
-
-                    if (!response.ok) {
-                        throw new Error(`HTTP ${response.status}: ${response.statusText}`);
-                    }
-
-                    const result = await response.json();
-                    
-                    if (result.success && result.text) {
-                        displayResults(result.text, result.method, result.metadata);
-                        if (window.notificationManager) {
-                            window.notificationManager.showSuccess('استخراج موفق', 'متن با موفقیت استخراج شد');
-                        }
-                        
-                        // Notify dashboard core
-                        if (window.dashboardCore) {
-                            window.dashboardCore.broadcast('documentUploaded', {
-                                fileName: file.name,
-                                fileSize: file.size,
-                                fileType: 'image'
-                            });
-                        }
-                    } else {
-                        throw new Error(result.metadata?.error || 'خطا در پردازش تصویر');
-                    }
-                }
-
-            } catch (error) {
-                console.error('Image upload error:', error);
-                if (window.notificationManager) {
-                    window.notificationManager.showError('خطا در آپلود', `خطا در پردازش تصویر: ${error.message}`);
-                }
-            } finally {
-                // Reset file input
-                event.target.value = '';
-            }
+            await window.dashboard.handleFileUpload(file, 'image');
+            event.target.value = ''; // Reset input
         }
 
-        // Display extraction results (enhanced)
-        function displayResults(text, method, metadata) {
-            const resultsArea = document.getElementById('resultsArea');
-            const extractedText = document.getElementById('extractedText');
-            
-            if (resultsArea && extractedText) {
-                window.dashboard.lastExtractedText = text;
-                extractedText.textContent = text;
-                resultsArea.style.display = 'block';
-                
-                // Add enhanced metadata info
-                const metadataInfo = document.createElement('div');
-                metadataInfo.style.cssText = `
-                    margin-bottom: 1rem; 
-                    padding: 0.8rem; 
-                    background: rgba(59, 130, 246, 0.1); 
-                    border-radius: 8px; 
-                    font-size: 0.85rem;
-                    border-left: 4px solid #3b82f6;
-                `;
-                
-                const confidence = metadata?.confidence ? ` | اعتماد: ${Math.round(metadata.confidence * 100)}%` : '';
-                const quality = metadata?.quality ? ` | کیفیت: ${Math.round(metadata.quality * 100)}%` : '';
-                const processingTime = metadata?.processing_time ? ` | زمان: ${metadata.processing_time}s` : '';
-                
-                metadataInfo.innerHTML = `
-                    <div style="font-weight: 600; margin-bottom: 0.5rem;">
-                        <i class="fas fa-info-circle" style="color: #3b82f6; margin-left: 0.5rem;"></i>
-                        اطلاعات پردازش
-                    </div>
-                    <div>
-                        <strong>روش:</strong> ${method}${confidence}${quality}${processingTime}
-                    </div>
-                    <div style="margin-top: 0.3rem; font-size: 0.8rem; color: #64748b;">
-                        تعداد کلمات: ${text.split(' ').filter(word => word.length > 0).length} | 
-                        تعداد کاراکتر: ${text.length}
-                    </div>
-                `;
-                
-                // Remove old metadata if exists
-                const oldMetadata = resultsArea.querySelector('.metadata-info');
-                if (oldMetadata) oldMetadata.remove();
-                
-                metadataInfo.className = 'metadata-info';
-                resultsArea.insertBefore(metadataInfo, extractedText);
-                
-                // Smooth scroll to results
-                resultsArea.scrollIntoView({ behavior: 'smooth', block: 'start' });
-            }
-        }
-
-        // Utility functions (enhanced)
+        // Utility functions
         function copyToClipboard() {
             const extractedText = document.getElementById('extractedText');
             if (extractedText && extractedText.textContent) {
                 navigator.clipboard.writeText(extractedText.textContent).then(() => {
-                    if (window.notificationManager) {
-                        window.notificationManager.showSuccess('کپی شد', 'متن در کلیپ‌بورد کپی شد');
-                    }
+                    window.dashboard.showToast('کپی شد', 'متن در کلیپ‌بورد کپی شد', 'success');
                 }).catch(() => {
-                    if (window.notificationManager) {
-                        window.notificationManager.showError('خطا در کپی', 'متن کپی نشد');
-                    }
+                    window.dashboard.showToast('خطا در کپی', 'متن کپی نشد', 'error');
                 });
             } else {
-                if (window.notificationManager) {
-                    window.notificationManager.showWarning('محتوا یافت نشد', 'متنی برای کپی کردن موجود نیست');
-                }
+                window.dashboard.showToast('محتوا یافت نشد', 'متنی برای کپی کردن موجود نیست', 'warning');
             }
         }
 
@@ -2188,22 +2488,18 @@
             if (resultsArea && extractedText) {
                 resultsArea.style.display = 'none';
                 extractedText.textContent = '';
-                if (window.dashboard) {
-                    window.dashboard.lastExtractedText = '';
-                }
+                window.dashboard.lastExtractedText = '';
                 
                 // Remove metadata
                 const metadata = resultsArea.querySelector('.metadata-info');
                 if (metadata) metadata.remove();
                 
-                if (window.notificationManager) {
-                    window.notificationManager.showInfo('پاک شد', 'نتایج پاک شدند');
-                }
+                window.dashboard.showToast('پاک شد', 'نتایج پاک شدند', 'info');
             }
         }
 
-        // Initialize Enhanced Dashboard
-        window.dashboard = new EnhancedDashboardController();
+        // Initialize Dashboard
+        window.dashboard = new LegalDashboardController();
         
         // Setup page visibility change handler for performance
         document.addEventListener('visibilitychange', () => {
@@ -2225,10 +2521,171 @@
             }
         });
         
-        console.log('🏠 Enhanced Legal Dashboard Ready!');
-        console.log('📊 Features: Real-time Updates, Multi-page Navigation, Smart OCR Upload');
-        console.log('🎯 Status: Fully Functional with API Integration');
-        console.log('🔗 Connected Scripts: notifications.js, api-client.js, core.js, file-upload-handler.js, document-crud.js, scraping-control.js');
+        console.log('🏛️ Enhanced Legal Dashboard Ready!');
+        console.log('📊 Features: Real-time API Integration, Smart OCR Upload, Interactive Charts');
+        console.log('🎯 Status: Fully Functional with Backend Integration');
+        console.log('🔗 API Endpoints: /api/health, /api/dashboard/*, /api/ocr/*, /api/documents/*');
+        console.log('⚡ Real-time Updates: Every 30 seconds');
+        console.log('📱 Mobile Responsive: Touch-friendly interface');
+        console.log('🗂️ Navigation: All pages connected and accessible');
+
+        // Load additional JS modules if available
+        const jsModules = [
+            { path: 'js/api-client.js', name: 'API Client', loaded: false },
+            { path: 'js/core.js', name: 'Core System', loaded: false },
+            { path: 'js/notifications.js', name: 'Notifications', loaded: false },
+            { path: 'js/file-upload-handler.js', name: 'File Upload', loaded: false },
+            { path: 'js/document-crud.js', name: 'Document CRUD', loaded: false },
+            { path: 'js/scraping-control.js', name: 'Scraping Control', loaded: false },
+            { path: 'js/performance-utils.js', name: 'Performance Utils', loaded: false },
+            { path: 'js/websocket-manager.js', name: 'WebSocket Manager', loaded: false }
+        ];
+
+        // Function to dynamically load JS modules
+        function loadJSModules() {
+            let loadedCount = 0;
+            const totalModules = jsModules.length;
+
+            jsModules.forEach((module, index) => {
+                const script = document.createElement('script');
+                script.src = module.path;
+                script.async = true;
+                
+                script.onerror = () => {
+                    console.warn(`⚠️ Failed to load module: ${module.name} (${module.path})`);
+                    module.loaded = false;
+                    loadedCount++;
+                    if (loadedCount === totalModules) {
+                        showModuleLoadStatus();
+                    }
+                };
+                
+                script.onload = () => {
+                    console.log(`✅ Loaded module: ${module.name} (${module.path})`);
+                    module.loaded = true;
+                    loadedCount++;
+                    if (loadedCount === totalModules) {
+                        showModuleLoadStatus();
+                    }
+                };
+                
+                document.head.appendChild(script);
+            });
+        }
+
+        // Show module loading status
+        function showModuleLoadStatus() {
+            const loadedModules = jsModules.filter(m => m.loaded).length;
+            const totalModules = jsModules.length;
+            
+            console.log(`📦 JS Modules Status: ${loadedModules}/${totalModules} loaded`);
+            
+            if (window.dashboard) {
+                if (loadedModules === totalModules) {
+                    window.dashboard.showToast('ماژول‌ها آماده', 'همه ماژول‌های JS بارگذاری شدند', 'success');
+                } else if (loadedModules > totalModules / 2) {
+                    window.dashboard.showToast('بارگذاری جزئی', `${loadedModules}/${totalModules} ماژول بارگذاری شد`, 'warning');
+                } else {
+                    window.dashboard.showToast('خطا در بارگذاری', 'برخی ماژول‌ها بارگذاری نشدند', 'error');
+                }
+            }
+
+            // Make module status available globally
+            window.moduleStatus = {
+                loaded: loadedModules,
+                total: totalModules,
+                modules: jsModules,
+                isComplete: loadedModules === totalModules
+            };
+        }
+
+        // Function to check which modules are available
+        function checkAvailableModules() {
+            const available = {
+                apiClient: typeof window.legalAPI !== 'undefined',
+                dashboardCore: typeof window.dashboardCore !== 'undefined',
+                notificationManager: typeof window.notificationManager !== 'undefined',
+                fileUploadHandler: typeof window.fileUploadHandler !== 'undefined',
+                documentCRUD: typeof window.documentCRUD !== 'undefined',
+                scrapingControl: typeof window.scrapingControl !== 'undefined',
+                performanceUtils: typeof window.performanceUtils !== 'undefined',
+                websocketManager: typeof window.websocketManager !== 'undefined'
+            };
+
+            const availableCount = Object.values(available).filter(Boolean).length;
+            console.log(`🔧 Available Modules: ${availableCount}/8`, available);
+            
+            return available;
+        }
+
+        // Load modules after dashboard initialization
+        setTimeout(() => {
+            loadJSModules();
+            // Check available modules after 3 seconds
+            setTimeout(checkAvailableModules, 3000);
+        }, 1000);
+
+        // Enhanced navigation function for better page transitions
+        function navigateToPage(url) {
+            // Add loading indicator
+            const currentPage = window.location.pathname.split('/').pop();
+            if (currentPage !== url) {
+                window.dashboard.showToast('در حال انتقال', `بارگذاری ${url}...`, 'info');
+                
+                // Check if page exists before navigation
+                fetch(url, { method: 'HEAD' })
+                    .then(response => {
+                        if (response.ok) {
+                            setTimeout(() => {
+                                window.location.href = url;
+                            }, 500);
+                        } else {
+                            throw new Error('Page not found');
+                        }
+                    })
+                    .catch(() => {
+                        window.dashboard.showToast('صفحه یافت نشد', `${url} در دسترس نیست`, 'error');
+                        console.warn(`❌ Page not accessible: ${url}`);
+                    });
+            }
+        }
+
+        // Add click handlers for navigation links
+        document.querySelectorAll('.nav-link[href$=".html"]').forEach(link => {
+            link.addEventListener('click', (e) => {
+                const href = link.getAttribute('href');
+                if (href && href.endsWith('.html')) {
+                    e.preventDefault();
+                    navigateToPage(href);
+                }
+            });
+        });
+
+        // Add click handlers for quick access items
+        document.querySelectorAll('.quick-access-item[href$=".html"]').forEach(item => {
+            item.addEventListener('click', (e) => {
+                const href = item.getAttribute('href');
+                if (href && href.endsWith('.html')) {
+                    e.preventDefault();
+                    navigateToPage(href);
+                }
+            });
+        });
+
+        // Global navigation status
+        window.navigationReady = true;
+        
+        // Final status report
+        console.log('🧭 Navigation system initialized');
+        console.log('📋 Connected Pages:', {
+            'داشبوردها': ['index.html', 'improved_legal_dashboard.html', 'analytics.html', 'enhanced_analytics_dashboard.html'],
+            'مدیریت اسناد': ['upload.html', 'documents.html', 'search.html'],
+            'وب اسکرپینگ': ['scraping.html', 'scraping_dashboard.html'],
+            'گزارشات': ['reports.html', 'system-health.html', 'recent-activity.html'],
+            'ابزارها': ['navigation-helper.html', 'settings.html']
+        });
+        console.log('⚙️ JS Modules Loading...', jsModules.map(m => m.name));
+        console.log('🎯 Navigation Features: Active Link Detection, Breadcrumb, Badge Updates, Smooth Transitions');
     </script>
 </body>
 </html>

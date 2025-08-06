@@ -372,6 +372,127 @@ class DashboardCore {
             showToast('خطا در به‌روزرسانی داده‌ها', 'error');
         }
     }
+
+    /**
+     * Enhanced error handling with retry mechanism
+     */
+    async retryOperation(operation, maxRetries = 3, delay = 1000) {
+        for (let attempt = 1; attempt <= maxRetries; attempt++) {
+            try {
+                return await operation();
+            } catch (error) {
+                console.warn(`Operation failed (attempt ${attempt}/${maxRetries}):`, error);
+
+                if (attempt === maxRetries) {
+                    throw error;
+                }
+
+                // Wait before retrying (exponential backoff)
+                await new Promise(resolve => setTimeout(resolve, delay * attempt));
+            }
+        }
+    }
+
+    /**
+     * Check if system is online
+     */
+    async isOnline() {
+        try {
+            const response = await fetch('/api/health', {
+                method: 'HEAD',
+                timeout: 5000
+            });
+            return response.ok;
+        } catch {
+            return false;
+        }
+    }
+
+    /**
+     * Enhanced notification system with Persian messages
+     */
+    showPersianToast(messageKey, type = 'info', duration = 3000) {
+        const messages = {
+            'upload_success': 'فایل با موفقیت آپلود شد',
+            'upload_error': 'خطا در آپلود فایل',
+            'delete_success': 'حذف با موفقیت انجام شد',
+            'delete_error': 'خطا در حذف',
+            'update_success': 'به‌روزرسانی با موفقیت انجام شد',
+            'update_error': 'خطا در به‌روزرسانی',
+            'network_error': 'خطا در اتصال به شبکه',
+            'server_error': 'خطای سرور',
+            'loading': 'در حال بارگذاری...',
+            'processing': 'در حال پردازش...',
+            'completed': 'عملیات تکمیل شد',
+            'cancelled': 'عملیات لغو شد'
+        };
+
+        const message = messages[messageKey] || messageKey;
+
+        if (typeof showToast === 'function') {
+            showToast(message, type, duration);
+        } else {
+            console.log(`Toast: ${message} (${type})`);
+        }
+    }
+
+    /**
+     * Local storage wrapper with error handling
+     */
+    setLocalStorage(key, value, expiry = null) {
+        try {
+            const item = {
+                value: value,
+                timestamp: Date.now(),
+                expiry: expiry
+            };
+            localStorage.setItem(`dashboard_${key}`, JSON.stringify(item));
+            return true;
+        } catch (error) {
+            console.warn('Failed to save to localStorage:', error);
+            return false;
+        }
+    }
+
+    getLocalStorage(key) {
+        try {
+            const item = JSON.parse(localStorage.getItem(`dashboard_${key}`));
+            if (!item) return null;
+
+            // Check expiry
+            if (item.expiry && Date.now() > item.expiry) {
+                localStorage.removeItem(`dashboard_${key}`);
+                return null;
+            }
+
+            return item.value;
+        } catch (error) {
+            console.warn('Failed to read from localStorage:', error);
+            return null;
+        }
+    }
+
+    /**
+     * Debounce function for search and API calls
+     */
+    debounce(func, wait) {
+        let timeout;
+        return function executedFunction(...args) {
+            const later = () => {
+                clearTimeout(timeout);
+                func(...args);
+            };
+            clearTimeout(timeout);
+            timeout = setTimeout(later, wait);
+        };
+    }
+
+    /**
+     * Generate unique ID
+     */
+    generateId() {
+        return Date.now().toString(36) + Math.random().toString(36).substr(2);
+    }
 }
 
 // Global instance
