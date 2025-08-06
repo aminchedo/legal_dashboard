@@ -20,7 +20,12 @@ REQUIRED_ENV_VARS = {
     'DATABASE_DIR': '/app/data',
     'TRANSFORMERS_CACHE': '/app/cache',
     'HF_HOME': '/app/cache',
-    'PORT': '7860'
+    'PORT': '7860',
+    'JWT_SECRET_KEY': 'your-super-secret-key-here',
+    'CORS_ORIGINS': '*',
+    'MAX_UPLOAD_SIZE': '50MB',
+    'UPLOAD_DIR': '/tmp/uploads',
+    'CACHE_TTL': '3600'
 }
 
 # Set environment variables if not already set
@@ -45,9 +50,11 @@ os.makedirs('/app/data', exist_ok=True)
 os.makedirs('/app/cache', exist_ok=True)
 os.makedirs('/tmp/uploads', exist_ok=True)
 
-logger.info("🚀 Starting Legal Dashboard for Hugging Face Spaces...")
-logger.info(f"📁 Data directory: {os.environ.get('DATABASE_DIR', '/app/data')}")
-logger.info(f"💾 Cache directory: {os.environ.get('TRANSFORMERS_CACHE', '/app/cache')}")
+logger.info("🚀 شروع سیستم داشبورد حقوقی برای Hugging Face Spaces...")
+logger.info(f"📁 مسیر داده‌ها: {os.environ.get('DATABASE_DIR', '/app/data')}")
+logger.info(f"💾 مسیر کش: {os.environ.get('TRANSFORMERS_CACHE', '/app/cache')}")
+logger.info(f"🌐 پورت: {os.environ.get('PORT', '7860')}")
+logger.info(f"🔧 محیط: {os.environ.get('ENVIRONMENT', 'production')}")
 
 try:
     # Import FastAPI application
@@ -57,20 +64,20 @@ try:
     # Try to import the main application
     try:
         from app.main import app as core_app
-        logger.info("✅ Successfully imported main application")
+        logger.info("✅ برنامه اصلی با موفقیت وارد شد")
     except ImportError as e:
-        logger.error(f"❌ Failed to import main application: {e}")
+        logger.error(f"❌ خطا در وارد کردن برنامه اصلی: {e}")
         # Create a fallback app
         core_app = FastAPI(
-            title="Legal Dashboard - Fallback",
-            description="Legal document processing system (fallback mode)",
+            title="داشبورد حقوقی - حالت پشتیبان",
+            description="سیستم پردازش اسناد حقوقی (حالت پشتیبان)",
             version="1.0.0"
         )
         
         @core_app.get("/")
         async def fallback_root():
             return {
-                "message": "Legal Dashboard is starting up...",
+                "message": "داشبورد حقوقی در حال راه‌اندازی است...",
                 "status": "initializing",
                 "error": str(e)
             }
@@ -79,13 +86,13 @@ try:
         async def fallback_health():
             return {
                 "status": "starting",
-                "message": "System is initializing, please wait..."
+                "message": "سیستم در حال راه‌اندازی است، لطفاً صبر کنید..."
             }
 
     # Create the main application
     app = FastAPI(
-        title="Legal Dashboard - Iranian Legal Documents",
-        description="AI-powered Persian legal document processing and analysis system",
+        title="داشبورد حقوقی - اسناد حقوقی ایران",
+        description="سیستم پردازش و تحلیل اسناد حقوقی فارسی با هوش مصنوعی",
         version="1.0.0",
         docs_url="/docs",
         redoc_url="/redoc"
@@ -103,18 +110,18 @@ try:
     # Mount the core application
     app.mount("/", core_app)
 
-    logger.info("✅ Application configured successfully")
+    logger.info("✅ برنامه با موفقیت پیکربندی شد")
 
 except Exception as e:
-    logger.error(f"❌ Critical error during application setup: {e}")
+    logger.error(f"❌ خطای بحرانی در راه‌اندازی برنامه: {e}")
     
     # Create emergency app
     from fastapi import FastAPI, HTTPException
     from fastapi.responses import HTMLResponse
     
     app = FastAPI(
-        title="Legal Dashboard - Emergency Mode",
-        description="System is in emergency mode due to initialization errors",
+        title="داشبورد حقوقی - حالت اضطراری",
+        description="سیستم در حالت اضطراری به دلیل خطاهای راه‌اندازی",
         version="1.0.0"
     )
     
@@ -122,28 +129,30 @@ except Exception as e:
     async def emergency_root():
         return HTMLResponse("""
         <html>
-            <head><title>Legal Dashboard - خطای سیستم</title></head>
-            <body style="font-family: 'Tahoma', sans-serif; text-align: center; padding: 50px;">
+            <head><title>داشبورد حقوقی - خطای سیستم</title></head>
+            <body style="font-family: 'Tahoma', sans-serif; text-align: center; padding: 50px; direction: rtl;">
                 <h1>⚠️ خطای سیستم</h1>
                 <p>متأسفانه خطایی در راه‌اندازی سیستم رخ داده است.</p>
                 <p>لطفاً چند لحظه صبر کنید و دوباره تلاش کنید.</p>
-                <p>Error: """ + str(e) + """</p>
+                <p>خطا: """ + str(e) + """</p>
+                <p><a href="/health">🔍 بررسی وضعیت سیستم</a></p>
             </body>
         </html>
         """)
     
     @app.get("/health")
     async def emergency_health():
-        raise HTTPException(status_code=503, detail="System is in emergency mode")
+        raise HTTPException(status_code=503, detail="سیستم در حالت اضطراری است")
 
 # Main execution
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 7860))
     host = "0.0.0.0"
     
-    logger.info(f"🌐 Starting server on {host}:{port}")
-    logger.info("📖 API Documentation available at /docs")
-    logger.info("🔍 Health check available at /health")
+    logger.info(f"🌐 شروع سرور روی {host}:{port}")
+    logger.info("📖 مستندات API در دسترس در /docs")
+    logger.info("🔍 بررسی وضعیت در دسترس در /health")
+    logger.info("🚀 سیستم آماده استفاده است!")
     
     try:
         uvicorn.run(
@@ -155,5 +164,5 @@ if __name__ == "__main__":
             reload=False  # Disable reload for production
         )
     except Exception as e:
-        logger.error(f"❌ Failed to start server: {e}")
+        logger.error(f"❌ خطا در شروع سرور: {e}")
         sys.exit(1)

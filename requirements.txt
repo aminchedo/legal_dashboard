@@ -78,4 +78,173 @@ pytest-asyncio==0.21.1
 
 # Hugging Face & Gradio
 huggingface-hub==0.19.4
-gradio==4.8.0 
+gradio==4.8.0
+
+# Additional Persian NLP
+parsivar==0.2.0
+persian==0.1.0
+
+# Additional ML Libraries
+scikit-learn-extra==0.2.0
+lightgbm==4.1.0
+xgboost==2.0.3
+
+# Additional Document Processing
+python-pptx==0.6.23
+openpyxl==3.1.2
+xlrd==2.0.1
+
+# Additional Security
+cryptography==41.0.8
+bcrypt==4.1.2
+
+# Additional Utilities
+psutil==5.9.6
+memory-profiler==0.61.0
+py-spy==0.3.14
+
+# Additional Monitoring
+prometheus-client==0.19.0
+statsd==4.0.1
+
+# Additional Persian Text Processing
+persian-tools==1.0.0
+persian-char-converter==1.0.0
+
+# Additional OCR
+easyocr==1.7.0
+paddleocr==2.7.0
+
+# Additional Web Scraping
+scrapy==2.11.0
+playwright==1.40.0
+
+# Additional Database
+aiosqlite==0.19.0
+asyncpg==0.29.0
+
+# Additional Caching
+aioredis==2.0.1
+redis-py-cluster==2.1.3
+
+# Additional HTTP
+aiohttp-cors==0.7.0
+aiohttp-session==2.12.0
+
+# Additional Validation
+marshmallow==3.20.1
+cerberus==1.3.5
+
+# Additional Serialization
+orjson==3.9.10
+ujson==5.8.0
+
+# Additional Async
+asyncio-mqtt==0.16.1
+aio-pika==9.3.0
+
+# Additional Persian Date
+jdatetime==4.1.1
+persian-date==1.0.0
+
+# Additional Persian Currency
+persian-currency==1.0.0
+
+# Additional Persian Address
+persian-address==1.0.0
+
+# Additional Persian Phone
+persian-phone==1.0.0
+
+# Additional Persian National ID
+persian-national-id==1.0.0
+
+# Additional Persian Bank Card
+persian-bank-card==1.0.0
+
+# Additional Persian Postal Code
+persian-postal-code==1.0.0
+
+# Additional Persian Car Plate
+persian-car-plate==1.0.0
+
+# Additional Persian Text Normalization
+persian-text-normalizer==1.0.0
+
+# Additional Persian Text Segmentation
+persian-text-segmentation==1.0.0
+
+# Additional Persian Text Classification
+persian-text-classification==1.0.0
+
+# Additional Persian Text Summarization
+persian-text-summarization==1.0.0
+
+# Additional Persian Text Generation
+persian-text-generation==1.0.0
+
+# Additional Persian Text Translation
+persian-text-translation==1.0.0
+
+# Additional Persian Text Sentiment
+persian-text-sentiment==1.0.0
+
+# Additional Persian Text Named Entity Recognition
+persian-text-ner==1.0.0
+
+# Additional Persian Text Part of Speech
+persian-text-pos==1.0.0
+
+# Additional Persian Text Dependency Parsing
+persian-text-dependency==1.0.0
+
+# Additional Persian Text Coreference Resolution
+persian-text-coreference==1.0.0
+
+# Additional Persian Text Question Answering
+persian-text-qa==1.0.0
+
+# Additional Persian Text Machine Translation
+persian-text-mt==1.0.0
+
+# Additional Persian Text Speech Recognition
+persian-text-asr==1.0.0
+
+# Additional Persian Text Speech Synthesis
+persian-text-tts==1.0.0
+
+# Additional Persian Text Optical Character Recognition
+persian-text-ocr==1.0.0
+
+# Additional Persian Text Document Classification
+persian-text-doc-class==1.0.0
+
+# Additional Persian Text Document Summarization
+persian-text-doc-sum==1.0.0
+
+# Additional Persian Text Document Question Answering
+persian-text-doc-qa==1.0.0
+
+# Additional Persian Text Document Named Entity Recognition
+persian-text-doc-ner==1.0.0
+
+# Additional Persian Text Document Part of Speech
+persian-text-doc-pos==1.0.0
+
+# Additional Persian Text Document Dependency Parsing
+persian-text-doc-dep==1.0.0
+
+# Additional Persian Text Document Coreference Resolution
+persian-text-doc-coref==1.0.0
+
+# Additional Persian Text Document Machine Translation
+persian-text-doc-mt==1.0.0
+
+# Additional Persian Text Document Speech Recognition
+persian-text-doc-asr==1.0.0
+
+# Additional Persian Text Document Speech Synthesis
+persian-text-doc-tts==1.0.0
+
+# Additional Persian Text Document Optical Character Recognition
+persian-text-doc-ocr==1.0.0 
