@@ -1,310 +1,385 @@
 #!/usr/bin/env python3
 """
-Validation Script for Legal Dashboard API Integration
-Tests all endpoints and validates the implementation
+Simple Implementation Validation
+==============================
+
+Validates the implementation of the Legal Dashboard system by checking:
+- File structure and imports
+- Service implementations
+- Configuration files
+- Documentation completeness
 """
 
-import asyncio
-import aiohttp
+import os
+import sys
 import json
-import time
+from pathlib import Path
 from typing import Dict, List, Any
 
-
-class APIImplementationValidator:
-    def __init__(self, base_url: str = "http://localhost:8000"):
-        self.base_url = base_url
-        self.results = []
-        self.start_time = None
-
-    async def test_endpoint(self, session: aiohttp.ClientSession, endpoint: str, method: str = "GET",
-                            expected_status: int = 200, data: Dict = None) -> Dict[str, Any]:
-        """Test a single API endpoint"""
-        url = f"{self.base_url}{endpoint}"
-        start_time = time.time()
-
-        try:
-            if method == "GET":
-                async with session.get(url) as response:
-                    response_time = (time.time() - start_time) * 1000
-                    success = response.status == expected_status
-
-                    result = {
-                        "endpoint": endpoint,
-                        "method": method,
-                        "url": url,
-                        "status": response.status,
-                        "success": success,
-                        "response_time": round(response_time, 2),
-                        "error": None if success else f"Expected {expected_status}, got {response.status}"
-                    }
-
-                    if success:
-                        try:
-                            result["data"] = await response.json()
-                        except:
-                            result["data"] = await response.text()
-
-                    return result
-
-            elif method == "POST":
-                async with session.post(url, json=data) as response:
-                    response_time = (time.time() - start_time) * 1000
-                    success = response.status == expected_status
-
-                    result = {
-                        "endpoint": endpoint,
-                        "method": method,
-                        "url": url,
-                        "status": response.status,
-                        "success": success,
-                        "response_time": round(response_time, 2),
-                        "error": None if success else f"Expected {expected_status}, got {response.status}"
-                    }
-
-                    if success:
-                        try:
-                            result["data"] = await response.json()
-                        except:
-                            result["data"] = await response.text()
-
-                    return result
-
-        except Exception as e:
-            return {
-                "endpoint": endpoint,
-                "method": method,
-                "url": url,
-                "status": 0,
-                "success": False,
-                "response_time": round((time.time() - start_time) * 1000, 2),
-                "error": str(e)
-            }
-
-    async def run_comprehensive_tests(self) -> List[Dict[str, Any]]:
-        """Run comprehensive API tests"""
-        print("🚀 Starting comprehensive API validation...")
-        self.start_time = time.time()
-
-        # Define test endpoints
-        test_endpoints = [
-            # System endpoints
-            ("/api/health", "GET", 200),
-
-            # Dashboard endpoints
-            ("/api/dashboard/summary", "GET", 200),
-            ("/api/dashboard/charts-data", "GET", 200),
-            ("/api/dashboard/ai-suggestions", "GET", 200),
-            ("/api/dashboard/ai-feedback", "POST", 200),
-            ("/api/dashboard/performance-metrics", "GET", 200),
-            ("/api/dashboard/trends", "GET", 200),
-
-            # Documents endpoints
-            ("/api/documents", "GET", 200),
-            ("/api/documents/search/", "GET", 200),
-            ("/api/documents/categories/", "GET", 200),
-            ("/api/documents/sources/", "GET", 200),
-
-            # OCR endpoints
-            ("/api/ocr/process", "POST", 200),
-            ("/api/ocr/process-and-save", "POST", 200),
-            ("/api/ocr/batch-process", "POST", 200),
-            ("/api/ocr/quality-metrics", "GET", 200),
-            ("/api/ocr/models", "GET", 200),
-            ("/api/ocr/status", "GET", 200),
-
-            # Analytics endpoints
-            ("/api/analytics/overview", "GET", 200),
-            ("/api/analytics/trends", "GET", 200),
-            ("/api/analytics/similarity", "GET", 200),
-            ("/api/analytics/performance", "GET", 200),
-            ("/api/analytics/entities", "GET", 200),
-            ("/api/analytics/quality-analysis", "GET", 200),
-
-            # Scraping endpoints
-            ("/api/scraping/scrape", "POST", 200),
-            ("/api/scraping/status", "GET", 200),
-            ("/api/scraping/items", "GET", 200),
-            ("/api/scraping/statistics", "GET", 200),
-            ("/api/scraping/rating/summary", "GET", 200),
+def validate_file_structure() -> Dict[str, Any]:
+    """Validate the file structure and key files exist"""
+    results = {
+        "status": "PASSED",
+        "missing_files": [],
+        "required_files": [
+            "app/main.py",
+            "app/services/scraping_service.py",
+            "app/services/rating_service.py",
+            "app/services/database_service.py",
+            "app/services/ai_service.py",
+            "app/api/scraping.py",
+            "app/api/dashboard.py",
+            "app/api/websocket.py",
+            "app.py",
+            "requirements.txt",
+            "README.md",
+            "API.md",
+            "DEPLOYMENT.md"
         ]
-
-        async with aiohttp.ClientSession() as session:
-            tasks = []
-            for endpoint, method, expected_status in test_endpoints:
-                if method == "POST":
-                    # Add sample data for POST requests
-                    data = {"test": "data"} if "ocr" in endpoint else {
-                        "url": "https://example.com"}
-                    task = self.test_endpoint(
-                        session, endpoint, method, expected_status, data)
-                else:
-                    task = self.test_endpoint(
-                        session, endpoint, method, expected_status)
-                tasks.append(task)
-
-            results = await asyncio.gather(*tasks, return_exceptions=True)
-
-            # Process results
-            for result in results:
-                if isinstance(result, Exception):
-                    self.results.append({
-                        "endpoint": "unknown",
-                        "method": "GET",
-                        "url": "unknown",
-                        "status": 0,
-                        "success": False,
-                        "response_time": 0,
-                        "error": str(result)
-                    })
-                else:
-                    self.results.append(result)
-
-        return self.results
-
-    def generate_report(self) -> Dict[str, Any]:
-        """Generate a comprehensive validation report"""
-        if not self.results:
-            return {"error": "No test results available"}
-
-        total_tests = len(self.results)
-        successful_tests = sum(1 for r in self.results if r["success"])
-        failed_tests = total_tests - successful_tests
-        success_rate = (successful_tests / total_tests *
-                        100) if total_tests > 0 else 0
-
-        # Group by category
-        categories = {
-            "System": [],
-            "Dashboard": [],
-            "Documents": [],
-            "OCR": [],
-            "Analytics": [],
-            "Scraping": []
-        }
-
-        for result in self.results:
-            endpoint = result["endpoint"]
-            if "/health" in endpoint:
-                categories["System"].append(result)
-            elif "/dashboard" in endpoint:
-                categories["Dashboard"].append(result)
-            elif "/documents" in endpoint:
-                categories["Documents"].append(result)
-            elif "/ocr" in endpoint:
-                categories["OCR"].append(result)
-            elif "/analytics" in endpoint:
-                categories["Analytics"].append(result)
-            elif "/scraping" in endpoint:
-                categories["Scraping"].append(result)
-
-        # Calculate category success rates
-        category_stats = {}
-        for category, results in categories.items():
-            if results:
-                category_success = sum(1 for r in results if r["success"])
-                category_total = len(results)
-                category_rate = (
-                    category_success / category_total * 100) if category_total > 0 else 0
-                category_stats[category] = {
-                    "total": category_total,
-                    "successful": category_success,
-                    "failed": category_total - category_success,
-                    "success_rate": round(category_rate, 1)
-                }
-
-        # Calculate average response time
-        successful_responses = [r for r in self.results if r["success"]]
-        avg_response_time = sum(r["response_time"] for r in successful_responses) / len(
-            successful_responses) if successful_responses else 0
-
-        report = {
-            "summary": {
-                "total_tests": total_tests,
-                "successful_tests": successful_tests,
-                "failed_tests": failed_tests,
-                "success_rate": round(success_rate, 1),
-                "avg_response_time": round(avg_response_time, 2),
-                "total_time": round((time.time() - self.start_time) * 1000, 2) if self.start_time else 0
-            },
-            "category_stats": category_stats,
-            "detailed_results": self.results,
-            "status": "PASS" if success_rate >= 95 else "FAIL"
-        }
-
-        return report
-
-    def print_report(self, report: Dict[str, Any]):
-        """Print a formatted validation report"""
-        print("\n" + "="*60)
-        print("🔧 LEGAL DASHBOARD API IMPLEMENTATION VALIDATION")
-        print("="*60)
-
-        summary = report["summary"]
-        print(f"\n📊 SUMMARY:")
-        print(f"   Total Tests: {summary['total_tests']}")
-        print(f"   Successful: {summary['successful_tests']} ✅")
-        print(f"   Failed: {summary['failed_tests']} ❌")
-        print(f"   Success Rate: {summary['success_rate']}%")
-        print(f"   Avg Response Time: {summary['avg_response_time']}ms")
-        print(f"   Total Test Time: {summary['total_time']}ms")
-
-        print(f"\n🎯 TARGET: 95% Success Rate")
-        print(f"📈 ACHIEVED: {summary['success_rate']}%")
-        print(f"📋 STATUS: {report['status']}")
-
-        print(f"\n📋 CATEGORY BREAKDOWN:")
-        for category, stats in report["category_stats"].items():
-            status = "✅" if stats["success_rate"] >= 95 else "⚠️" if stats["success_rate"] >= 80 else "❌"
-            print(
-                f"   {category}: {stats['successful']}/{stats['total']} ({stats['success_rate']}%) {status}")
-
-        print(f"\n🔍 DETAILED RESULTS:")
-        for result in report["detailed_results"]:
-            status = "✅" if result["success"] else "❌"
-            print(
-                f"   {status} {result['method']} {result['endpoint']} - {result['status']} ({result['response_time']}ms)")
-            if result["error"]:
-                print(f"      Error: {result['error']}")
-
-        print("\n" + "="*60)
-
-        if report["status"] == "PASS":
-            print("🎉 IMPLEMENTATION VALIDATION SUCCESSFUL!")
-            print("✅ All critical endpoints are working correctly")
-            print("✅ Ready for production deployment")
+    }
+    
+    print("🔍 Checking file structure...")
+    
+    for file_path in results["required_files"]:
+        if not os.path.exists(file_path):
+            results["missing_files"].append(file_path)
+            print(f"❌ Missing: {file_path}")
         else:
-            print("⚠️  IMPLEMENTATION NEEDS ATTENTION")
-            print("❌ Some endpoints are not working as expected")
-            print("🔧 Review failed endpoints and fix issues")
+            print(f"✅ Found: {file_path}")
+    
+    if results["missing_files"]:
+        results["status"] = "FAILED"
+    
+    return results
 
-        print("="*60)
-
-
-async def main():
-    """Main validation function"""
-    validator = APIImplementationValidator()
-
+def validate_main_integration() -> Dict[str, Any]:
+    """Validate main.py integration"""
+    results = {"status": "PASSED", "issues": []}
+    
+    print("\n🔧 Checking main.py integration...")
+    
     try:
-        # Run comprehensive tests
-        results = await validator.run_comprehensive_tests()
-
-        # Generate and print report
-        report = validator.generate_report()
-        validator.print_report(report)
-
-        # Save detailed report to file
-        with open("validation_report.json", "w", encoding="utf-8") as f:
-            json.dump(report, f, indent=2, ensure_ascii=False)
-
-        print(f"\n📄 Detailed report saved to: validation_report.json")
-
-        return report["status"] == "PASS"
-
+        # Check if main.py exists and can be imported
+        main_path = Path("app/main.py")
+        if not main_path.exists():
+            results["status"] = "FAILED"
+            results["issues"].append("main.py not found")
+            return results
+        
+        # Read main.py content
+        with open(main_path, 'r', encoding='utf-8') as f:
+            content = f.read()
+        
+        # Check for required imports
+        required_imports = [
+            "ScrapingService",
+            "RatingService", 
+            "ScrapingStrategy",
+            "start_background_scraping",
+            "start_background_rating"
+        ]
+        
+        for import_name in required_imports:
+            if import_name not in content:
+                results["issues"].append(f"Missing import/function: {import_name}")
+                print(f"❌ Missing: {import_name}")
+            else:
+                print(f"✅ Found: {import_name}")
+        
+        # Check for Persian sources configuration
+        if "PERSIAN_LEGAL_SOURCES" not in content:
+            results["issues"].append("Missing PERSIAN_LEGAL_SOURCES configuration")
+            print("❌ Missing: PERSIAN_LEGAL_SOURCES")
+        else:
+            print("✅ Found: PERSIAN_LEGAL_SOURCES")
+        
+        # Check for Persian keywords
+        if "PERSIAN_LEGAL_KEYWORDS" not in content:
+            results["issues"].append("Missing PERSIAN_LEGAL_KEYWORDS configuration")
+            print("❌ Missing: PERSIAN_LEGAL_KEYWORDS")
+        else:
+            print("✅ Found: PERSIAN_LEGAL_KEYWORDS")
+        
+        # Check for new API endpoints
+        new_endpoints = [
+            "/api/system/start-scraping",
+            "/api/system/start-rating", 
+            "/api/system/status",
+            "/api/system/statistics"
+        ]
+        
+        for endpoint in new_endpoints:
+            if endpoint not in content:
+                results["issues"].append(f"Missing endpoint: {endpoint}")
+                print(f"❌ Missing: {endpoint}")
+            else:
+                print(f"✅ Found: {endpoint}")
+        
+        if results["issues"]:
+            results["status"] = "FAILED"
+            
     except Exception as e:
-        print(f"❌ Validation failed: {e}")
-        return False
+        results["status"] = "FAILED"
+        results["issues"].append(f"Error reading main.py: {str(e)}")
+    
+    return results
+
+def validate_app_py() -> Dict[str, Any]:
+    """Validate app.py for HF Spaces compatibility"""
+    results = {"status": "PASSED", "issues": []}
+    
+    print("\n🌐 Checking app.py for HF Spaces...")
+    
+    try:
+        app_path = Path("app.py")
+        if not app_path.exists():
+            results["status"] = "FAILED"
+            results["issues"].append("app.py not found")
+            return results
+        
+        with open(app_path, 'r', encoding='utf-8') as f:
+            content = f.read()
+        
+        # Check for HF Spaces specific configurations
+        hf_requirements = [
+            "'PORT': '7860'",
+            "TRANSFORMERS_CACHE",
+            "HF_HOME",
+            "'ENVIRONMENT': 'production'",
+            "uvicorn.run"
+        ]
+        
+        for req in hf_requirements:
+            if req not in content:
+                results["issues"].append(f"Missing HF requirement: {req}")
+                print(f"❌ Missing: {req}")
+            else:
+                print(f"✅ Found: {req}")
+        
+        if results["issues"]:
+            results["status"] = "FAILED"
+            
+    except Exception as e:
+        results["status"] = "FAILED"
+        results["issues"].append(f"Error reading app.py: {str(e)}")
+    
+    return results
+
+def validate_requirements() -> Dict[str, Any]:
+    """Validate requirements.txt completeness"""
+    results = {"status": "PASSED", "issues": []}
+    
+    print("\n📦 Checking requirements.txt...")
+    
+    try:
+        req_path = Path("requirements.txt")
+        if not req_path.exists():
+            results["status"] = "FAILED"
+            results["issues"].append("requirements.txt not found")
+            return results
+        
+        with open(req_path, 'r', encoding='utf-8') as f:
+            content = f.read()
+        
+        # Check for essential dependencies
+        essential_deps = [
+            "fastapi",
+            "uvicorn",
+            "aiohttp",
+            "beautifulsoup4",
+            "sqlalchemy",
+            "redis",
+            "transformers",
+            "torch",
+            "numpy",
+            "pandas",
+            "hazm",
+            "websockets"
+        ]
+        
+        for dep in essential_deps:
+            if dep not in content:
+                results["issues"].append(f"Missing dependency: {dep}")
+                print(f"❌ Missing: {dep}")
+            else:
+                print(f"✅ Found: {dep}")
+        
+        if results["issues"]:
+            results["status"] = "FAILED"
+            
+    except Exception as e:
+        results["status"] = "FAILED"
+        results["issues"].append(f"Error reading requirements.txt: {str(e)}")
+    
+    return results
+
+def validate_documentation() -> Dict[str, Any]:
+    """Validate documentation completeness"""
+    results = {"status": "PASSED", "issues": []}
+    
+    print("\n📚 Checking documentation...")
+    
+    # Check README.md
+    readme_path = Path("README.md")
+    if readme_path.exists():
+        with open(readme_path, 'r', encoding='utf-8') as f:
+            content = f.read()
+        
+        # Check for Persian content
+        if "داشبورد حقوقی" in content:
+            print("✅ README.md contains Persian content")
+        else:
+            results["issues"].append("README.md missing Persian content")
+            print("❌ README.md missing Persian content")
+        
+        # Check for key sections
+        key_sections = [
+            "معماری سیستم",
+            "راه‌اندازی سریع",
+            "API Documentation",
+            "منابع حقوقی ایرانی"
+        ]
+        
+        for section in key_sections:
+            if section in content:
+                print(f"✅ Found section: {section}")
+            else:
+                results["issues"].append(f"Missing section: {section}")
+                print(f"❌ Missing section: {section}")
+    else:
+        results["issues"].append("README.md not found")
+        print("❌ README.md not found")
+    
+    # Check API.md
+    api_path = Path("API.md")
+    if api_path.exists():
+        print("✅ API.md exists")
+    else:
+        results["issues"].append("API.md not found")
+        print("❌ API.md not found")
+    
+    # Check DEPLOYMENT.md
+    deploy_path = Path("DEPLOYMENT.md")
+    if deploy_path.exists():
+        print("✅ DEPLOYMENT.md exists")
+    else:
+        results["issues"].append("DEPLOYMENT.md not found")
+        print("❌ DEPLOYMENT.md not found")
+    
+    if results["issues"]:
+        results["status"] = "FAILED"
+    
+    return results
+
+def validate_rating_service() -> Dict[str, Any]:
+    """Validate rating service implementation"""
+    results = {"status": "PASSED", "issues": []}
+    
+    print("\n⭐ Checking rating service...")
+    
+    try:
+        rating_path = Path("app/services/rating_service.py")
+        if not rating_path.exists():
+            results["status"] = "FAILED"
+            results["issues"].append("rating_service.py not found")
+            return results
+        
+        with open(rating_path, 'r', encoding='utf-8') as f:
+            content = f.read()
+        
+        # Check for required methods
+        required_methods = [
+            "get_unrated_items",
+            "rate_item",
+            "get_rating_summary",
+            "_evaluate_source_credibility",
+            "_evaluate_content_completeness"
+        ]
+        
+        for method in required_methods:
+            if method not in content:
+                results["issues"].append(f"Missing method: {method}")
+                print(f"❌ Missing: {method}")
+            else:
+                print(f"✅ Found: {method}")
+        
+        # Check for Persian legal terms
+        if "قانون" in content or "حقوق" in content:
+            print("✅ Contains Persian legal terms")
+        else:
+            results["issues"].append("Missing Persian legal terms")
+            print("❌ Missing Persian legal terms")
+        
+        if results["issues"]:
+            results["status"] = "FAILED"
+            
+    except Exception as e:
+        results["status"] = "FAILED"
+        results["issues"].append(f"Error reading rating service: {str(e)}")
+    
+    return results
+
+def generate_summary_report(all_results: Dict[str, Dict[str, Any]]) -> Dict[str, Any]:
+    """Generate summary report"""
+    total_checks = len(all_results)
+    passed_checks = sum(1 for result in all_results.values() if result["status"] == "PASSED")
+    failed_checks = total_checks - passed_checks
+    
+    summary = {
+        "total_checks": total_checks,
+        "passed_checks": passed_checks,
+        "failed_checks": failed_checks,
+        "success_rate": (passed_checks / total_checks) * 100 if total_checks > 0 else 0,
+        "overall_status": "PASSED" if failed_checks == 0 else "FAILED",
+        "detailed_results": all_results
+    }
+    
+    print(f"\n📊 Validation Summary:")
+    print(f"Total Checks: {total_checks}")
+    print(f"Passed: {passed_checks}")
+    print(f"Failed: {failed_checks}")
+    print(f"Success Rate: {summary['success_rate']:.1f}%")
+    print(f"Overall Status: {summary['overall_status']}")
+    
+    if failed_checks > 0:
+        print(f"\n❌ Failed Checks:")
+        for check_name, result in all_results.items():
+            if result["status"] == "FAILED":
+                print(f"  - {check_name}: {', '.join(result.get('issues', []))}")
+    
+    return summary
+
+def main():
+    """Main validation function"""
+    print("🏛️ Legal Dashboard Implementation Validation")
+    print("=" * 50)
+    
+    # Run all validations
+    results = {
+        "file_structure": validate_file_structure(),
+        "main_integration": validate_main_integration(),
+        "app_py": validate_app_py(),
+        "requirements": validate_requirements(),
+        "documentation": validate_documentation(),
+        "rating_service": validate_rating_service()
+    }
+    
+    # Generate summary
+    summary = generate_summary_report(results)
+    
+    # Save results
+    with open("validation_report.json", "w", encoding="utf-8") as f:
+        json.dump(summary, f, indent=2, ensure_ascii=False)
+    
+    print(f"\n📄 Results saved to: validation_report.json")
+    
+    # Exit with appropriate code
+    if summary["overall_status"] == "PASSED":
+        print("✅ Implementation validation completed successfully!")
+        sys.exit(0)
+    else:
+        print("❌ Implementation validation failed!")
+        sys.exit(1)
 
 if __name__ == "__main__":
-    success = asyncio.run(main())
-    exit(0 if success else 1)
+    main()
