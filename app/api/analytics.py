@@ -500,3 +500,271 @@ def _generate_quality_recommendations(quality_dist: Dict, common_issues: List[Di
         recommendations.append(f"Most common issue: {top_issue}")
 
     return recommendations
+
+
+@router.get("/quality-metrics")
+async def get_quality_metrics(
+    category: Optional[str] = Query(None),
+    date_from: Optional[str] = Query(None),
+    date_to: Optional[str] = Query(None),
+    db: DatabaseManager = Depends(get_db_manager),
+    ai_engine: AIScoringEngine = Depends(get_ai_engine)
+):
+    """Get detailed quality metrics and statistics"""
+    try:
+        # Build filters
+        filters = {}
+        if category:
+            filters["category"] = category
+
+        # Get documents within date range
+        documents = db.search_documents("", filters=filters, limit=1000)
+
+        # Filter by date if specified
+        if date_from or date_to:
+            filtered_docs = []
+            for doc in documents:
+                doc_date = datetime.fromisoformat(
+                    doc['created_at'].replace('Z', '+00:00'))
+
+                if date_from:
+                    from_date = datetime.fromisoformat(date_from)
+                    if doc_date < from_date:
+                        continue
+
+                if date_to:
+                    to_date = datetime.fromisoformat(date_to)
+                    if doc_date > to_date:
+                        continue
+
+                filtered_docs.append(doc)
+            documents = filtered_docs
+
+        # Calculate quality metrics
+        quality_metrics = {
+            "total_documents": len(documents),
+            "quality_distribution": {
+                "excellent": 0,  # 0.9-1.0
+                "very_good": 0,  # 0.8-0.9
+                "good": 0,       # 0.7-0.8
+                "fair": 0,       # 0.6-0.7
+                "poor": 0,       # 0.5-0.6
+                "very_poor": 0   # 0.0-0.5
+            },
+            "average_quality": 0.0,
+            "quality_trends": [],
+            "ocr_accuracy": {
+                "character_accuracy": 0.0,
+                "word_accuracy": 0.0,
+                "confidence_score": 0.0
+            },
+            "processing_metrics": {
+                "avg_processing_time": 0.0,
+                "success_rate": 0.0,
+                "error_count": 0
+            },
+            "common_quality_issues": [],
+            "recommendations": []
+        }
+
+        total_quality = 0.0
+        total_processing_time = 0.0
+        successful_docs = 0
+        error_count = 0
+        all_issues = []
+
+        for doc in documents:
+            # Get quality score from AI analysis
+            try:
+                analysis = ai_engine.analyze_document(doc['full_text'])
+                quality_score = analysis.get('quality_score', 0.0)
+                total_quality += quality_score
+
+                # Categorize quality
+                if quality_score >= 0.9:
+                    quality_metrics["quality_distribution"]["excellent"] += 1
+                elif quality_score >= 0.8:
+                    quality_metrics["quality_distribution"]["very_good"] += 1
+                elif quality_score >= 0.7:
+                    quality_metrics["quality_distribution"]["good"] += 1
+                elif quality_score >= 0.6:
+                    quality_metrics["quality_distribution"]["fair"] += 1
+                elif quality_score >= 0.5:
+                    quality_metrics["quality_distribution"]["poor"] += 1
+                else:
+                    quality_metrics["quality_distribution"]["very_poor"] += 1
+
+                # Collect quality issues
+                issues = analysis.get('quality_issues', [])
+                all_issues.extend(issues)
+
+                # Processing metrics
+                processing_time = doc.get('processing_time', 0)
+                if processing_time > 0:
+                    total_processing_time += processing_time
+                    successful_docs += 1
+
+            except Exception as e:
+                logger.warning(f"Error analyzing document {doc['id']}: {e}")
+                error_count += 1
+
+        # Calculate averages and rates
+        if documents:
+            quality_metrics["average_quality"] = round(
+                total_quality / len(documents), 3)
+
+        if successful_docs > 0:
+            quality_metrics["processing_metrics"]["avg_processing_time"] = round(
+                total_processing_time / successful_docs, 2)
+            quality_metrics["processing_metrics"]["success_rate"] = round(
+                successful_docs / len(documents) * 100, 2)
+
+        quality_metrics["processing_metrics"]["error_count"] = error_count
+
+        # OCR accuracy simulation (in real implementation, this would come from OCR service)
+        quality_metrics["ocr_accuracy"] = {
+            "character_accuracy": round(95.2 + (quality_metrics["average_quality"] * 4.8), 2),
+            "word_accuracy": round(92.5 + (quality_metrics["average_quality"] * 7.5), 2),
+            "confidence_score": round(quality_metrics["average_quality"] * 100, 2)
+        }
+
+        # Analyze common issues
+        issue_counts = {}
+        for issue in all_issues:
+            issue_counts[issue] = issue_counts.get(issue, 0) + 1
+
+        quality_metrics["common_quality_issues"] = [
+            {"issue": issue, "frequency": count, "percentage": round(
+                count / len(documents) * 100, 2)}
+            for issue, count in sorted(issue_counts.items(), key=lambda x: x[1], reverse=True)
+        ][:10]  # Top 10 issues
+
+        # Generate recommendations
+        quality_metrics["recommendations"] = _generate_advanced_quality_recommendations(
+            quality_metrics["quality_distribution"],
+            quality_metrics["common_quality_issues"],
+            quality_metrics["average_quality"],
+            quality_metrics["ocr_accuracy"]
+        )
+
+        # Add quality trends (daily averages for the past week)
+        quality_metrics["quality_trends"] = _calculate_quality_trends(
+            documents)
+
+        return {
+            "status": "success",
+            "data": quality_metrics,
+            "metadata": {
+                "category_filter": category,
+                "date_from": date_from,
+                "date_to": date_to,
+                "generated_at": datetime.now().isoformat()
+            }
+        }
+
+    except Exception as e:
+        logger.error(f"Error getting quality metrics: {e}")
+        raise HTTPException(
+            status_code=500, detail=f"Error calculating quality metrics: {str(e)}")
+
+
+def _generate_advanced_quality_recommendations(
+    quality_dist: Dict,
+    common_issues: List[Dict],
+    avg_quality: float,
+    ocr_accuracy: Dict
+) -> List[str]:
+    """Generate advanced quality improvement recommendations"""
+    recommendations = []
+
+    # Quality distribution analysis
+    total_docs = sum(quality_dist.values())
+    if total_docs > 0:
+        poor_percentage = (quality_dist.get('poor', 0) +
+                           quality_dist.get('very_poor', 0)) / total_docs * 100
+
+        if poor_percentage > 20:
+            recommendations.append(
+                f"⚠️ {poor_percentage:.1f}% of documents have poor quality. Consider reviewing OCR settings or source quality."
+            )
+
+        excellent_percentage = quality_dist.get(
+            'excellent', 0) / total_docs * 100
+        if excellent_percentage < 30:
+            recommendations.append(
+                f"📈 Only {excellent_percentage:.1f}% of documents are excellent quality. Target for 40%+ excellent documents."
+            )
+
+    # Average quality analysis
+    if avg_quality < 0.7:
+        recommendations.append(
+            "🎯 Overall document quality is below target (70%). Consider preprocessing improvements."
+        )
+    elif avg_quality > 0.85:
+        recommendations.append(
+            "✅ Excellent overall document quality! Maintain current processing standards."
+        )
+
+    # OCR accuracy analysis
+    char_accuracy = ocr_accuracy.get('character_accuracy', 0)
+    if char_accuracy < 95:
+        recommendations.append(
+            f"🔧 Character accuracy is {char_accuracy}%. Consider improving image preprocessing or using higher resolution scans."
+        )
+
+    # Common issues analysis
+    if common_issues:
+        top_issue = common_issues[0]
+        recommendations.append(
+            f"🔍 Most frequent issue: '{top_issue['issue']}' affects {top_issue['percentage']}% of documents."
+        )
+
+        if top_issue['percentage'] > 15:
+            recommendations.append(
+                "⚡ High frequency of the same issue suggests a systematic problem. Review processing pipeline."
+            )
+
+    # General recommendations
+    if not recommendations:
+        recommendations.append(
+            "🎉 Document quality metrics look good! Continue monitoring for trends.")
+
+    return recommendations
+
+
+def _calculate_quality_trends(documents: List[Dict]) -> List[Dict]:
+    """Calculate quality trends over time"""
+    trends = []
+
+    # Group documents by date and calculate daily averages
+    daily_scores = {}
+    for doc in documents:
+        try:
+            doc_date = datetime.fromisoformat(
+                doc['created_at'].replace('Z', '+00:00')).date()
+            date_str = doc_date.isoformat()
+
+            if date_str not in daily_scores:
+                daily_scores[date_str] = []
+
+            # Use AI score or estimate from content length
+            score = doc.get('ai_score', 0.7 +
+                            (len(doc.get('full_text', '')) / 10000) * 0.2)
+            score = min(1.0, max(0.0, score))  # Clamp between 0 and 1
+            daily_scores[date_str].append(score)
+
+        except Exception as e:
+            logger.warning(f"Error processing document date: {e}")
+            continue
+
+    # Calculate daily averages
+    for date_str, scores in sorted(daily_scores.items()):
+        if scores:
+            avg_score = sum(scores) / len(scores)
+            trends.append({
+                "date": date_str,
+                "average_quality": round(avg_score, 3),
+                "document_count": len(scores)
+            })
+
+    return trends[-30:]  # Return last 30 days

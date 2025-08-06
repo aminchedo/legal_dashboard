@@ -608,6 +608,53 @@ class ScrapingService:
             logger.error(f"Error getting scraping statistics: {e}")
             return {}
 
+    async def stop_job(self, job_id: str) -> bool:
+        """
+        Stop a running scraping job
+
+        Args:
+            job_id: ID of the job to stop
+
+        Returns:
+            bool: True if job was stopped successfully, False if job not found
+        """
+        try:
+            if job_id not in self.active_jobs:
+                logger.warning(f"Job {job_id} not found in active jobs")
+                return False
+
+            job = self.active_jobs[job_id]
+
+            # Update job status to stopped
+            job.status = "stopped"
+            job.progress = job.completed_items / \
+                job.total_items if job.total_items > 0 else 0.0
+
+            # Update in database
+            await self._update_job_status(job_id, "stopped")
+
+            logger.info(f"🛑 Stopped scraping job {job_id}")
+            return True
+
+        except Exception as e:
+            logger.error(f"Error stopping job {job_id}: {e}")
+            return False
+
+    async def _update_job_status(self, job_id: str, status: str):
+        """Update job status in database"""
+        try:
+            with sqlite3.connect(self.db_path) as conn:
+                cursor = conn.cursor()
+                cursor.execute("""
+                    UPDATE scraping_jobs 
+                    SET status = ?, updated_at = ?
+                    WHERE job_id = ?
+                """, (status, datetime.now(timezone.utc).isoformat(), job_id))
+                conn.commit()
+
+        except Exception as e:
+            logger.error(f"Error updating job status: {e}")
+
     async def cleanup_old_jobs(self, days: int = 7):
         """Clean up old completed jobs"""
         try:
@@ -616,7 +663,7 @@ class ScrapingService:
             # Remove old jobs from memory
             jobs_to_remove = []
             for job_id, job in self.active_jobs.items():
-                if job.status in ["completed", "failed"] and job.created_at < cutoff_date:
+                if job.status in ["completed", "failed", "stopped"] and job.created_at < cutoff_date:
                     jobs_to_remove.append(job_id)
 
             for job_id in jobs_to_remove:

@@ -19,7 +19,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.middleware.gzip import GZipMiddleware
 
 # Import API routers
-from .api import documents, ocr, dashboard, scraping, analytics, enhanced_analytics
+from .api import documents, ocr, dashboard, scraping, analytics, enhanced_analytics, websocket
 
 # Import services for initialization
 from .services.database_service import DatabaseManager
@@ -111,6 +111,8 @@ app.include_router(
     analytics.router, prefix="/api/analytics", tags=["Analytics"])
 app.include_router(
     enhanced_analytics.router, prefix="/api/enhanced-analytics", tags=["Enhanced Analytics"])
+app.include_router(
+    websocket.router, prefix="", tags=["WebSocket"])
 
 # Import and include new routers
 

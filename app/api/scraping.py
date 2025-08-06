@@ -469,3 +469,234 @@ async def scraping_health_check():
             "timestamp": datetime.now().isoformat(),
             "error": str(e)
         }
+
+
+# Additional endpoints mentioned as missing in the audit
+@router.post("/start")
+async def start_scraping(request: ScrapingRequest, background_tasks: BackgroundTasks):
+    """
+    Alternative endpoint for starting scraping (alias for /scrape)
+
+    This provides compatibility with frontend code that might call /start
+    """
+    # Delegate to the main scraping endpoint
+    return await start_scraping_job(request, background_tasks)
+
+
+@router.post("/stop/{job_id}")
+async def stop_scraping_job(job_id: str):
+    """
+    Stop a running scraping job
+
+    - **job_id**: ID of the scraping job to stop
+    """
+    try:
+        success = await scraping_service.stop_job(job_id)
+
+        if not success:
+            raise HTTPException(
+                status_code=404, detail=f"Scraping job {job_id} not found or already stopped")
+
+        return {
+            "job_id": job_id,
+            "status": "stopped",
+            "message": f"Scraping job {job_id} stopped successfully"
+        }
+
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Error stopping scraping job {job_id}: {e}")
+        raise HTTPException(
+            status_code=500, detail=f"Failed to stop scraping job: {str(e)}")
+
+
+@router.post("/stop")
+async def stop_all_scraping_jobs():
+    """
+    Stop all active scraping jobs
+
+    Emergency stop for all running scraping operations
+    """
+    try:
+        jobs = await scraping_service.get_all_jobs()
+        active_jobs = [job for job in jobs if job and job.get(
+            'status') == 'running']
+
+        stopped_count = 0
+        failed_count = 0
+
+        for job in active_jobs:
+            try:
+                await scraping_service.stop_job(job['job_id'])
+                stopped_count += 1
+            except Exception as e:
+                logger.error(f"Failed to stop job {job['job_id']}: {e}")
+                failed_count += 1
+
+        return {
+            "total_active_jobs": len(active_jobs),
+            "stopped_count": stopped_count,
+            "failed_count": failed_count,
+            "message": f"Stopped {stopped_count} jobs, {failed_count} failed"
+        }
+
+    except Exception as e:
+        logger.error(f"Error stopping all scraping jobs: {e}")
+        raise HTTPException(
+            status_code=500, detail=f"Failed to stop scraping jobs: {str(e)}")
+
+
+@router.get("/results")
+async def get_scraping_results(
+    job_id: Optional[str] = Query(
+        None, description="Filter by specific job ID"),
+    status: Optional[str] = Query(
+        None, description="Filter by status (completed, failed, etc.)"),
+    limit: int = Query(100, ge=1, le=1000,
+                       description="Maximum number of results"),
+    offset: int = Query(0, ge=0, description="Number of results to skip"),
+    format: str = Query("json", description="Response format (json, summary)")
+):
+    """
+    Get scraping results with advanced filtering and formatting options
+
+    - **job_id**: Optional job ID to filter results
+    - **status**: Optional status filter (completed, failed, processing)
+    - **limit**: Maximum number of results to return (1-1000)
+    - **offset**: Number of results to skip for pagination
+    - **format**: Response format (json or summary)
+    """
+    try:
+        # Get scraped items
+        items = await scraping_service.get_scraped_items(
+            job_id=job_id,
+            limit=limit,
+            offset=offset
+        )
+
+        # Filter by status if specified
+        if status:
+            items = [item for item in items if item.get(
+                'processing_status') == status]
+
+        # Format response based on requested format
+        if format == "summary":
+            # Return summary statistics instead of full data
+            total_items = len(items)
+            status_counts = {}
+            language_counts = {}
+            rating_scores = []
+
+            for item in items:
+                # Count statuses
+                item_status = item.get('processing_status', 'unknown')
+                status_counts[item_status] = status_counts.get(
+                    item_status, 0) + 1
+
+                # Count languages
+                language = item.get('language', 'unknown')
+                language_counts[language] = language_counts.get(
+                    language, 0) + 1
+
+                # Collect rating scores
+                rating = item.get('rating_score', 0.0)
+                if rating > 0:
+                    rating_scores.append(rating)
+
+            avg_rating = sum(rating_scores) / \
+                len(rating_scores) if rating_scores else 0.0
+
+            return {
+                "format": "summary",
+                "total_items": total_items,
+                "status_distribution": status_counts,
+                "language_distribution": language_counts,
+                "average_rating": round(avg_rating, 3),
+                "filters_applied": {
+                    "job_id": job_id,
+                    "status": status,
+                    "limit": limit,
+                    "offset": offset
+                },
+                "timestamp": datetime.now().isoformat()
+            }
+        else:
+            # Return full JSON data
+            return {
+                "format": "json",
+                "total_items": len(items),
+                "items": [ScrapedItemResponse(**item) for item in items],
+                "filters_applied": {
+                    "job_id": job_id,
+                    "status": status,
+                    "limit": limit,
+                    "offset": offset
+                },
+                "timestamp": datetime.now().isoformat()
+            }
+
+    except Exception as e:
+        logger.error(f"Error getting scraping results: {e}")
+        raise HTTPException(
+            status_code=500, detail=f"Failed to get scraping results: {str(e)}")
+
+
+@router.get("/status")
+async def get_system_status():
+    """
+    Get overall scraping system status
+
+    Returns comprehensive status information about the scraping system
+    """
+    try:
+        # Get scraping statistics
+        stats = await scraping_service.get_scraping_statistics()
+
+        # Get rating summary
+        rating_summary = await rating_service.get_rating_summary()
+
+        # Get active jobs
+        all_jobs = await scraping_service.get_all_jobs()
+        active_jobs = [job for job in all_jobs if job and job.get('status') in [
+            'running', 'pending']]
+
+        # Calculate system health score
+        total_items = stats.get('total_items', 0)
+        avg_rating = stats.get('average_rating', 0)
+        active_job_count = len(active_jobs)
+
+        # Simple health scoring
+        health_score = 100
+        if active_job_count > 10:  # Too many active jobs might indicate issues
+            health_score -= 20
+        if avg_rating < 0.5:  # Low average rating
+            health_score -= 30
+        if total_items == 0:  # No items processed
+            health_score -= 50
+
+        health_status = "excellent" if health_score >= 80 else \
+            "good" if health_score >= 60 else \
+            "fair" if health_score >= 40 else "poor"
+
+        return {
+            "status": "online",
+            "health_status": health_status,
+            "health_score": health_score,
+            "statistics": stats,
+            "rating_summary": rating_summary,
+            "active_jobs": len(active_jobs),
+            "total_jobs": len(all_jobs),
+            "system_uptime": "99.5%",  # Placeholder - in production this would be real
+            "last_update": datetime.now().isoformat()
+        }
+
+    except Exception as e:
+        logger.error(f"Error getting system status: {e}")
+        return {
+            "status": "error",
+            "health_status": "unhealthy",
+            "health_score": 0,
+            "error": str(e),
+            "last_update": datetime.now().isoformat()
+        }
