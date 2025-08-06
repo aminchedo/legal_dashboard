@@ -1,0 +1,14 @@
+{
+  "timestamp": "2025-08-02T15:21:31.357892",
+  "test_results": {
+    "total_tests": 4,
+    "passed": 1,
+    "failed": 3,
+    "errors": [
+      "Database connectivity: Database should be connected",
+      "Cache functionality: CacheService.set() got an unexpected keyword argument 'expire'",
+      "Document operations: 'DatabaseManager' object has no attribute 'get_all_documents'"
+    ]
+  },
+  "success_rate": 25.0
+}

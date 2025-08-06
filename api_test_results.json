@@ -1,0 +1,66 @@
+{
+  "/api/analytics/realtime": {
+    "status_code": 0,
+    "response_time": 0,
+    "success": false,
+    "error": "Connection refused - server may not be running",
+    "content_type": "",
+    "content_length": 0
+  },
+  "/api/analytics/trends": {
+    "status_code": 0,
+    "response_time": 0,
+    "success": false,
+    "error": "Connection refused - server may not be running",
+    "content_type": "",
+    "content_length": 0
+  },
+  "/api/analytics/predictions": {
+    "status_code": 0,
+    "response_time": 0,
+    "success": false,
+    "error": "Connection refused - server may not be running",
+    "content_type": "",
+    "content_length": 0
+  },
+  "/api/analytics/similarity": {
+    "status_code": 0,
+    "response_time": 0,
+    "success": false,
+    "error": "Connection refused - server may not be running",
+    "content_type": "",
+    "content_length": 0
+  },
+  "/api/analytics/clustering": {
+    "status_code": 0,
+    "response_time": 0,
+    "success": false,
+    "error": "Connection refused - server may not be running",
+    "content_type": "",
+    "content_length": 0
+  },
+  "/api/analytics/quality": {
+    "status_code": 0,
+    "response_time": 0,
+    "success": false,
+    "error": "Connection refused - server may not be running",
+    "content_type": "",
+    "content_length": 0
+  },
+  "/api/analytics/health": {
+    "status_code": 0,
+    "response_time": 0,
+    "success": false,
+    "error": "Connection refused - server may not be running",
+    "content_type": "",
+    "content_length": 0
+  },
+  "/api/analytics/performance": {
+    "status_code": 0,
+    "response_time": 0,
+    "success": false,
+    "error": "Connection refused - server may not be running",
+    "content_type": "",
+    "content_length": 0
+  }
+}

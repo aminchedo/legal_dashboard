@@ -1,0 +1,32 @@
+# Environment Configuration for Legal Dashboard
+# ==============================================
+
+# Security
+JWT_SECRET_KEY=your-super-secret-jwt-key-change-this-in-production-2024
+
+# Database Configuration
+DATABASE_DIR=/app/data
+DATABASE_NAME=legal_documents.db
+DATABASE_PATH=/app/data/legal_documents.db
+
+# Application Settings
+LOG_LEVEL=INFO
+ENVIRONMENT=production
+PYTHONPATH=/app
+
+# Cache and Storage
+TRANSFORMERS_CACHE=/app/cache
+HF_HOME=/app/cache
+
+# Server Configuration
+HOST=0.0.0.0
+PORT=8000
+WORKERS=4
+
+# JWT Token Expiration
+ACCESS_TOKEN_EXPIRE_MINUTES=30
+REFRESH_TOKEN_EXPIRE_DAYS=7
+
+# Hugging Face Spaces Configuration
+SPACE_ID=your-space-name
+HF_TOKEN=your_hugging_face_token

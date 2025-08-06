@@ -1,0 +1,303 @@
+{
+  "summary": {
+    "total_tests": 28,
+    "successful_tests": 0,
+    "failed_tests": 28,
+    "success_rate": 0.0,
+    "avg_response_time": 0,
+    "total_time": 4100.07
+  },
+  "category_stats": {
+    "System": {
+      "total": 1,
+      "successful": 0,
+      "failed": 1,
+      "success_rate": 0.0
+    },
+    "Dashboard": {
+      "total": 6,
+      "successful": 0,
+      "failed": 6,
+      "success_rate": 0.0
+    },
+    "Documents": {
+      "total": 4,
+      "successful": 0,
+      "failed": 4,
+      "success_rate": 0.0
+    },
+    "OCR": {
+      "total": 6,
+      "successful": 0,
+      "failed": 6,
+      "success_rate": 0.0
+    },
+    "Analytics": {
+      "total": 6,
+      "successful": 0,
+      "failed": 6,
+      "success_rate": 0.0
+    },
+    "Scraping": {
+      "total": 5,
+      "successful": 0,
+      "failed": 5,
+      "success_rate": 0.0
+    }
+  },
+  "detailed_results": [
+    {
+      "endpoint": "/api/health",
+      "method": "GET",
+      "url": "http://localhost:8000/api/health",
+      "status": 0,
+      "success": false,
+      "response_time": 4100.07,
+      "error": "Cannot connect to host localhost:8000 ssl:default [The remote computer refused the network connection]"
+    },
+    {
+      "endpoint": "/api/dashboard/summary",
+      "method": "GET",
+      "url": "http://localhost:8000/api/dashboard/summary",
+      "status": 0,
+      "success": false,
+      "response_time": 4100.07,
+      "error": "Cannot connect to host localhost:8000 ssl:default [The remote computer refused the network connection]"
+    },
+    {
+      "endpoint": "/api/dashboard/charts-data",
+      "method": "GET",
+      "url": "http://localhost:8000/api/dashboard/charts-data",
+      "status": 0,
+      "success": false,
+      "response_time": 4100.07,
+      "error": "Cannot connect to host localhost:8000 ssl:default [The remote computer refused the network connection]"
+    },
+    {
+      "endpoint": "/api/dashboard/ai-suggestions",
+      "method": "GET",
+      "url": "http://localhost:8000/api/dashboard/ai-suggestions",
+      "status": 0,
+      "success": false,
+      "response_time": 4100.07,
+      "error": "Cannot connect to host localhost:8000 ssl:default [The remote computer refused the network connection]"
+    },
+    {
+      "endpoint": "/api/dashboard/ai-feedback",
+      "method": "POST",
+      "url": "http://localhost:8000/api/dashboard/ai-feedback",
+      "status": 0,
+      "success": false,
+      "response_time": 4100.07,
+      "error": "Cannot connect to host localhost:8000 ssl:default [The remote computer refused the network connection]"
+    },
+    {
+      "endpoint": "/api/dashboard/performance-metrics",
+      "method": "GET",
+      "url": "http://localhost:8000/api/dashboard/performance-metrics",
+      "status": 0,
+      "success": false,
+      "response_time": 4100.07,
+      "error": "Cannot connect to host localhost:8000 ssl:default [The remote computer refused the network connection]"
+    },
+    {
+      "endpoint": "/api/dashboard/trends",
+      "method": "GET",
+      "url": "http://localhost:8000/api/dashboard/trends",
+      "status": 0,
+      "success": false,
+      "response_time": 4100.07,
+      "error": "Cannot connect to host localhost:8000 ssl:default [The remote computer refused the network connection]"
+    },
+    {
+      "endpoint": "/api/documents",
+      "method": "GET",
+      "url": "http://localhost:8000/api/documents",
+      "status": 0,
+      "success": false,
+      "response_time": 4100.07,
+      "error": "Cannot connect to host localhost:8000 ssl:default [The remote computer refused the network connection]"
+    },
+    {
+      "endpoint": "/api/documents/search/",
+      "method": "GET",
+      "url": "http://localhost:8000/api/documents/search/",
+      "status": 0,
+      "success": false,
+      "response_time": 4100.07,
+      "error": "Cannot connect to host localhost:8000 ssl:default [The remote computer refused the network connection]"
+    },
+    {
+      "endpoint": "/api/documents/categories/",
+      "method": "GET",
+      "url": "http://localhost:8000/api/documents/categories/",
+      "status": 0,
+      "success": false,
+      "response_time": 4100.07,
+      "error": "Cannot connect to host localhost:8000 ssl:default [The remote computer refused the network connection]"
+    },
+    {
+      "endpoint": "/api/documents/sources/",
+      "method": "GET",
+      "url": "http://localhost:8000/api/documents/sources/",
+      "status": 0,
+      "success": false,
+      "response_time": 4100.07,
+      "error": "Cannot connect to host localhost:8000 ssl:default [The remote computer refused the network connection]"
+    },
+    {
+      "endpoint": "/api/ocr/process",
+      "method": "POST",
+      "url": "http://localhost:8000/api/ocr/process",
+      "status": 0,
+      "success": false,
+      "response_time": 4100.07,
+      "error": "Cannot connect to host localhost:8000 ssl:default [The remote computer refused the network connection]"
+    },
+    {
+      "endpoint": "/api/ocr/process-and-save",
+      "method": "POST",
+      "url": "http://localhost:8000/api/ocr/process-and-save",
+      "status": 0,
+      "success": false,
+      "response_time": 4100.07,
+      "error": "Cannot connect to host localhost:8000 ssl:default [The remote computer refused the network connection]"
+    },
+    {
+      "endpoint": "/api/ocr/batch-process",
+      "method": "POST",
+      "url": "http://localhost:8000/api/ocr/batch-process",
+      "status": 0,
+      "success": false,
+      "response_time": 4100.07,
+      "error": "Cannot connect to host localhost:8000 ssl:default [The remote computer refused the network connection]"
+    },
+    {
+      "endpoint": "/api/ocr/quality-metrics",
+      "method": "GET",
+      "url": "http://localhost:8000/api/ocr/quality-metrics",
+      "status": 0,
+      "success": false,
+      "response_time": 4100.07,
+      "error": "Cannot connect to host localhost:8000 ssl:default [The remote computer refused the network connection]"
+    },
+    {
+      "endpoint": "/api/ocr/models",
+      "method": "GET",
+      "url": "http://localhost:8000/api/ocr/models",
+      "status": 0,
+      "success": false,
+      "response_time": 4100.07,
+      "error": "Cannot connect to host localhost:8000 ssl:default [The remote computer refused the network connection]"
+    },
+    {
+      "endpoint": "/api/ocr/status",
+      "method": "GET",
+      "url": "http://localhost:8000/api/ocr/status",
+      "status": 0,
+      "success": false,
+      "response_time": 4100.07,
+      "error": "Cannot connect to host localhost:8000 ssl:default [The remote computer refused the network connection]"
+    },
+    {
+      "endpoint": "/api/analytics/overview",
+      "method": "GET",
+      "url": "http://localhost:8000/api/analytics/overview",
+      "status": 0,
+      "success": false,
+      "response_time": 4100.07,
+      "error": "Cannot connect to host localhost:8000 ssl:default [The remote computer refused the network connection]"
+    },
+    {
+      "endpoint": "/api/analytics/trends",
+      "method": "GET",
+      "url": "http://localhost:8000/api/analytics/trends",
+      "status": 0,
+      "success": false,
+      "response_time": 4100.07,
+      "error": "Cannot connect to host localhost:8000 ssl:default [The remote computer refused the network connection]"
+    },
+    {
+      "endpoint": "/api/analytics/similarity",
+      "method": "GET",
+      "url": "http://localhost:8000/api/analytics/similarity",
+      "status": 0,
+      "success": false,
+      "response_time": 4100.07,
+      "error": "Cannot connect to host localhost:8000 ssl:default [The remote computer refused the network connection]"
+    },
+    {
+      "endpoint": "/api/analytics/performance",
+      "method": "GET",
+      "url": "http://localhost:8000/api/analytics/performance",
+      "status": 0,
+      "success": false,
+      "response_time": 4100.07,
+      "error": "Cannot connect to host localhost:8000 ssl:default [The remote computer refused the network connection]"
+    },
+    {
+      "endpoint": "/api/analytics/entities",
+      "method": "GET",
+      "url": "http://localhost:8000/api/analytics/entities",
+      "status": 0,
+      "success": false,
+      "response_time": 4100.07,
+      "error": "Cannot connect to host localhost:8000 ssl:default [The remote computer refused the network connection]"
+    },
+    {
+      "endpoint": "/api/analytics/quality-analysis",
+      "method": "GET",
+      "url": "http://localhost:8000/api/analytics/quality-analysis",
+      "status": 0,
+      "success": false,
+      "response_time": 4100.07,
+      "error": "Cannot connect to host localhost:8000 ssl:default [The remote computer refused the network connection]"
+    },
+    {
+      "endpoint": "/api/scraping/scrape",
+      "method": "POST",
+      "url": "http://localhost:8000/api/scraping/scrape",
+      "status": 0,
+      "success": false,
+      "response_time": 4100.07,
+      "error": "Cannot connect to host localhost:8000 ssl:default [The remote computer refused the network connection]"
+    },
+    {
+      "endpoint": "/api/scraping/status",
+      "method": "GET",
+      "url": "http://localhost:8000/api/scraping/status",
+      "status": 0,
+      "success": false,
+      "response_time": 4100.07,
+      "error": "Cannot connect to host localhost:8000 ssl:default [The remote computer refused the network connection]"
+    },
+    {
+      "endpoint": "/api/scraping/items",
+      "method": "GET",
+      "url": "http://localhost:8000/api/scraping/items",
+      "status": 0,
+      "success": false,
+      "response_time": 4100.07,
+      "error": "Cannot connect to host localhost:8000 ssl:default [The remote computer refused the network connection]"
+    },
+    {
+      "endpoint": "/api/scraping/statistics",
+      "method": "GET",
+      "url": "http://localhost:8000/api/scraping/statistics",
+      "status": 0,
+      "success": false,
+      "response_time": 4100.07,
+      "error": "Cannot connect to host localhost:8000 ssl:default [The remote computer refused the network connection]"
+    },
+    {
+      "endpoint": "/api/scraping/rating/summary",
+      "method": "GET",
+      "url": "http://localhost:8000/api/scraping/rating/summary",
+      "status": 0,
+      "success": false,
+      "response_time": 4100.07,
+      "error": "Cannot connect to host localhost:8000 ssl:default [The remote computer refused the network connection]"
+    }
+  ],
+  "status": "FAIL"
+}

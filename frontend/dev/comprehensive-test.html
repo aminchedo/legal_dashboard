@@ -1,0 +1,767 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Comprehensive Frontend Test - Legal Dashboard</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            max-inline-size: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .test-section {
+            background: white;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .success { color: #10b981; }
+        .error { color: #ef4444; }
+        .info { color: #3b82f6; }
+        .warning { color: #f59e0b; }
+        button {
+            background: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        button:hover {
+            background: #0056b3;
+        }
+        button:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+        }
+        .page-test {
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            padding: 15px;
+            margin: 10px 0;
+            background: white;
+        }
+        .page-test.success {
+            border-color: #10b981;
+            background: #f0fdf4;
+        }
+        .page-test.error {
+            border-color: #ef4444;
+            background: #fef2f2;
+        }
+        .page-test.testing {
+            border-color: #3b82f6;
+            background: #eff6ff;
+        }
+        .status-indicator {
+            display: inline-block;
+            inline-size: 12px;
+            block-size: 12px;
+            border-radius: 50%;
+            margin-inline-end: 8px;
+        }
+        .status-indicator.success { background: #10b981; }
+        .status-indicator.error { background: #ef4444; }
+        .status-indicator.warning { background: #f59e0b; }
+        .status-indicator.info { background: #3b82f6; }
+        .status-indicator.testing { 
+            background: #3b82f6; 
+            animation: pulse 1s infinite;
+        }
+        @keyframes pulse {
+            0% { opacity: 1; }
+            50% { opacity: 0.5; }
+            100% { opacity: 1; }
+        }
+        .test-results {
+            max-block-size: 400px;
+            overflow-y: auto;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            padding: 10px;
+            background: #f8f9fa;
+            font-family: 'Courier New', monospace;
+            font-size: 12px;
+        }
+        .summary-stats {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 15px;
+            margin-block-end: 20px;
+        }
+        .stat-card {
+            background: white;
+            padding: 15px;
+            border-radius: 8px;
+            text-align: center;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .stat-number {
+            font-size: 2rem;
+            font-weight: bold;
+            margin-block-end: 5px;
+        }
+        .stat-label {
+            color: #666;
+            font-size: 0.9rem;
+        }
+        .progress-bar {
+            inline-size: 100%;
+            block-size: 4px;
+            background: #e5e7eb;
+            border-radius: 2px;
+            overflow: hidden;
+            margin: 10px 0;
+        }
+        .progress-fill {
+            block-size: 100%;
+            background: #3b82f6;
+            transition: width 0.3s ease;
+        }
+        
+        .progress-fill.initial {
+            inline-size: 0%;
+        }
+    </style>
+</head>
+<body>
+    <h1>🔍 Comprehensive Frontend Test - Legal Dashboard</h1>
+    <div class="test-section">
+        <h2>📊 Test Summary</h2>
+        <div class="summary-stats">
+            <div class="stat-card">
+                <div class="stat-number" id="totalPages">0</div>
+                <div class="stat-label">Total Pages</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number" id="passedPages">0</div>
+                <div class="stat-label">Passed</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number" id="failedPages">0</div>
+                <div class="stat-label">Failed</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number" id="successRate">0%</div>
+                <div class="stat-label">Success Rate</div>
+            </div>
+        </div>
+        <div class="progress-bar">
+            <div class="progress-fill initial" id="progressBar"></div>
+        </div>
+    </div>
+
+    <div class="test-section">
+        <h2>🎛️ Test Controls</h2>
+        <button type="button" onclick="runAllTests()" id="runAllBtn">Run All Tests</button>
+        <button type="button" onclick="testCoreSystem()">Test Core System</button>
+        <button type="button" onclick="testAPIConnectivity()">Test API Connectivity</button>
+        <button type="button" onclick="testPageIntegration()">Test Page Integration</button>
+        <button type="button" onclick="clearResults()">Clear Results</button>
+        <button type="button" onclick="exportResults()">Export Results</button>
+    </div>
+
+    <div class="test-section">
+        <h2>📄 Page Tests</h2>
+        <div id="pageTests">
+            <!-- Page tests will be generated here -->
+        </div>
+    </div>
+
+    <div class="test-section">
+        <h2>📋 Test Results</h2>
+        <div class="test-results" id="testResults">
+            <!-- Test results will be displayed here -->
+        </div>
+    </div>
+
+    <script src="../js/api-client.js"></script>
+    <script src="../js/core.js"></script>
+    <script src="../js/notifications.js"></script>
+    <script>
+        class ComprehensiveTester {
+            constructor() {
+                this.baseURL = window.location.origin;
+                this.results = [];
+                this.testStats = {
+                    total: 0,
+                    passed: 0,
+                    failed: 0,
+                    successRate: 0
+                };
+                this.isRunning = false;
+                
+                this.pages = [
+                    {
+                        name: 'Main Dashboard',
+                        url: 'improved_legal_dashboard.html',
+                        description: 'Main dashboard with analytics and charts',
+                        tests: ['load', 'api', 'core', 'charts']
+                    },
+                    {
+                        name: 'Documents Page',
+                        url: 'documents.html',
+                        description: 'Document management and CRUD operations',
+                        tests: ['load', 'api', 'core', 'crud']
+                    },
+                    {
+                        name: 'Upload Page',
+                        url: 'upload.html',
+                        description: 'File upload and OCR processing',
+                        tests: ['load', 'api', 'core', 'upload']
+                    },
+                    {
+                        name: 'Scraping Page',
+                        url: 'scraping.html',
+                        description: 'Web scraping and content extraction',
+                        tests: ['load', 'api', 'core', 'scraping']
+                    },
+                    {
+                        name: 'Scraping Dashboard',
+                        url: 'scraping_dashboard.html',
+                        description: 'Scraping statistics and monitoring',
+                        tests: ['load', 'api', 'core', 'stats']
+                    },
+                    {
+                        name: 'Reports Page',
+                        url: 'reports.html',
+                        description: 'Analytics reports and insights',
+                        tests: ['load', 'api', 'core', 'reports']
+                    },
+                    {
+                        name: 'Index Page',
+                        url: 'index.html',
+                        description: 'Landing page and navigation',
+                        tests: ['load', 'api', 'core', 'navigation']
+                    }
+                ];
+                
+                this.initialize();
+            }
+
+            initialize() {
+                this.createPageTests();
+                this.updateStats();
+            }
+
+            createPageTests() {
+                const container = document.getElementById('pageTests');
+                container.innerHTML = '';
+
+                this.pages.forEach((page, index) => {
+                    const testDiv = document.createElement('div');
+                    testDiv.className = 'page-test';
+                    testDiv.id = `page-${index}`;
+                    
+                    testDiv.innerHTML = `
+                        <div class="status-indicator"></div>
+                        <h3>${page.name}</h3>
+                        <p>${page.description}</p>
+                        <div style="font-size: 0.8rem; color: #666; margin: 5px 0;">
+                            File: ${page.url}
+                        </div>
+                        <div class="tests" id="tests-${index}">
+                            ${page.tests.map((test, testIndex) => `
+                                <div class="test" id="test-${index}-${testIndex}">
+                                    <span class="status-indicator"></span>
+                                    ${test.charAt(0).toUpperCase() + test.slice(1)} Test
+                                </div>
+                            `).join('')}
+                        </div>
+                        <button type="button" onclick="tester.testSinglePage(${index})" class="test-page-btn">
+                            Test Page
+                        </button>
+                    `;
+                    
+                    container.appendChild(testDiv);
+                });
+            }
+
+            async testSinglePage(pageIndex) {
+                const page = this.pages[pageIndex];
+                const testDiv = document.getElementById(`page-${pageIndex}`);
+                
+                // Set testing state
+                testDiv.className = 'page-test testing';
+                testDiv.querySelector('.status-indicator').className = 'status-indicator testing';
+                testDiv.querySelector('.test-page-btn').disabled = true;
+                
+                this.logResult({
+                    page: page.name,
+                    status: 'started',
+                    message: `Starting tests for ${page.name}`
+                });
+                
+                let allTestsPassed = true;
+                
+                for (let testIndex = 0; testIndex < page.tests.length; testIndex++) {
+                    const test = page.tests[testIndex];
+                    const testDiv = document.getElementById(`test-${pageIndex}-${testIndex}`);
+                    
+                    // Set test testing state
+                    testDiv.querySelector('.status-indicator').className = 'status-indicator testing';
+                    
+                    try {
+                        const result = await this.executeTest(test, page);
+                        
+                        if (result.success) {
+                            testDiv.querySelector('.status-indicator').className = 'status-indicator success';
+                            this.logResult({
+                                page: page.name,
+                                test: test,
+                                status: 'success',
+                                message: `${test} test passed for ${page.name}`
+                            });
+                        } else {
+                            testDiv.querySelector('.status-indicator').className = 'status-indicator error';
+                            allTestsPassed = false;
+                            this.logResult({
+                                page: page.name,
+                                test: test,
+                                status: 'error',
+                                message: `${test} test failed for ${page.name}: ${result.error}`
+                            });
+                        }
+                    } catch (error) {
+                        testDiv.querySelector('.status-indicator').className = 'status-indicator error';
+                        allTestsPassed = false;
+                        this.logResult({
+                            page: page.name,
+                            test: test,
+                            status: 'error',
+                            message: `${test} test failed for ${page.name}: ${error.message}`
+                        });
+                    }
+                    
+                    await this.delay(200); // Small delay between tests
+                }
+                
+                // Update page status
+                testDiv.className = `page-test ${allTestsPassed ? 'success' : 'error'}`;
+                testDiv.querySelector('.status-indicator').className = `status-indicator ${allTestsPassed ? 'success' : 'error'}`;
+                testDiv.querySelector('.test-page-btn').disabled = false;
+                
+                this.logResult({
+                    page: page.name,
+                    status: allTestsPassed ? 'completed' : 'failed',
+                    message: `${page.name} ${allTestsPassed ? 'completed successfully' : 'failed'}`
+                });
+                
+                this.updateStats();
+            }
+
+            async executeTest(test, page) {
+                switch (test) {
+                    case 'load':
+                        return await this.testPageLoad(page);
+                    case 'api':
+                        return await this.testAPIConnectivity(page);
+                    case 'core':
+                        return await this.testCoreIntegration(page);
+                    case 'charts':
+                        return await this.testChartsFunctionality(page);
+                    case 'crud':
+                        return await this.testCRUDOperations(page);
+                    case 'upload':
+                        return await this.testUploadFunctionality(page);
+                    case 'scraping':
+                        return await this.testScrapingFunctionality(page);
+                    case 'stats':
+                        return await this.testStatisticsFunctionality(page);
+                    case 'reports':
+                        return await this.testReportsFunctionality(page);
+                    case 'navigation':
+                        return await this.testNavigationFunctionality(page);
+                    default:
+                        return { success: false, error: 'Unknown test' };
+                }
+            }
+
+            async testPageLoad(page) {
+                try {
+                    const response = await fetch(`${this.baseURL}/${page.url}`);
+                    return { success: response.ok, error: response.ok ? null : `HTTP ${response.status}` };
+                } catch (error) {
+                    return { success: false, error: error.message };
+                }
+            }
+
+            async testAPIConnectivity(page) {
+                try {
+                    const response = await fetch(`${this.baseURL}/api/health`);
+                    return { success: response.ok, error: response.ok ? null : `HTTP ${response.status}` };
+                } catch (error) {
+                    return { success: false, error: error.message };
+                }
+            }
+
+            async testCoreIntegration(page) {
+                try {
+                    // Check if core.js is loaded
+                    if (typeof dashboardCore === 'undefined') {
+                        return { success: false, error: 'Core module not loaded' };
+                    }
+                    
+                    // Check if core is initialized
+                    if (!dashboardCore.isInitialized) {
+                        return { success: false, error: 'Core module not initialized' };
+                    }
+                    
+                    return { success: true, error: null };
+                } catch (error) {
+                    return { success: false, error: error.message };
+                }
+            }
+
+            async testChartsFunctionality(page) {
+                try {
+                    // Check if Chart.js is available
+                    if (typeof Chart === 'undefined') {
+                        return { success: false, error: 'Chart.js not loaded' };
+                    }
+                    
+                    return { success: true, error: null };
+                } catch (error) {
+                    return { success: false, error: error.message };
+                }
+            }
+
+            async testCRUDOperations(page) {
+                try {
+                    const response = await fetch(`${this.baseURL}/api/documents`);
+                    return { success: response.ok, error: response.ok ? null : `HTTP ${response.status}` };
+                } catch (error) {
+                    return { success: false, error: error.message };
+                }
+            }
+
+            async testUploadFunctionality(page) {
+                try {
+                    const response = await fetch(`${this.baseURL}/api/ocr/status`);
+                    return { success: response.ok, error: response.ok ? null : `HTTP ${response.status}` };
+                } catch (error) {
+                    return { success: false, error: error.message };
+                }
+            }
+
+            async testScrapingFunctionality(page) {
+                try {
+                    const response = await fetch(`${this.baseURL}/api/scraping/health`);
+                    return { success: response.ok, error: response.ok ? null : `HTTP ${response.status}` };
+                } catch (error) {
+                    return { success: false, error: error.message };
+                }
+            }
+
+            async testStatisticsFunctionality(page) {
+                try {
+                    const response = await fetch(`${this.baseURL}/api/scraping/scrape/statistics`);
+                    return { success: response.ok, error: response.ok ? null : `HTTP ${response.status}` };
+                } catch (error) {
+                    return { success: false, error: error.message };
+                }
+            }
+
+            async testReportsFunctionality(page) {
+                try {
+                    const response = await fetch(`${this.baseURL}/api/analytics/overview`);
+                    return { success: response.ok, error: response.ok ? null : `HTTP ${response.status}` };
+                } catch (error) {
+                    return { success: false, error: error.message };
+                }
+            }
+
+            async testNavigationFunctionality(page) {
+                try {
+                    // Check if navigation elements exist
+                    const response = await fetch(`${this.baseURL}/${page.url}`);
+                    const html = await response.text();
+                    
+                    // Check for navigation elements
+                    const hasNavigation = html.includes('nav') || html.includes('sidebar') || html.includes('menu');
+                    
+                    return { success: hasNavigation, error: hasNavigation ? null : 'No navigation found' };
+                } catch (error) {
+                    return { success: false, error: error.message };
+                }
+            }
+
+            async runAllTests() {
+                if (this.isRunning) return;
+                
+                this.isRunning = true;
+                document.getElementById('runAllBtn').disabled = true;
+                document.getElementById('runAllBtn').textContent = 'Running...';
+                
+                this.clearResults();
+                
+                for (let i = 0; i < this.pages.length; i++) {
+                    await this.testSinglePage(i);
+                    await this.delay(500); // Delay between pages
+                }
+                
+                this.isRunning = false;
+                document.getElementById('runAllBtn').disabled = false;
+                document.getElementById('runAllBtn').textContent = 'Run All Tests';
+            }
+
+            async testCoreSystem() {
+                this.logResult({
+                    test: 'Core System',
+                    status: 'started',
+                    message: 'Testing core system integration'
+                });
+                
+                try {
+                    // Test core module loading
+                    if (typeof dashboardCore === 'undefined') {
+                        throw new Error('Core module not loaded');
+                    }
+                    
+                    // Test core initialization
+                    if (!dashboardCore.isInitialized) {
+                        throw new Error('Core module not initialized');
+                    }
+                    
+                    // Test API client
+                    if (!dashboardCore.apiClient) {
+                        throw new Error('API client not available');
+                    }
+                    
+                    this.logResult({
+                        test: 'Core System',
+                        status: 'success',
+                        message: 'Core system integration working correctly'
+                    });
+                    
+                } catch (error) {
+                    this.logResult({
+                        test: 'Core System',
+                        status: 'error',
+                        message: `Core system test failed: ${error.message}`
+                    });
+                }
+                
+                this.updateStats();
+            }
+
+            async testAPIConnectivity() {
+                this.logResult({
+                    test: 'API Connectivity',
+                    status: 'started',
+                    message: 'Testing API connectivity'
+                });
+                
+                const endpoints = [
+                    '/api/health',
+                    '/api/dashboard/summary',
+                    '/api/documents',
+                    '/api/ocr/status',
+                    '/api/scraping/health',
+                    '/api/analytics/overview'
+                ];
+                
+                let successCount = 0;
+                let totalCount = endpoints.length;
+                
+                for (const endpoint of endpoints) {
+                    try {
+                        const response = await fetch(`${this.baseURL}${endpoint}`);
+                        if (response.ok) {
+                            successCount++;
+                            this.logResult({
+                                test: 'API Connectivity',
+                                endpoint: endpoint,
+                                status: 'success',
+                                message: `${endpoint} - OK`
+                            });
+                        } else {
+                            this.logResult({
+                                test: 'API Connectivity',
+                                endpoint: endpoint,
+                                status: 'error',
+                                message: `${endpoint} - HTTP ${response.status}`
+                            });
+                        }
+                    } catch (error) {
+                        this.logResult({
+                            test: 'API Connectivity',
+                            endpoint: endpoint,
+                            status: 'error',
+                            message: `${endpoint} - ${error.message}`
+                        });
+                    }
+                }
+                
+                const successRate = Math.round((successCount / totalCount) * 100);
+                this.logResult({
+                    test: 'API Connectivity',
+                    status: 'completed',
+                    message: `API connectivity test completed: ${successCount}/${totalCount} endpoints working (${successRate}%)`
+                });
+                
+                this.updateStats();
+            }
+
+            async testPageIntegration() {
+                this.logResult({
+                    test: 'Page Integration',
+                    status: 'started',
+                    message: 'Testing page integration with core system'
+                });
+                
+                try {
+                    // Test if pages can communicate with core
+                    if (typeof dashboardCore !== 'undefined') {
+                        // Test event broadcasting
+                        dashboardCore.broadcast('testIntegration', { test: true });
+                        
+                        // Test event listening
+                        let eventReceived = false;
+                        const unsubscribe = dashboardCore.listen('testIntegration', (data) => {
+                            eventReceived = true;
+                        });
+                        
+                        // Broadcast again to trigger the listener
+                        dashboardCore.broadcast('testIntegration', { test: true });
+                        
+                        // Clean up
+                        if (unsubscribe) unsubscribe();
+                        
+                        this.logResult({
+                            test: 'Page Integration',
+                            status: 'success',
+                            message: 'Page integration with core system working correctly'
+                        });
+                    } else {
+                        throw new Error('Core system not available');
+                    }
+                    
+                } catch (error) {
+                    this.logResult({
+                        test: 'Page Integration',
+                        status: 'error',
+                        message: `Page integration test failed: ${error.message}`
+                    });
+                }
+                
+                this.updateStats();
+            }
+
+            logResult(result) {
+                this.results.push({
+                    ...result,
+                    timestamp: new Date().toISOString()
+                });
+                
+                const resultsDiv = document.getElementById('testResults');
+                const resultEntry = document.createElement('div');
+                resultEntry.className = `test-result ${result.status === 'success' || result.status === 'completed' ? 'success' : 'error'}`;
+                resultEntry.innerHTML = `
+                    <strong>${result.page || result.test}</strong>${result.test && result.page ? ` - ${result.test}` : ''} - 
+                    ${result.status.toUpperCase()} - 
+                    ${result.message}
+                    <br><small>${new Date().toLocaleTimeString()}</small>
+                `;
+                
+                resultsDiv.appendChild(resultEntry);
+                resultsDiv.scrollTop = resultsDiv.scrollHeight;
+            }
+
+            updateStats() {
+                const total = this.results.length;
+                const passed = this.results.filter(r => 
+                    r.status === 'success' || r.status === 'completed'
+                ).length;
+                const failed = total - passed;
+                const successRate = total > 0 ? Math.round((passed / total) * 100) : 0;
+                
+                this.testStats = { total, passed, failed, successRate };
+                
+                document.getElementById('totalPages').textContent = total;
+                document.getElementById('passedPages').textContent = passed;
+                document.getElementById('failedPages').textContent = failed;
+                document.getElementById('successRate').textContent = successRate + '%';
+                
+                const progressBar = document.getElementById('progressBar');
+                progressBar.style.width = successRate + '%';
+                progressBar.style.background = successRate >= 80 ? '#10b981' : successRate >= 60 ? '#f59e0b' : '#ef4444';
+            }
+
+            clearResults() {
+                this.results = [];
+                document.getElementById('testResults').innerHTML = '';
+                this.updateStats();
+                
+                // Reset all page tests
+                this.pages.forEach((page, index) => {
+                    const testDiv = document.getElementById(`page-${index}`);
+                    testDiv.className = 'page-test';
+                    testDiv.querySelector('.status-indicator').className = 'status-indicator';
+                    testDiv.querySelector('.test-page-btn').disabled = false;
+                    
+                    page.tests.forEach((test, testIndex) => {
+                        const testDiv = document.getElementById(`test-${index}-${testIndex}`);
+                        testDiv.querySelector('.status-indicator').className = 'status-indicator';
+                    });
+                });
+            }
+
+            exportResults() {
+                const data = {
+                    timestamp: new Date().toISOString(),
+                    stats: this.testStats,
+                    results: this.results
+                };
+                
+                const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `comprehensive-test-results-${new Date().toISOString().slice(0, 19).replace(/:/g, '-')}.json`;
+                a.click();
+                URL.revokeObjectURL(url);
+            }
+
+            delay(ms) {
+                return new Promise(resolve => setTimeout(resolve, ms));
+            }
+        }
+
+        // Global tester instance
+        const tester = new ComprehensiveTester();
+
+        // Global functions for button clicks
+        function runAllTests() {
+            tester.runAllTests();
+        }
+
+        function testCoreSystem() {
+            tester.testCoreSystem();
+        }
+
+        function testAPIConnectivity() {
+            tester.testAPIConnectivity();
+        }
+
+        function testPageIntegration() {
+            tester.testPageIntegration();
+        }
+
+        function clearResults() {
+            tester.clearResults();
+        }
+
+        function exportResults() {
+            tester.exportResults();
+        }
+
+        console.log('🔍 Comprehensive Tester initialized');
+    </script>
+</body>
+</html> 

@@ -1,0 +1,514 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>پالایش داده | سامانه حقوقی</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@200;300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    
+    <style>
+        :root {
+            --text-primary: #0f172a;
+            --text-secondary: #475569;
+            --text-muted: #64748b;
+            --text-light: #ffffff;
+            --body-bg: linear-gradient(135deg, #f1f5f9 0%, #e2e8f0 50%, #cbd5e1 100%);
+            --card-bg: rgba(255, 255, 255, 0.95);
+            --glass-bg: rgba(255, 255, 255, 0.9);
+            --glass-border: rgba(148, 163, 184, 0.2);
+            --primary-gradient: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
+            --secondary-gradient: linear-gradient(135deg, #06b6d4 0%, #0891b2 100%);
+            --success-gradient: linear-gradient(135deg, #10b981 0%, #047857 100%);
+            --warning-gradient: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+            --danger-gradient: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+            --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.08);
+            --shadow-md: 0 4px 15px rgba(0, 0, 0, 0.1);
+            --shadow-lg: 0 8px 25px rgba(0, 0, 0, 0.12);
+            --sidebar-width: 260px;
+            --border-radius: 12px;
+            --border-radius-sm: 8px;
+            --transition-smooth: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+            --font-size-xs: 0.7rem;
+            --font-size-sm: 0.8rem;
+            --font-size-base: 0.9rem;
+            --font-size-lg: 1.1rem;
+            --font-size-xl: 1.25rem;
+            --font-size-2xl: 1.5rem;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Vazirmatn', sans-serif;
+            background: var(--body-bg);
+            color: var(--text-primary);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+        
+        .dashboard-container { display: flex; min-height: 100vh; width: 100%; }
+
+        /* Sidebar Styles (Copied from other pages) */
+        .sidebar {
+            width: var(--sidebar-width);
+            background: linear-gradient(135deg, rgba(248, 250, 252, 0.98) 0%, rgba(226, 232, 240, 0.98) 50%, rgba(203, 213, 225, 0.95) 100%);
+            backdrop-filter: blur(25px);
+            padding: 1rem 0;
+            position: fixed;
+            height: 100vh;
+            right: 0;
+            top: 0;
+            z-index: 1000;
+            overflow-y: auto;
+            box-shadow: -8px 0 32px rgba(59, 130, 246, 0.12);
+            border-left: 1px solid rgba(59, 130, 246, 0.15);
+        }
+        .sidebar-header { padding: 0 1rem 1rem; border-bottom: 1px solid rgba(59, 130, 246, 0.12); margin-bottom: 1rem; display: flex; align-items: center; background: linear-gradient(135deg, rgba(255, 255, 255, 0.4) 0%, rgba(248, 250, 252, 0.2) 100%); margin: 0 0.5rem 1rem; border-radius: var(--border-radius); backdrop-filter: blur(10px); }
+        .logo { display: flex; align-items: center; gap: 0.6rem; color: var(--text-primary); text-decoration: none; }
+        .logo-icon { width: 2rem; height: 2rem; background: var(--primary-gradient); border-radius: var(--border-radius-sm); display: flex; align-items: center; justify-content: center; font-size: 1rem; color: white; }
+        .logo-text { font-size: var(--font-size-lg); font-weight: 700; background: var(--primary-gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .nav-section { margin-bottom: 1rem; }
+        .nav-title { padding: 0 1rem 0.4rem; font-size: var(--font-size-xs); font-weight: 600; text-transform: uppercase; color: var(--text-secondary); }
+        .nav-menu { list-style: none; }
+        .nav-item { margin: 0.15rem 0.5rem; }
+        .nav-link { display: flex; align-items: center; padding: 0.6rem 0.8rem; color: var(--text-primary); text-decoration: none; border-radius: var(--border-radius-sm); transition: var(--transition-smooth); font-weight: 500; font-size: var(--font-size-sm); cursor: pointer; border: 1px solid transparent; }
+        .nav-link:hover { transform: translateX(-2px); border-color: rgba(59, 130, 246, 0.15); background: rgba(59, 130, 246, 0.05); }
+        .nav-link.active { background: var(--primary-gradient); color: var(--text-light); box-shadow: var(--shadow-md); }
+        .nav-icon { margin-left: 0.6rem; width: 1rem; text-align: center; font-size: 0.9rem; }
+        .nav-badge { background: var(--danger-gradient); color: white; padding: 0.15rem 0.4rem; border-radius: 10px; font-size: var(--font-size-xs); font-weight: 600; margin-right: auto; }
+
+        /* Main Content Styles */
+        .main-content {
+            flex: 1;
+            margin-right: var(--sidebar-width);
+            padding: 1rem;
+            width: calc(100% - var(--sidebar-width));
+        }
+
+        .page-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+        }
+
+        .page-title {
+            font-size: var(--font-size-2xl);
+            font-weight: 800;
+            background: var(--primary-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+        }
+        
+        .page-stats { display: flex; gap: 1rem; font-size: var(--font-size-sm); }
+        .stat-item { background: var(--glass-bg); padding: 0.5rem 1rem; border-radius: var(--border-radius-sm); border: 1px solid var(--glass-border); }
+
+        /* Curation Layout */
+        .curation-layout {
+            display: grid;
+            grid-template-columns: 400px 1fr;
+            gap: 1.5rem;
+            height: calc(100vh - 120px);
+        }
+
+        /* Queue List Panel */
+        .queue-panel {
+            background: var(--card-bg);
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow-md);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        .queue-header {
+            padding: 1rem;
+            border-bottom: 1px solid var(--glass-border);
+        }
+        
+        .queue-search { width: 100%; padding: 0.6rem; border-radius: var(--border-radius-sm); border: 1px solid var(--glass-border); background: var(--glass-bg); }
+
+        .queue-list {
+            list-style: none;
+            overflow-y: auto;
+            flex-grow: 1;
+        }
+
+        .queue-item {
+            padding: 1rem;
+            border-bottom: 1px solid var(--glass-border);
+            cursor: pointer;
+            transition: var(--transition-smooth);
+            position: relative;
+        }
+        
+        .queue-item:hover { background: rgba(59, 130, 246, 0.05); }
+        .queue-item.active { background: rgba(59, 130, 246, 0.1); border-right: 4px solid #3b82f6; }
+        
+        .item-title { font-weight: 600; margin-bottom: 0.3rem; }
+        .item-source { font-size: var(--font-size-xs); color: var(--text-secondary); }
+        .item-score { position: absolute; top: 1rem; left: 1rem; background: var(--primary-gradient); color: white; padding: 0.2rem 0.5rem; border-radius: 10px; font-size: var(--font-size-xs); font-weight: 600; }
+        .item-score.high { background: var(--success-gradient); }
+        .item-score.low { background: var(--warning-gradient); }
+
+        /* Details Panel */
+        .details-panel {
+            background: var(--card-bg);
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow-md);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        .details-header {
+            padding: 1.5rem;
+            border-bottom: 1px solid var(--glass-border);
+        }
+        
+        .details-title { font-size: var(--font-size-xl); font-weight: 700; margin-bottom: 0.5rem; }
+        .details-url { font-size: var(--font-size-sm); color: #3b82f6; text-decoration: none; }
+
+        .details-content {
+            padding: 1.5rem;
+            overflow-y: auto;
+            flex-grow: 1;
+        }
+        
+        .content-section { margin-bottom: 1.5rem; }
+        .content-label { font-weight: 600; margin-bottom: 0.5rem; color: var(--text-secondary); }
+        .content-text { background: rgba(0,0,0,0.02); padding: 1rem; border-radius: var(--border-radius-sm); max-height: 250px; overflow-y: auto; line-height: 1.7; }
+
+        .form-group { margin-bottom: 1rem; }
+        .form-label { display: block; font-weight: 600; margin-bottom: 0.5rem; }
+        .form-control { width: 100%; padding: 0.6rem; border-radius: var(--border-radius-sm); border: 1px solid var(--glass-border); background: var(--glass-bg); }
+        
+        .tag-list { display: flex; flex-wrap: wrap; gap: 0.5rem; padding: 0.5rem; border: 1px solid var(--glass-border); border-radius: var(--border-radius-sm); }
+        .tag-item { background: rgba(59, 130, 246, 0.1); color: #1d4ed8; padding: 0.3rem 0.6rem; border-radius: 5px; display: flex; align-items: center; gap: 0.3rem; }
+        .tag-remove { background: none; border: none; cursor: pointer; }
+
+        .details-footer {
+            padding: 1rem;
+            border-top: 1px solid var(--glass-border);
+            background: rgba(0,0,0,0.02);
+            display: flex;
+            justify-content: flex-end;
+            gap: 0.8rem;
+        }
+
+        .btn { padding: 0.6rem 1.2rem; border: none; border-radius: var(--border-radius-sm); font-weight: 600; cursor: pointer; transition: var(--transition-smooth); display: flex; align-items: center; gap: 0.5rem; }
+        .btn-success { background: var(--success-gradient); color: white; }
+        .btn-danger { background: var(--danger-gradient); color: white; }
+        .btn-outline { background: transparent; color: var(--text-primary); border: 1px solid rgba(59, 130, 246, 0.2); }
+        .btn:hover { transform: translateY(-1px); box-shadow: var(--shadow-md); }
+        
+        /* Placeholder */
+        .placeholder { display: flex; align-items: center; justify-content: center; height: 100%; color: var(--text-muted); text-align: center; }
+
+        /* Toast Notifications */
+        .toast-container { position: fixed; top: 1rem; left: 1rem; z-index: 10001; }
+        .toast { background: var(--card-bg); border-radius: var(--border-radius-sm); padding: 1rem 1.5rem; box-shadow: var(--shadow-lg); border-left: 4px solid; display: flex; align-items: center; gap: 0.8rem; min-width: 300px; transform: translateX(-120%); transition: all 0.3s ease; margin-bottom: 0.5rem; }
+        .toast.show { transform: translateX(0); }
+        .toast.success { border-left-color: #10b981; }
+        .toast.error { border-left-color: #ef4444; }
+        .toast-icon { font-size: 1.2rem; }
+        .toast.success .toast-icon { color: #10b981; }
+        .toast.error .toast-icon { color: #ef4444; }
+        .toast-title { font-weight: 600; }
+        .toast-message { font-size: var(--font-size-xs); color: var(--text-secondary); }
+    </style>
+</head>
+<body>
+    <div class="dashboard-container">
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <a href="/" class="logo">
+                    <div class="logo-icon"><i class="fas fa-gavel"></i></div>
+                    <div class="logo-text">سامانه حقوقی</div>
+                </a>
+            </div>
+            <nav>
+                <div class="nav-section">
+                    <h6 class="nav-title">ابزارها</h6>
+                    <ul class="nav-menu">
+                        <li class="nav-item">
+                            <a href="/static/scraping.html" class="nav-link">
+                                <i class="fas fa-globe nav-icon"></i>
+                                <span>استخراج محتوا</span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="/static/curation.html" class="nav-link active">
+                                <i class="fas fa-check-double nav-icon"></i>
+                                <span>پالایش داده</span>
+                                <span class="nav-badge" id="queue-badge">0</span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="/static/analytics.html" class="nav-link">
+                                <i class="fas fa-chart-line nav-icon"></i>
+                                <span>آمار و تحلیل</span>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </nav>
+        </aside>
+
+        <main class="main-content">
+            <header class="page-header">
+                <h1 class="page-title">
+                    <i class="fas fa-check-double"></i>
+                    پالایش و اعتبارسنجی داده
+                </h1>
+                <div class="page-stats">
+                    <div class="stat-item">
+                        <i class="fas fa-list-check" style="color: #3b82f6;"></i>
+                        <span id="stat-in-queue">۰</span> در صف
+                    </div>
+                    <div class="stat-item">
+                        <i class="fas fa-check" style="color: #10b981;"></i>
+                        <span id="stat-approved">۰</span> تایید شده امروز
+                    </div>
+                    <div class="stat-item">
+                        <i class="fas fa-times" style="color: #ef4444;"></i>
+                        <span id="stat-rejected">۰</span> رد شده امروز
+                    </div>
+                </div>
+            </header>
+
+            <div class="curation-layout">
+                <aside class="queue-panel">
+                    <div class="queue-header">
+                        <input type="search" id="queueSearch" class="queue-search" placeholder="جستجو در صف...">
+                    </div>
+                    <ul class="queue-list" id="queueList">
+                        </ul>
+                </aside>
+
+                <section class="details-panel" id="detailsPanel">
+                    <div class="placeholder" id="detailsPlaceholder">
+                        <div>
+                            <i class="fas fa-arrow-right fa-3x" style="opacity: 0.2;"></i>
+                            <p>برای مشاهده جزئیات، یک مورد را از لیست انتخاب کنید.</p>
+                        </div>
+                    </div>
+                    </section>
+            </div>
+        </main>
+    </div>
+
+    <div id="toastContainer" class="toast-container"></div>
+
+    <script>
+        // --- Mock Data ---
+        // In a real application, this data would come from an API call.
+        const mockData = [
+            {
+                id: 'doc1',
+                title: 'رای وحدت رویه شماره ۸۲۰ دیوان عالی کشور',
+                source: 'divan-edalat.ir',
+                url: 'https://divan-edalat.ir/doc/820',
+                score: 95,
+                scrapedAt: '2025-08-04T10:00:00Z',
+                content: 'نظر به اینکه مطابق ماده ۴۷۷ قانون آیین دادرسی کیفری، آراء قطعی لازم‌الاجرا بوده و ... این رأی وحدت رویه برای شعب دیوان عالی کشور و دادگاه‌ها و سایر مراجع اعم از قضایی و غیر آن در موارد مشابه لازم‌الاتباع است.',
+                suggestedCategory: 'رای وحدت رویه',
+                suggestedTags: ['دیوان عالی', 'آیین دادرسی', 'ماده ۴۷۷']
+            },
+            {
+                id: 'doc2',
+                title: 'قانون اصلاح قانون مبارزه با پولشویی',
+                source: 'majlis.ir',
+                url: 'https://majlis.ir/law/12345',
+                score: 92,
+                scrapedAt: '2025-08-04T11:30:00Z',
+                content: 'ماده ۱- تبصره‌های زیر به ماده (۱) قانون مبارزه با پولشویی مصوب ۱۳۸۶/۱۱/۲ الحاق می‌شود: تبصره ۱- ...',
+                suggestedCategory: 'قانون مصوب',
+                suggestedTags: ['پولشویی', 'مجلس', 'اصلاحیه']
+            },
+            {
+                id: 'doc3',
+                title: 'تحلیل حقوقی قراردادهای مشارکت در ساخت',
+                source: 'hoghoughdanan.com',
+                url: 'https://hoghoughdanan.com/article/567',
+                score: 78,
+                scrapedAt: '2025-08-05T09:00:00Z',
+                content: 'قراردادهای مشارکت در ساخت یکی از رایج‌ترین انواع قراردادها در حوزه املاک و مستغلات است. در این نوع قرارداد، مالک زمین با سازنده توافق می‌کند که ...',
+                suggestedCategory: 'مقاله حقوقی',
+                suggestedTags: ['مشارکت در ساخت', 'قرارداد', 'املاک']
+            },
+            {
+                id: 'doc4',
+                title: 'اطلاعیه ثبت‌نام آزمون وکالت سال ۱۴۰۴',
+                source: 'iranbar.org',
+                url: 'https://iranbar.org/news/9901',
+                score: 85,
+                scrapedAt: '2025-08-05T06:15:00Z',
+                content: 'بدینوسیله به اطلاع کلیه داوطلبان متقاضی شرکت در آزمون کارآموزی وکالت سال ۱۴۰۴ می‌رساند که ثبت‌نام از تاریخ ... آغاز خواهد شد.',
+                suggestedCategory: 'اطلاعیه',
+                suggestedTags: ['آزمون وکالت', 'کانون وکلا', 'ثبت‌نام']
+            }
+        ];
+
+        let queueData = [...mockData];
+        let currentItem = null;
+        let stats = { approved: 0, rejected: 0 };
+        
+        // --- DOM Elements ---
+        const queueList = document.getElementById('queueList');
+        const detailsPanel = document.getElementById('detailsPanel');
+        const detailsPlaceholder = document.getElementById('detailsPlaceholder');
+        
+        // --- Initialization ---
+        document.addEventListener('DOMContentLoaded', () => {
+            renderQueue();
+            updateStats();
+        });
+
+        // --- Render Functions ---
+        function renderQueue() {
+            queueList.innerHTML = '';
+            queueData.forEach(item => {
+                const scoreClass = item.score > 90 ? 'high' : (item.score < 80 ? 'low' : '');
+                const li = document.createElement('li');
+                li.className = 'queue-item';
+                li.id = `queue-item-${item.id}`;
+                li.setAttribute('onclick', `displayItemDetails('${item.id}')`);
+                li.innerHTML = `
+                    <div class="item-score ${scoreClass}">${item.score}</div>
+                    <h4 class="item-title">${item.title}</h4>
+                    <p class="item-source">${item.source}</p>
+                `;
+                queueList.appendChild(li);
+            });
+            document.getElementById('queue-badge').textContent = queueData.length;
+        }
+
+        function displayItemDetails(itemId) {
+            currentItem = queueData.find(item => item.id === itemId);
+            if (!currentItem) return;
+            
+            // Highlight active item
+            document.querySelectorAll('.queue-item').forEach(el => el.classList.remove('active'));
+            document.getElementById(`queue-item-${itemId}`).classList.add('active');
+
+            detailsPlaceholder.style.display = 'none';
+
+            detailsPanel.innerHTML = `
+                <header class="details-header">
+                    <h3 class="details-title">${currentItem.title}</h3>
+                    <a href="${currentItem.url}" target="_blank" class="details-url">${currentItem.source}</a>
+                </header>
+                <div class="details-content">
+                    <section class="content-section">
+                        <h5 class="content-label">محتوای استخراج شده</h5>
+                        <div class="content-text">${currentItem.content}</div>
+                    </section>
+                    <section class="content-section">
+                        <h5 class="content-label">اطلاعات تکمیلی و ویرایش</h5>
+                        <div class="form-group">
+                            <label for="itemCategory" class="form-label">دسته‌بندی پیشنهادی</label>
+                            <select id="itemCategory" class="form-control">
+                                <option>رای وحدت رویه</option>
+                                <option>قانون مصوب</option>
+                                <option>مقاله حقوقی</option>
+                                <option>اطلاعیه</option>
+                                <option>دادخواست</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">کلمات کلیدی پیشنهادی</label>
+                            <div id="tagList" class="tag-list">
+                                </div>
+                        </div>
+                    </section>
+                </div>
+                <footer class="details-footer">
+                    <button class="btn btn-outline" onclick="handleReject('${currentItem.id}')"><i class="fas fa-times"></i> رد کردن</button>
+                    <button class="btn btn-danger" onclick="handleReject('${currentItem.id}', true)"><i class="fas fa-trash"></i> رد و حذف</button>
+                    <button class="btn btn-success" onclick="handleApprove('${currentItem.id}')"><i class="fas fa-check"></i> تایید</button>
+                </footer>
+            `;
+            
+            // Set values for form controls
+            document.getElementById('itemCategory').value = currentItem.suggestedCategory;
+            renderTags(currentItem.suggestedTags);
+        }
+
+        function renderTags(tags) {
+            const tagList = document.getElementById('tagList');
+            tagList.innerHTML = tags.map(tag => `
+                <div class="tag-item">
+                    <span>${tag}</span>
+                    <button class="tag-remove" onclick="removeTag(this, '${tag}')"><i class="fas fa-times-circle"></i></button>
+                </div>
+            `).join('');
+        }
+
+        // --- Action Handlers ---
+        function handleApprove(itemId) {
+            // In a real app, send the approved (and possibly edited) data to the backend.
+            stats.approved++;
+            removeItemFromQueue(itemId);
+            showToast(`سند "${currentItem.title}" با موفقیت تایید شد.`, 'success');
+        }
+        
+        function handleReject(itemId, andDelete = false) {
+            // In a real app, update the item's status to 'rejected' on the backend.
+            stats.rejected++;
+            removeItemFromQueue(itemId);
+            const message = andDelete ? 'رد و حذف شد.' : 'رد شد.';
+            showToast(`سند "${currentItem.title}" ${message}`, 'error');
+        }
+
+        function removeItemFromQueue(itemId) {
+            queueData = queueData.filter(item => item.id !== itemId);
+            currentItem = null;
+            detailsPanel.innerHTML = '';
+            detailsPlaceholder.style.display = 'flex';
+            renderQueue();
+            updateStats();
+        }
+
+        // --- UI Updates ---
+        function updateStats() {
+            document.getElementById('stat-in-queue').textContent = queueData.length;
+            document.getElementById('stat-approved').textContent = stats.approved;
+            document.getElementById('stat-rejected').textContent = stats.rejected;
+        }
+
+        // --- Utility Functions ---
+        function showToast(message, type = 'info') {
+            const container = document.getElementById('toastContainer');
+            const toast = document.createElement('div');
+            toast.className = `toast ${type}`;
+            const icon = type === 'success' ? 'fa-check-circle' : 'fa-times-circle';
+            
+            toast.innerHTML = `
+                <div class="toast-icon"><i class="fas ${icon}"></i></div>
+                <div class="toast-content">
+                    <div class="toast-title">${type === 'success' ? 'موفق' : 'انجام شد'}</div>
+                    <div class="toast-message">${message}</div>
+                </div>
+            `;
+            
+            container.appendChild(toast);
+            setTimeout(() => toast.classList.add('show'), 100);
+            
+            setTimeout(() => {
+                toast.classList.remove('show');
+                setTimeout(() => toast.remove(), 300);
+            }, 5000);
+        }
+
+    </script>
+</body>
+</html>

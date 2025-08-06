@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Integration Test - Legal Dashboard</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            max-inline-size: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .test-section {
+            background: white;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .success { color: #10b981; }
+        .error { color: #ef4444; }
+        .info { color: #3b82f6; }
+        .warning { color: #f59e0b; }
+        button {
+            background: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        button:hover {
+            background: #0056b3;
+        }
+        pre {
+            background: #f8f9fa;
+            padding: 10px;
+            border-radius: 4px;
+            overflow-x: auto;
+            max-block-size: 300px;
+            overflow-y: auto;
+        }
+        .event-log {
+            background: #1a1a1a;
+            color: #00ff00;
+            padding: 15px;
+            border-radius: 8px;
+            font-family: 'Courier New', monospace;
+            max-block-size: 400px;
+            overflow-y: auto;
+        }
+        .status-indicator {
+            display: inline-block;
+            inline-size: 12px;
+            block-size: 12px;
+            border-radius: 50%;
+            margin-inline-end: 8px;
+        }
+        .status-indicator.success { background: #10b981; }
+        .status-indicator.error { background: #ef4444; }
+        .status-indicator.warning { background: #f59e0b; }
+        .status-indicator.info { background: #3b82f6; }
+    </style>
+</head>
+<body>
+    <h1>🔍 Integration Test - Legal Dashboard</h1>
+
+    <div class="test-section">
+        <h2>📦 Core Module Test</h2>
+        <button type="button" onclick="testCoreModule()">Test Core Module</button>
+        <div id="coreTestResult"></div>
+    </div>
+
+    <div class="test-section">
+        <h2>🔌 API Connectivity Test</h2>
+        <button type="button" onclick="testAPIConnectivity()">Test API Connectivity</button>
+        <div id="apiTestResult"></div>
+    </div>
+
+    <div class="test-section">
+        <h2>📡 Cross-Page Communication Test</h2>
+        <button type="button" onclick="testCrossPageCommunication()">Test Cross-Page Events</button>
+        <div id="communicationTestResult"></div>
+    </div>
+
+    <div class="test-section">
+        <h2>📊 Event Log</h2>
+        <button type="button" onclick="clearEventLog()">Clear Log</button>
+        <div id="eventLog" class="event-log"></div>
+    </div>
+
+    <div class="test-section">
+        <h2>🔄 Real-time Updates Test</h2>
+        <button type="button" onclick="simulateDocumentUpload()">Simulate Document Upload</button>
+        <button type="button" onclick="simulateDocumentUpdate()">Simulate Document Update</button>
+        <button type="button" onclick="simulateDocumentDelete()">Simulate Document Delete</button>
+        <div id="realtimeTestResult"></div>
+    </div>
+
+    <script src="../js/api-client.js"></script>
+    <script src="../js/core.js"></script>
+    <script>
+        let eventLog = [];
+
+        function logEvent(message, type = 'info') {
+            const timestamp = new Date().toLocaleTimeString();
+            const logEntry = `[${timestamp}] ${message}`;
+            eventLog.push({ message: logEntry, type });
+            
+            const eventLogElement = document.getElementById('eventLog');
+            eventLogElement.innerHTML = eventLog.map(entry => 
+                `<div class="${entry.type}">${entry.message}</div>`
+            ).join('');
+            
+            eventLogElement.scrollTop = eventLogElement.scrollHeight;
+        }
+
+        function clearEventLog() {
+            eventLog = [];
+            document.getElementById('eventLog').innerHTML = '';
+        }
+
+        async function testCoreModule() {
+            const resultDiv = document.getElementById('coreTestResult');
+            resultDiv.innerHTML = '<p>Testing core module...</p>';
+
+            try {
+                // Test if core module is loaded
+                if (typeof dashboardCore === 'undefined') {
+                    throw new Error('Dashboard Core module not loaded');
+                }
+
+                // Test initialization
+                if (!dashboardCore.isInitialized) {
+                    throw new Error('Dashboard Core not initialized');
+                }
+
+                // Test API client
+                if (!dashboardCore.apiClient) {
+                    throw new Error('API client not initialized');
+                }
+
+                // Test event system
+                let eventReceived = false;
+                const unsubscribe = dashboardCore.listen('testEvent', (data) => {
+                    eventReceived = true;
+                    logEvent('✅ Test event received: ' + JSON.stringify(data), 'success');
+                });
+
+                dashboardCore.broadcast('testEvent', { test: true, timestamp: Date.now() });
+
+                setTimeout(() => {
+                    unsubscribe();
+                    if (eventReceived) {
+                        resultDiv.innerHTML = `
+                            <div class="success">
+                                <span class="status-indicator success"></span>
+                                ✅ Core module working correctly
+                                <ul>
+                                    <li>Module loaded: ✅</li>
+                                    <li>Initialized: ✅</li>
+                                    <li>API client: ✅</li>
+                                    <li>Event system: ✅</li>
+                                </ul>
+                            </div>
+                        `;
+                    } else {
+                        throw new Error('Event system not working');
+                    }
+                }, 100);
+
+            } catch (error) {
+                resultDiv.innerHTML = `
+                    <div class="error">
+                        <span class="status-indicator error"></span>
+                        ❌ Core module test failed: ${error.message}
+                    </div>
+                `;
+                logEvent('❌ Core module test failed: ' + error.message, 'error');
+            }
+        }
+
+        async function testAPIConnectivity() {
+            const resultDiv = document.getElementById('apiTestResult');
+            resultDiv.innerHTML = '<p>Testing API connectivity...</p>';
+
+            const endpoints = [
+                '/api/health',
+                '/api/dashboard/summary',
+                '/api/documents',
+                '/api/ocr/status'
+            ];
+
+            const results = [];
+
+            for (const endpoint of endpoints) {
+                try {
+                    const response = await fetch(endpoint);
+                    const success = response.ok;
+                    results.push({
+                        endpoint,
+                        success,
+                        status: response.status,
+                        statusText: response.statusText
+                    });
+                    
+                    logEvent(`${success ? '✅' : '❌'} ${endpoint}: ${response.status}`, success ? 'success' : 'error');
+                } catch (error) {
+                    results.push({
+                        endpoint,
+                        success: false,
+                        error: error.message
+                    });
+                    logEvent(`❌ ${endpoint}: ${error.message}`, 'error');
+                }
+            }
+
+            const successCount = results.filter(r => r.success).length;
+            const totalCount = results.length;
+            const successRate = Math.round((successCount / totalCount) * 100);
+
+            resultDiv.innerHTML = `
+                <div class="${successRate >= 75 ? 'success' : successRate >= 50 ? 'warning' : 'error'}">
+                    <span class="status-indicator ${successRate >= 75 ? 'success' : successRate >= 50 ? 'warning' : 'error'}"></span>
+                    API Connectivity: ${successCount}/${totalCount} (${successRate}%)
+                    <ul>
+                        ${results.map(r => `
+                            <li class="${r.success ? 'success' : 'error'}">
+                                ${r.success ? '✅' : '❌'} ${r.endpoint}: ${r.status || r.error}
+                            </li>
+                        `).join('')}
+                    </ul>
+                </div>
+            `;
+        }
+
+        function testCrossPageCommunication() {
+            const resultDiv = document.getElementById('communicationTestResult');
+            resultDiv.innerHTML = '<p>Testing cross-page communication...</p>';
+
+            try {
+                // Test localStorage synchronization
+                const testData = { test: true, timestamp: Date.now() };
+                dashboardCore.storeEvent('testStorageEvent', testData);
+                
+                // Verify event was stored
+                const events = JSON.parse(localStorage.getItem('dashboard_events') || '[]');
+                const lastEvent = events[events.length - 1];
+                
+                if (lastEvent && lastEvent.name === 'testStorageEvent') {
+                    logEvent('✅ localStorage synchronization working', 'success');
+                } else {
+                    throw new Error('localStorage synchronization failed');
+                }
+
+                // Test event broadcasting
+                let eventReceived = false;
+                const unsubscribe = dashboardCore.listen('testCommunicationEvent', (data) => {
+                    eventReceived = true;
+                    logEvent('✅ Cross-page event received: ' + JSON.stringify(data), 'success');
+                });
+
+                dashboardCore.broadcast('testCommunicationEvent', { 
+                    message: 'Test cross-page communication',
+                    timestamp: Date.now()
+                });
+
+                setTimeout(() => {
+                    unsubscribe();
+                    if (eventReceived) {
+                        resultDiv.innerHTML = `
+                            <div class="success">
+                                <span class="status-indicator success"></span>
+                                ✅ Cross-page communication working
+                                <ul>
+                                    <li>Event broadcasting: ✅</li>
+                                    <li>Event listening: ✅</li>
+                                    <li>localStorage sync: ✅</li>
+                                </ul>
+                            </div>
+                        `;
+                    } else {
+                        throw new Error('Event communication failed');
+                    }
+                }, 100);
+
+            } catch (error) {
+                resultDiv.innerHTML = `
+                    <div class="error">
+                        <span class="status-indicator error"></span>
+                        ❌ Cross-page communication test failed: ${error.message}
+                    </div>
+                `;
+                logEvent('❌ Cross-page communication test failed: ' + error.message, 'error');
+            }
+        }
+
+        function simulateDocumentUpload() {
+            const testData = {
+                fileId: 'test_' + Date.now(),
+                fileName: 'test_document.pdf',
+                fileSize: 1024000,
+                status: 'uploaded'
+            };
+
+            dashboardCore.broadcast('documentUploaded', testData);
+            logEvent('📄 Simulated document upload: ' + testData.fileName, 'info');
+            
+            document.getElementById('realtimeTestResult').innerHTML = `
+                <div class="success">
+                    ✅ Document upload event broadcasted
+                    <pre>${JSON.stringify(testData, null, 2)}</pre>
+                </div>
+            `;
+        }
+
+        function simulateDocumentUpdate() {
+            const testData = {
+                documentId: 'doc_' + Date.now(),
+                fileName: 'updated_document.pdf',
+                status: 'updated',
+                updatedAt: new Date().toISOString()
+            };
+
+            dashboardCore.broadcast('documentUpdated', testData);
+            logEvent('📝 Simulated document update: ' + testData.fileName, 'info');
+            
+            document.getElementById('realtimeTestResult').innerHTML = `
+                <div class="success">
+                    ✅ Document update event broadcasted
+                    <pre>${JSON.stringify(testData, null, 2)}</pre>
+                </div>
+            `;
+        }
+
+        function simulateDocumentDelete() {
+            const testData = {
+                documentId: 'doc_' + Date.now(),
+                fileName: 'deleted_document.pdf',
+                status: 'deleted'
+            };
+
+            dashboardCore.broadcast('documentDeleted', testData);
+            logEvent('🗑️ Simulated document delete: ' + testData.fileName, 'info');
+            
+            document.getElementById('realtimeTestResult').innerHTML = `
+                <div class="success">
+                    ✅ Document delete event broadcasted
+                    <pre>${JSON.stringify(testData, null, 2)}</pre>
+                </div>
+            `;
+        }
+
+        // Listen for all dashboard events
+        dashboardCore.listen('documentUploaded', (data) => {
+            logEvent('📄 Document upload event received: ' + data.fileName, 'success');
+        });
+
+        dashboardCore.listen('documentUpdated', (data) => {
+            logEvent('📝 Document update event received: ' + data.fileName, 'success');
+        });
+
+        dashboardCore.listen('documentDeleted', (data) => {
+            logEvent('🗑️ Document delete event received: ' + data.fileName, 'success');
+        });
+
+        dashboardCore.listen('healthUpdate', (data) => {
+            logEvent('💓 Health update: ' + data.status, 'info');
+        });
+
+        dashboardCore.listen('dashboardStatsUpdated', (data) => {
+            logEvent('📊 Dashboard stats updated', 'info');
+        });
+
+        // Initialize test page
+        document.addEventListener('DOMContentLoaded', () => {
+            logEvent('🚀 Integration test page loaded', 'info');
+            logEvent('📦 Dashboard Core module: ' + (typeof dashboardCore !== 'undefined' ? 'Loaded' : 'Not loaded'), 'info');
+        });
+    </script>
+</body>
+</html> 

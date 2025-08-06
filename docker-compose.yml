@@ -1,0 +1,110 @@
+version: "3.8"
+
+services:
+  # FastAPI Application
+  legal-dashboard:
+    build: 
+      context: .
+      dockerfile: Dockerfile
+    container_name: legal_dashboard_app
+    restart: unless-stopped
+    networks:
+      - app_network
+    # Remove user override to use the user from Dockerfile
+    # user: "1000:1000" # Commented out - using Dockerfile user instead
+    volumes:
+      # Create host directories with proper permissions first
+      - ./data:/app/data:rw
+      - ./cache:/app/cache:rw
+      - ./logs:/app/logs:rw
+      - ./uploads:/app/uploads:rw
+      - ./backups:/app/backups:rw
+    environment:
+      - DATABASE_DIR=/app/data
+      - DATABASE_PATH=/app/data/legal_dashboard.db
+      - TRANSFORMERS_CACHE=/app/cache
+      - HF_HOME=/app/cache
+      - LOG_LEVEL=INFO
+      - ENVIRONMENT=production
+      - JWT_SECRET_KEY=${JWT_SECRET_KEY:-your-secret-key-change-in-production}
+      - PYTHONPATH=/app
+      - PYTHONUNBUFFERED=1
+    ports:
+      - "8000:8000"
+    healthcheck:
+      test: ["CMD-SHELL", "curl -fs http://localhost:8000/api/auth/health || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 60s
+    depends_on:
+      - redis
+
+  # Redis for caching and sessions
+  redis:
+    image: redis:7-alpine
+    container_name: legal_dashboard_redis
+    restart: unless-stopped
+    networks:
+      - app_network
+    volumes:
+      - redis_data:/data
+    command: redis-server --appendonly yes --maxmemory 256mb --maxmemory-policy allkeys-lru
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    ports:
+      - "6379:6379"
+
+  # Nginx Reverse Proxy (Optional - commented out for simple deployment)
+  # nginx:
+  #   image: nginx:alpine
+  #   container_name: legal_dashboard_nginx
+  #   restart: unless-stopped
+  #   ports:
+  #     - "80:80"
+  #     - "443:443"
+  #   volumes:
+  #     - ./nginx.conf:/etc/nginx/conf.d/default.conf:ro
+  #     - ./ssl:/etc/nginx/ssl:ro
+  #     - ./logs/nginx:/var/log/nginx
+  #   depends_on:
+  #     - legal-dashboard
+  #   networks:
+  #     - app_network
+
+  # Backup Service
+  backup:
+    image: alpine:latest
+    container_name: legal_dashboard_backup
+    restart: unless-stopped
+    volumes:
+      - ./data:/app/data:ro
+      - ./backups:/app/backups:rw
+      - ./logs:/app/logs:ro
+    command: |
+      sh -c "
+        echo 'Starting backup service...' &&
+        mkdir -p /app/backups &&
+        while true; do
+          echo 'Creating backup...' &&
+          timestamp=$$(date +%Y%m%d_%H%M%S) &&
+          tar -czf /app/backups/backup-$$timestamp.tar.gz -C /app data logs 2>/dev/null || echo 'Backup failed' &&
+          echo 'Cleaning old backups...' &&
+          find /app/backups -name 'backup-*.tar.gz' -mtime +7 -delete 2>/dev/null || echo 'Cleanup completed' &&
+          echo 'Backup cycle completed. Sleeping for 24 hours...' &&
+          sleep 86400
+        done
+      "
+    networks:
+      - app_network
+
+networks:
+  app_network:
+    driver: bridge
+
+volumes:
+  redis_data:
+    driver: local

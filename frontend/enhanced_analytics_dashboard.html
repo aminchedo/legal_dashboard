@@ -1,0 +1,1174 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>داشبورد تحلیلی پیشرفته | سامانه هوشمند حقوقی</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@200;300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.min.js"></script>
+    <style>
+        :root {
+            /* رنگ‌بندی مدرن و هارمونیک */
+            --text-primary: #0f172a;
+            --text-secondary: #475569;
+            --text-muted: #64748b;
+            --text-light: #ffffff;
+
+            /* پس‌زمینه‌های بهبود یافته */
+            --body-bg: linear-gradient(135deg, #f1f5f9 0%, #e2e8f0 50%, #cbd5e1 100%);
+            --card-bg: rgba(255, 255, 255, 0.95);
+            --glass-bg: rgba(255, 255, 255, 0.9);
+            --glass-border: rgba(148, 163, 184, 0.2);
+            --sidebar-bg: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+
+            /* گرادیان‌های مدرن */
+            --primary-gradient: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
+            --secondary-gradient: linear-gradient(135deg, #06b6d4 0%, #0891b2 100%);
+            --success-gradient: linear-gradient(135deg, #10b981 0%, #047857 100%);
+            --warning-gradient: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+            --danger-gradient: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+
+            /* سایه‌های ملایم */
+            --shadow-xs: 0 1px 3px rgba(0, 0, 0, 0.05);
+            --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.08);
+            --shadow-md: 0 4px 15px rgba(0, 0, 0, 0.1);
+            --shadow-lg: 0 8px 25px rgba(0, 0, 0, 0.12);
+            --shadow-glow-primary: 0 0 20px rgba(59, 130, 246, 0.15);
+            --shadow-glow-success: 0 0 20px rgba(16, 185, 129, 0.15);
+            --shadow-glow-warning: 0 0 20px rgba(245, 158, 11, 0.15);
+            --shadow-glow-danger: 0 0 20px rgba(239, 68, 68, 0.15);
+
+            /* متغیرهای کامپکت */
+            --sidebar-width: 260px;
+            --border-radius: 12px;
+            --border-radius-sm: 8px;
+            --border-radius-lg: 16px;
+            --transition-smooth: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+            --transition-fast: all 0.15s ease-in-out;
+
+            /* فونت‌های کامپکت */
+            --font-size-xs: 0.7rem;
+            --font-size-sm: 0.8rem;
+            --font-size-base: 0.9rem;
+            --font-size-lg: 1.1rem;
+            --font-size-xl: 1.25rem;
+            --font-size-2xl: 1.5rem;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Vazirmatn', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--body-bg);
+            color: var(--text-primary);
+            line-height: 1.6;
+            overflow-x: hidden;
+            font-size: var(--font-size-base);
+        }
+
+        /* اسکرول‌بار مدرن */
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: rgba(0, 0, 0, 0.02);
+            border-radius: 10px;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: rgba(0, 0, 0, 0.1);
+            border-radius: 10px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: rgba(0, 0, 0, 0.2);
+        }
+
+        /* Layout */
+        .dashboard-container {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            width: var(--sidebar-width);
+            background: var(--sidebar-bg);
+            padding: 1.5rem;
+            position: fixed;
+            height: 100vh;
+            overflow-y: auto;
+            z-index: 1000;
+        }
+
+        .sidebar-header {
+            text-align: center;
+            margin-bottom: 2rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .sidebar-header h2 {
+            color: var(--text-light);
+            font-size: var(--font-size-xl);
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+
+        .sidebar-header p {
+            color: rgba(255, 255, 255, 0.7);
+            font-size: var(--font-size-sm);
+        }
+
+        .nav-menu {
+            list-style: none;
+        }
+
+        .nav-item {
+            margin-bottom: 0.5rem;
+        }
+
+        .nav-link {
+            display: flex;
+            align-items: center;
+            padding: 0.75rem 1rem;
+            color: rgba(255, 255, 255, 0.8);
+            text-decoration: none;
+            border-radius: var(--border-radius-sm);
+            transition: var(--transition-smooth);
+            font-size: var(--font-size-sm);
+        }
+
+        .nav-link:hover,
+        .nav-link.active {
+            background: rgba(255, 255, 255, 0.1);
+            color: var(--text-light);
+        }
+
+        .nav-link i {
+            margin-left: 0.75rem;
+            width: 16px;
+            text-align: center;
+        }
+
+        /* Main Content */
+        .main-content {
+            flex: 1;
+            margin-right: var(--sidebar-width);
+            padding: 2rem;
+        }
+
+        .page-header {
+            margin-bottom: 2rem;
+        }
+
+        .page-title {
+            font-size: var(--font-size-2xl);
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 0.5rem;
+        }
+
+        .page-subtitle {
+            color: var(--text-secondary);
+            font-size: var(--font-size-base);
+        }
+
+        /* Cards */
+        .cards-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .card {
+            background: var(--card-bg);
+            border-radius: var(--border-radius-lg);
+            padding: 1.5rem;
+            box-shadow: var(--shadow-sm);
+            border: 1px solid var(--glass-border);
+            transition: var(--transition-smooth);
+        }
+
+        .card:hover {
+            box-shadow: var(--shadow-md);
+            transform: translateY(-2px);
+        }
+
+        .card-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 1rem;
+        }
+
+        .card-title {
+            font-size: var(--font-size-lg);
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .card-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            color: white;
+        }
+
+        .card-icon.primary { background: var(--primary-gradient); }
+        .card-icon.success { background: var(--success-gradient); }
+        .card-icon.warning { background: var(--warning-gradient); }
+        .card-icon.danger { background: var(--danger-gradient); }
+
+        .metric-value {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+
+        .metric-label {
+            color: var(--text-secondary);
+            font-size: var(--font-size-sm);
+        }
+
+        .metric-change {
+            display: flex;
+            align-items: center;
+            font-size: var(--font-size-sm);
+            margin-top: 0.5rem;
+        }
+
+        .metric-change.positive {
+            color: #10b981;
+        }
+
+        .metric-change.negative {
+            color: #ef4444;
+        }
+
+        /* Charts */
+        .charts-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .chart-card {
+            background: var(--card-bg);
+            border-radius: var(--border-radius-lg);
+            padding: 1.5rem;
+            box-shadow: var(--shadow-sm);
+            border: 1px solid var(--glass-border);
+        }
+
+        .chart-container {
+            position: relative;
+            height: 300px;
+        }
+
+        /* Alerts */
+        .alerts-section {
+            margin-bottom: 2rem;
+        }
+
+        .alert {
+            padding: 1rem;
+            border-radius: var(--border-radius-sm);
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+        }
+
+        .alert.warning {
+            background: rgba(245, 158, 11, 0.1);
+            border: 1px solid rgba(245, 158, 11, 0.3);
+            color: #92400e;
+        }
+
+        .alert.error {
+            background: rgba(239, 68, 68, 0.1);
+            border: 1px solid rgba(239, 68, 68, 0.3);
+            color: #991b1b;
+        }
+
+        .alert.success {
+            background: rgba(16, 185, 129, 0.1);
+            border: 1px solid rgba(16, 185, 129, 0.3);
+            color: #065f46;
+        }
+
+        .alert i {
+            margin-left: 0.75rem;
+            font-size: 1.2rem;
+        }
+
+        /* Tables */
+        .table-container {
+            background: var(--card-bg);
+            border-radius: var(--border-radius-lg);
+            padding: 1.5rem;
+            box-shadow: var(--shadow-sm);
+            border: 1px solid var(--glass-border);
+            margin-bottom: 2rem;
+        }
+
+        .table-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .table-title {
+            font-size: var(--font-size-lg);
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th, td {
+            padding: 0.75rem;
+            text-align: right;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+        }
+
+        th {
+            font-weight: 600;
+            color: var(--text-secondary);
+            font-size: var(--font-size-sm);
+        }
+
+        td {
+            color: var(--text-primary);
+        }
+
+        /* Loading */
+        .loading {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+            color: var(--text-secondary);
+        }
+
+        .loading i {
+            margin-left: 0.5rem;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .sidebar {
+                transform: translateX(-100%);
+                transition: var(--transition-smooth);
+            }
+
+            .sidebar.open {
+                transform: translateX(0);
+            }
+
+            .main-content {
+                margin-right: 0;
+                padding: 1rem;
+            }
+
+            .cards-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .charts-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Utility Classes */
+        .text-center { text-align: center; }
+        .text-right { text-align: right; }
+        .text-left { text-align: left; }
+        .mb-1 { margin-bottom: 0.5rem; }
+        .mb-2 { margin-bottom: 1rem; }
+        .mb-3 { margin-bottom: 1.5rem; }
+        .mt-1 { margin-top: 0.5rem; }
+        .mt-2 { margin-top: 1rem; }
+        .mt-3 { margin-top: 1.5rem; }
+    </style>
+</head>
+<body>
+    <div class="dashboard-container">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <h2>📊 تحلیلات پیشرفته</h2>
+                <p>داشبورد هوشمند</p>
+            </div>
+            <nav class="nav-menu">
+                <div class="nav-item">
+                    <a href="#overview" class="nav-link active" onclick="showSection('overview')">
+                        <i class="fas fa-chart-line"></i>
+                        نمای کلی
+                    </a>
+                </div>
+                <div class="nav-item">
+                    <a href="#trends" class="nav-link" onclick="showSection('trends')">
+                        <i class="fas fa-chart-area"></i>
+                        روندها
+                    </a>
+                </div>
+                <div class="nav-item">
+                    <a href="#predictions" class="nav-link" onclick="showSection('predictions')">
+                        <i class="fas fa-crystal-ball"></i>
+                        پیش‌بینی‌ها
+                    </a>
+                </div>
+                <div class="nav-item">
+                    <a href="#quality" class="nav-link" onclick="showSection('quality')">
+                        <i class="fas fa-award"></i>
+                        کیفیت
+                    </a>
+                </div>
+                <div class="nav-item">
+                    <a href="#health" class="nav-link" onclick="showSection('health')">
+                        <i class="fas fa-heartbeat"></i>
+                        سلامت سیستم
+                    </a>
+                </div>
+                <div class="nav-item">
+                    <a href="#clustering" class="nav-link" onclick="showSection('clustering')">
+                        <i class="fas fa-sitemap"></i>
+                        خوشه‌بندی
+                    </a>
+                </div>
+            </nav>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Overview Section -->
+            <section id="overview" class="section active">
+                <div class="page-header">
+                    <h1 class="page-title">📊 نمای کلی تحلیلات</h1>
+                    <p class="page-subtitle">معیارهای زنده و آمار سیستم</p>
+                </div>
+
+                <!-- Real-time Metrics -->
+                <div class="cards-grid">
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 class="card-title">کل اسناد</h3>
+                            <div class="card-icon primary">
+                                <i class="fas fa-file-alt"></i>
+                            </div>
+                        </div>
+                        <div class="metric-value" id="total-documents">-</div>
+                        <div class="metric-label">تعداد کل اسناد پردازش شده</div>
+                        <div class="metric-change positive" id="documents-change">
+                            <i class="fas fa-arrow-up"></i>
+                            <span>+12%</span>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 class="card-title">پردازش امروز</h3>
+                            <div class="card-icon success">
+                                <i class="fas fa-clock"></i>
+                            </div>
+                        </div>
+                        <div class="metric-value" id="processed-today">-</div>
+                        <div class="metric-label">اسناد پردازش شده امروز</div>
+                        <div class="metric-change positive" id="today-change">
+                            <i class="fas fa-arrow-up"></i>
+                            <span>+8%</span>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 class="card-title">زمان پردازش</h3>
+                            <div class="card-icon warning">
+                                <i class="fas fa-stopwatch"></i>
+                            </div>
+                        </div>
+                        <div class="metric-value" id="avg-processing-time">-</div>
+                        <div class="metric-label">میانگین زمان پردازش (ثانیه)</div>
+                        <div class="metric-change negative" id="time-change">
+                            <i class="fas fa-arrow-down"></i>
+                            <span>-5%</span>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 class="card-title">سلامت سیستم</h3>
+                            <div class="card-icon success">
+                                <i class="fas fa-heartbeat"></i>
+                            </div>
+                        </div>
+                        <div class="metric-value" id="system-health">-</div>
+                        <div class="metric-label">درصد سلامت کلی سیستم</div>
+                        <div class="metric-change positive" id="health-change">
+                            <i class="fas fa-arrow-up"></i>
+                            <span>+2%</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Charts -->
+                <div class="charts-grid">
+                    <div class="chart-card">
+                        <h3 class="card-title mb-2">روند پردازش</h3>
+                        <div class="chart-container">
+                            <canvas id="processing-chart"></canvas>
+                        </div>
+                    </div>
+
+                    <div class="chart-card">
+                        <h3 class="card-title mb-2">کیفیت اسناد</h3>
+                        <div class="chart-container">
+                            <canvas id="quality-chart"></canvas>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Alerts -->
+                <div class="alerts-section">
+                    <h3 class="card-title mb-2">هشدارها و توصیه‌ها</h3>
+                    <div id="alerts-container">
+                        <!-- Alerts will be populated here -->
+                    </div>
+                </div>
+            </section>
+
+            <!-- Trends Section -->
+            <section id="trends" class="section">
+                <div class="page-header">
+                    <h1 class="page-title">📈 تحلیل روندها</h1>
+                    <p class="page-subtitle">تحلیل روندهای سیستم و پیش‌بینی‌ها</p>
+                </div>
+
+                <div class="charts-grid">
+                    <div class="chart-card">
+                        <h3 class="card-title mb-2">روند حجم اسناد</h3>
+                        <div class="chart-container">
+                            <canvas id="volume-trend-chart"></canvas>
+                        </div>
+                    </div>
+
+                    <div class="chart-card">
+                        <h3 class="card-title mb-2">روند کیفیت</h3>
+                        <div class="chart-container">
+                            <canvas id="quality-trend-chart"></canvas>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="table-container">
+                    <div class="table-header">
+                        <h3 class="table-title">تجزیه و تحلیل روندها</h3>
+                    </div>
+                    <table id="trends-table">
+                        <thead>
+                            <tr>
+                                <th>معیار</th>
+                                <th>جهت</th>
+                                <th>تغییر</th>
+                                <th>اعتماد</th>
+                                <th>توصیه</th>
+                            </tr>
+                        </thead>
+                        <tbody id="trends-tbody">
+                            <!-- Trends data will be populated here -->
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <!-- Predictions Section -->
+            <section id="predictions" class="section">
+                <div class="page-header">
+                    <h1 class="page-title">🔮 پیش‌بینی‌ها</h1>
+                    <p class="page-subtitle">پیش‌بینی‌های هوشمند و توصیه‌های بهینه‌سازی</p>
+                </div>
+
+                <div class="cards-grid">
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 class="card-title">پیش‌بینی 24 ساعته</h3>
+                            <div class="card-icon primary">
+                                <i class="fas fa-calendar-day"></i>
+                            </div>
+                        </div>
+                        <div id="forecast-24h">
+                            <!-- 24h forecast data -->
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 class="card-title">ساعات اوج</h3>
+                            <div class="card-icon warning">
+                                <i class="fas fa-chart-bar"></i>
+                            </div>
+                        </div>
+                        <div id="peak-hours">
+                            <!-- Peak hours data -->
+                        </div>
+                    </div>
+                </div>
+
+                <div class="table-container">
+                    <div class="table-header">
+                        <h3 class="table-title">توصیه‌های بهینه‌سازی</h3>
+                    </div>
+                    <div id="optimization-recommendations">
+                        <!-- Optimization recommendations -->
+                    </div>
+                </div>
+            </section>
+
+            <!-- Quality Section -->
+            <section id="quality" class="section">
+                <div class="page-header">
+                    <h1 class="page-title">🏆 تحلیل کیفیت</h1>
+                    <p class="page-subtitle">ارزیابی کیفیت اسناد و فرصت‌های بهبود</p>
+                </div>
+
+                <div class="cards-grid">
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 class="card-title">امتیاز کلی کیفیت</h3>
+                            <div class="card-icon success">
+                                <i class="fas fa-star"></i>
+                            </div>
+                        </div>
+                        <div class="metric-value" id="overall-quality">-</div>
+                        <div class="metric-label">میانگین کیفیت اسناد</div>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 class="card-title">مشکلات رایج</h3>
+                            <div class="card-icon warning">
+                                <i class="fas fa-exclamation-triangle"></i>
+                            </div>
+                        </div>
+                        <div id="common-issues">
+                            <!-- Common issues -->
+                        </div>
+                    </div>
+                </div>
+
+                <div class="chart-card">
+                    <h3 class="card-title mb-2">توزیع کیفیت</h3>
+                    <div class="chart-container">
+                        <canvas id="quality-distribution-chart"></canvas>
+                    </div>
+                </div>
+            </section>
+
+            <!-- System Health Section -->
+            <section id="health" class="section">
+                <div class="page-header">
+                    <h1 class="page-title">💚 سلامت سیستم</h1>
+                    <p class="page-subtitle">نظارت بر سلامت اجزای سیستم</p>
+                </div>
+
+                <div class="cards-grid">
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 class="card-title">سلامت کلی</h3>
+                            <div class="card-icon success">
+                                <i class="fas fa-heartbeat"></i>
+                            </div>
+                        </div>
+                        <div class="metric-value" id="overall-health">-</div>
+                        <div class="metric-label">درصد سلامت سیستم</div>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 class="card-title">پایگاه داده</h3>
+                            <div class="card-icon primary">
+                                <i class="fas fa-database"></i>
+                            </div>
+                        </div>
+                        <div class="metric-value" id="db-health">-</div>
+                        <div class="metric-label">سلامت پایگاه داده</div>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 class="card-title">پردازش OCR</h3>
+                            <div class="card-icon warning">
+                                <i class="fas fa-eye"></i>
+                            </div>
+                        </div>
+                        <div class="metric-value" id="ocr-health">-</div>
+                        <div class="metric-label">سلامت پردازش OCR</div>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 class="card-title">موتور AI</h3>
+                            <div class="card-icon success">
+                                <i class="fas fa-brain"></i>
+                            </div>
+                        </div>
+                        <div class="metric-value" id="ai-health">-</div>
+                        <div class="metric-label">سلامت موتور هوش مصنوعی</div>
+                    </div>
+                </div>
+
+                <div class="table-container">
+                    <div class="table-header">
+                        <h3 class="table-title">هشدارهای سیستم</h3>
+                    </div>
+                    <div id="system-alerts">
+                        <!-- System alerts -->
+                    </div>
+                </div>
+            </section>
+
+            <!-- Clustering Section -->
+            <section id="clustering" class="section">
+                <div class="page-header">
+                    <h1 class="page-title">🔗 خوشه‌بندی اسناد</h1>
+                    <p class="page-subtitle">تحلیل خوشه‌های اسناد و شباهت‌ها</p>
+                </div>
+
+                <div class="cards-grid">
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 class="card-title">تعداد خوشه‌ها</h3>
+                            <div class="card-icon primary">
+                                <i class="fas fa-sitemap"></i>
+                            </div>
+                        </div>
+                        <div class="metric-value" id="cluster-count">-</div>
+                        <div class="metric-label">تعداد خوشه‌های شناسایی شده</div>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 class="card-title">کیفیت خوشه‌بندی</h3>
+                            <div class="card-icon success">
+                                <i class="fas fa-chart-pie"></i>
+                            </div>
+                        </div>
+                        <div class="metric-value" id="clustering-quality">-</div>
+                        <div class="metric-label">امتیاز کیفیت خوشه‌بندی</div>
+                    </div>
+                </div>
+
+                <div class="chart-card">
+                    <h3 class="card-title mb-2">توزیع خوشه‌ها</h3>
+                    <div class="chart-container">
+                        <canvas id="clusters-chart"></canvas>
+                    </div>
+                </div>
+
+                <div class="table-container">
+                    <div class="table-header">
+                        <h3 class="table-title">جزئیات خوشه‌ها</h3>
+                    </div>
+                    <div id="clusters-details">
+                        <!-- Clusters details -->
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <script>
+        // Global variables
+        let charts = {};
+        let currentSection = 'overview';
+        const API_BASE = 'http://localhost:8000/api';
+
+        // Initialize dashboard
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeDashboard();
+        });
+
+        function initializeDashboard() {
+            loadRealTimeMetrics();
+            loadTrends();
+            loadPredictions();
+            loadQualityReport();
+            loadSystemHealth();
+            loadClusteringData();
+            
+            // Auto-refresh every 30 seconds
+            setInterval(loadRealTimeMetrics, 30000);
+        }
+
+        function showSection(sectionId) {
+            // Hide all sections
+            document.querySelectorAll('.section').forEach(section => {
+                section.style.display = 'none';
+            });
+            
+            // Show selected section
+            document.getElementById(sectionId).style.display = 'block';
+            
+            // Update navigation
+            document.querySelectorAll('.nav-link').forEach(link => {
+                link.classList.remove('active');
+            });
+            event.target.classList.add('active');
+            
+            currentSection = sectionId;
+        }
+
+        async function loadRealTimeMetrics() {
+            try {
+                const response = await fetch(`${API_BASE}/enhanced-analytics/real-time-metrics`);
+                const data = await response.json();
+                
+                if (data) {
+                    document.getElementById('total-documents').textContent = data.total_documents.toLocaleString();
+                    document.getElementById('processed-today').textContent = data.processed_today.toLocaleString();
+                    document.getElementById('avg-processing-time').textContent = data.avg_processing_time.toFixed(2);
+                    document.getElementById('system-health').textContent = data.system_health.toFixed(1) + '%';
+                    
+                    // Update charts
+                    updateProcessingChart(data);
+                    updateQualityChart(data);
+                }
+            } catch (error) {
+                console.error('Error loading real-time metrics:', error);
+                showError('خطا در بارگذاری معیارهای زنده');
+            }
+        }
+
+        async function loadTrends() {
+            try {
+                const response = await fetch(`${API_BASE}/enhanced-analytics/trends`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        metric: 'processing_time',
+                        time_period: '7d'
+                    })
+                });
+                const data = await response.json();
+                
+                if (data) {
+                    updateTrendsTable(data);
+                    updateTrendCharts(data);
+                }
+            } catch (error) {
+                console.error('Error loading trends:', error);
+            }
+        }
+
+        async function loadPredictions() {
+            try {
+                const response = await fetch(`${API_BASE}/enhanced-analytics/predictive-insights`);
+                const data = await response.json();
+                
+                if (data) {
+                    updatePredictionsUI(data);
+                }
+            } catch (error) {
+                console.error('Error loading predictions:', error);
+            }
+        }
+
+        async function loadQualityReport() {
+            try {
+                const response = await fetch(`${API_BASE}/enhanced-analytics/quality-report`);
+                const data = await response.json();
+                
+                if (data) {
+                    document.getElementById('overall-quality').textContent = (data.overall_quality_score * 100).toFixed(1) + '%';
+                    updateQualityDistribution(data);
+                    updateCommonIssues(data);
+                }
+            } catch (error) {
+                console.error('Error loading quality report:', error);
+            }
+        }
+
+        async function loadSystemHealth() {
+            try {
+                const response = await fetch(`${API_BASE}/enhanced-analytics/system-health`);
+                const data = await response.json();
+                
+                if (data) {
+                    document.getElementById('overall-health').textContent = data.overall_health.toFixed(1) + '%';
+                    document.getElementById('db-health').textContent = data.component_health.database.toFixed(1) + '%';
+                    document.getElementById('ocr-health').textContent = data.component_health.ocr_pipeline.toFixed(1) + '%';
+                    document.getElementById('ai-health').textContent = data.component_health.ai_engine.toFixed(1) + '%';
+                    
+                    updateSystemAlerts(data.alerts);
+                }
+            } catch (error) {
+                console.error('Error loading system health:', error);
+            }
+        }
+
+        async function loadClusteringData() {
+            try {
+                const response = await fetch(`${API_BASE}/enhanced-analytics/clustering`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        n_clusters: 5
+                    })
+                });
+                const data = await response.json();
+                
+                if (data) {
+                    document.getElementById('cluster-count').textContent = Object.keys(data.clusters).length;
+                    document.getElementById('clustering-quality').textContent = (data.silhouette_score * 100).toFixed(1) + '%';
+                    updateClustersChart(data);
+                }
+            } catch (error) {
+                console.error('Error loading clustering data:', error);
+            }
+        }
+
+        function updateProcessingChart(data) {
+            const ctx = document.getElementById('processing-chart');
+            if (charts.processing) {
+                charts.processing.destroy();
+            }
+            
+            charts.processing = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: ['شنبه', 'یکشنبه', 'دوشنبه', 'سه‌شنبه', 'چهارشنبه', 'پنج‌شنبه', 'جمعه'],
+                    datasets: [{
+                        label: 'زمان پردازش (ثانیه)',
+                        data: [2.1, 2.3, 2.0, 2.5, 2.2, 2.4, 2.1],
+                        borderColor: '#3b82f6',
+                        backgroundColor: 'rgba(59, 130, 246, 0.1)',
+                        tension: 0.4
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'top',
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true
+                        }
+                    }
+                }
+            });
+        }
+
+        function updateQualityChart(data) {
+            const ctx = document.getElementById('quality-chart');
+            if (charts.quality) {
+                charts.quality.destroy();
+            }
+            
+            charts.quality = new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['عالی', 'خوب', 'متوسط', 'ضعیف'],
+                    datasets: [{
+                        data: [45, 30, 20, 5],
+                        backgroundColor: [
+                            '#10b981',
+                            '#3b82f6',
+                            '#f59e0b',
+                            '#ef4444'
+                        ]
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'bottom',
+                        }
+                    }
+                }
+            });
+        }
+
+        function updateTrendsTable(data) {
+            const tbody = document.getElementById('trends-tbody');
+            tbody.innerHTML = '';
+            
+            const trends = [
+                { metric: 'حجم اسناد', direction: 'صعودی', change: '+15%', confidence: '95%', recommendation: 'افزایش ظرفیت سیستم' },
+                { metric: 'کیفیت پردازش', direction: 'صعودی', change: '+8%', confidence: '87%', recommendation: 'حفظ روند فعلی' },
+                { metric: 'زمان پردازش', direction: 'نزولی', change: '-5%', confidence: '92%', recommendation: 'بهینه‌سازی الگوریتم‌ها' }
+            ];
+            
+            trends.forEach(trend => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${trend.metric}</td>
+                    <td><span class="badge ${trend.direction === 'صعودی' ? 'success' : 'warning'}">${trend.direction}</span></td>
+                    <td>${trend.change}</td>
+                    <td>${trend.confidence}</td>
+                    <td>${trend.recommendation}</td>
+                `;
+                tbody.appendChild(row);
+            });
+        }
+
+        function updatePredictionsUI(data) {
+            const forecastDiv = document.getElementById('forecast-24h');
+            const predictions = data.next_24h_forecast || {};
+            
+            forecastDiv.innerHTML = `
+                <div class="metric-value">${predictions.expected_documents || 0}</div>
+                <div class="metric-label">اسناد پیش‌بینی شده</div>
+                <div class="mt-2">
+                    <strong>ساعات اوج:</strong> ${(predictions.peak_hours || []).join(', ')}
+                </div>
+            `;
+            
+            const recommendationsDiv = document.getElementById('optimization-recommendations');
+            const recommendations = data.system_optimization_suggestions || [];
+            
+            recommendationsDiv.innerHTML = recommendations.map(rec => 
+                `<div class="alert alert-info">${rec}</div>`
+            ).join('');
+        }
+
+        function updateQualityDistribution(data) {
+            const ctx = document.getElementById('quality-distribution-chart');
+            if (charts.qualityDistribution) {
+                charts.qualityDistribution.destroy();
+            }
+            
+            const distribution = data.quality_distribution || {};
+            
+            charts.qualityDistribution = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: Object.keys(distribution),
+                    datasets: [{
+                        label: 'تعداد اسناد',
+                        data: Object.values(distribution),
+                        backgroundColor: '#3b82f6'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'top',
+                        }
+                    }
+                }
+            });
+        }
+
+        function updateCommonIssues(data) {
+            const issuesDiv = document.getElementById('common-issues');
+            const issues = data.common_issues || [];
+            
+            issuesDiv.innerHTML = issues.map(issue => `
+                <div class="alert alert-${issue.severity === 'high' ? 'error' : 'warning'}">
+                    <i class="fas fa-exclamation-triangle"></i>
+                    <strong>${issue.type}:</strong> ${issue.description}
+                </div>
+            `).join('');
+        }
+
+        function updateSystemAlerts(alerts) {
+            const alertsContainer = document.getElementById('system-alerts');
+            
+            alertsContainer.innerHTML = alerts.map(alert => `
+                <div class="alert alert-${alert.severity === 'high' ? 'error' : 'warning'}">
+                    <i class="fas fa-${alert.type === 'error' ? 'exclamation-circle' : 'exclamation-triangle'}"></i>
+                    <strong>${alert.component}:</strong> ${alert.message}
+                </div>
+            `).join('');
+        }
+
+        function updateClustersChart(data) {
+            const ctx = document.getElementById('clusters-chart');
+            if (charts.clusters) {
+                charts.clusters.destroy();
+            }
+            
+            const clusters = data.clusters || {};
+            const labels = Object.keys(clusters);
+            const sizes = Object.values(clusters).map(cluster => cluster.length);
+            
+            charts.clusters = new Chart(ctx, {
+                type: 'pie',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        data: sizes,
+                        backgroundColor: [
+                            '#3b82f6',
+                            '#10b981',
+                            '#f59e0b',
+                            '#ef4444',
+                            '#8b5cf6'
+                        ]
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'bottom',
+                        }
+                    }
+                }
+            });
+        }
+
+        function showError(message) {
+            const alertsContainer = document.getElementById('alerts-container');
+            alertsContainer.innerHTML = `
+                <div class="alert alert-error">
+                    <i class="fas fa-exclamation-circle"></i>
+                    ${message}
+                </div>
+            `;
+        }
+
+        // Initialize dashboard when page loads
+        document.addEventListener('DOMContentLoaded', initializeDashboard);
+    </script>
+</body>
+</html> 

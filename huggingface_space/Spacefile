@@ -1,0 +1,33 @@
+# Spacefile for Legal Dashboard OCR
+# This file configures the Hugging Face Space deployment
+
+# Python runtime
+runtime: python3.10
+
+# Build commands
+build:
+  - pip install -r requirements.txt
+
+# Run command
+run: python app.py
+
+# Environment variables
+env:
+  - HF_TOKEN: $HF_TOKEN
+  - PYTHONPATH: /workspace
+
+# Hardware requirements
+hardware: cpu
+
+# Python packages
+packages:
+  - transformers
+  - torch
+  - fastapi
+  - uvicorn
+  - gradio
+  - PyMuPDF
+  - Pillow
+  - opencv-python
+  - numpy
+  - scikit-learn 

@@ -1,0 +1,108 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+
+# Virtual environments
+venv/
+env/
+ENV/
+env.bak/
+venv.bak/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Git
+.git/
+.gitignore
+
+# Environment files
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# Logs
+*.log
+logs/
+
+# Database (exclude old database files, but allow /app/data directory)
+*.db
+*.sqlite
+*.sqlite3
+
+# Cache directories (exclude to prevent permission issues)
+cache/
+/app/cache/
+
+# Temporary files
+tmp/
+temp/
+*.tmp
+
+# Test files
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Documentation
+docs/
+*.md
+!README.md
+
+# Deployment files
+huggingface_space/
+deploy_to_hf.py
+DEPLOYMENT_*.md
+FINAL_*.md
+*_INSTRUCTIONS.md
+*_SUMMARY.md
+*_CHECKLIST.md
+*_READY.md
+
+# Validation and test files
+*_test.py
+*_validation.py
+*_check.py
+*_report.json
+*_results.json
+
+# PowerShell scripts
+*.ps1
+*.ps
+
+# Sample documents (keep only necessary ones)
+data/sample_persian.pdf 

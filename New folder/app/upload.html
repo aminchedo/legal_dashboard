@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>آپلود و تحلیل هوشمند اسناد | سامانه حقوقی</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@200;300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+
+    <!-- JS Files -->
+    <script src="/static/js/api-client.js" type="module"></script>
+    <script src="/static/js/core.js" type="module"></script>
+    <script src="/static/js/notifications.js" type="module"></script>
+
+    <style>
+        :root {
+            --text-primary: #0f172a; --text-secondary: #475569; --text-muted: #64748b; --text-light: #ffffff;
+            --body-bg: linear-gradient(135deg, #f1f5f9 0%, #e2e8f0 50%, #cbd5e1 100%);
+            --card-bg: rgba(255, 255, 255, 0.95); --glass-bg: rgba(255, 255, 255, 0.9);
+            --glass-border: rgba(148, 163, 184, 0.2);
+            --primary-gradient: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
+            --success-gradient: linear-gradient(135deg, #10b981 0%, #047857 100%);
+            --danger-gradient: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+            --purple-gradient: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%);
+            --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.08); --shadow-md: 0 4px 15px rgba(0, 0, 0, 0.1);
+            --shadow-lg: 0 8px 25px rgba(0, 0, 0, 0.12);
+            --sidebar-width: 280px; --border-radius: 12px; --border-radius-sm: 8px;
+            --transition-smooth: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+            --font-size-sm: 0.875rem; --font-size-base: 1rem; --font-size-lg: 1.125rem;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Vazirmatn', sans-serif; background: var(--body-bg); color: var(--text-primary); line-height: 1.6; font-size: var(--font-size-sm); }
+        .dashboard-container { display: flex; min-height: 100vh; width: 100%; }
+        .sidebar { width: var(--sidebar-width); background: linear-gradient(135deg, rgba(248, 250, 252, 0.98) 0%, rgba(241, 245, 249, 0.95) 100%); backdrop-filter: blur(25px); padding: 1rem 0; position: fixed; height: 100vh; right: 0; top: 0; z-index: 1000; overflow-y: auto; box-shadow: -8px 0 32px rgba(59, 130, 246, 0.12); border-left: 1px solid rgba(59, 130, 246, 0.15); }
+        .sidebar-header { padding: 0 1rem 1rem; border-bottom: 1px solid rgba(59, 130, 246, 0.12); margin-bottom: 1rem; display: flex; align-items: center; background: linear-gradient(135deg, rgba(255, 255, 255, 0.4) 0%, rgba(248, 250, 252, 0.2) 100%); margin: 0 0.5rem 1rem; border-radius: var(--border-radius); backdrop-filter: blur(10px); }
+        .logo { display: flex; align-items: center; gap: 0.6rem; color: var(--text-primary); text-decoration: none; }
+        .logo-icon { width: 2.2rem; height: 2.2rem; background: var(--primary-gradient); border-radius: var(--border-radius-sm); display: flex; align-items: center; justify-content: center; font-size: 1.1rem; color: white; }
+        .logo-text { font-size: var(--font-size-lg); font-weight: 700; background: var(--primary-gradient); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; }
+        .nav-section { margin-bottom: 1rem; }
+        .nav-title { padding: 0 1rem 0.4rem; font-size: 0.75rem; font-weight: 600; text-transform: uppercase; color: var(--text-secondary); }
+        .nav-menu { list-style: none; }
+        .nav-item { margin: 0.15rem 0.5rem; }
+        .nav-link { display: flex; align-items: center; padding: 0.7rem 1rem; color: var(--text-primary); text-decoration: none; border-radius: var(--border-radius-sm); transition: var(--transition-smooth); font-weight: 500; cursor: pointer; border: 1px solid transparent; }
+        .nav-link:hover { transform: translateX(-3px); border-color: rgba(59, 130, 246, 0.15); background: rgba(59, 130, 246, 0.05); }
+        .nav-link.active { background: var(--primary-gradient); color: var(--text-light); box-shadow: var(--shadow-md); }
+        .nav-icon { margin-left: 0.8rem; width: 1.2rem; text-align: center; font-size: 1rem; }
+        .main-content { flex: 1; margin-right: var(--sidebar-width); padding: 2rem; width: calc(100% - var(--sidebar-width)); }
+        .page-header { margin-bottom: 2rem; }
+        .page-title { font-size: 1.75rem; font-weight: 800; display: flex; align-items: center; gap: 0.75rem; }
+        .upload-area { border: 3px dashed var(--glass-border); border-radius: var(--border-radius); padding: 3rem; text-align: center; background: linear-gradient(135deg, rgba(59, 130, 246, 0.02), rgba(255, 255, 255, 0.1)); transition: var(--transition-smooth); cursor: pointer; margin-bottom: 2rem; }
+        .upload-area:hover, .upload-area.dragover { border-color: #3b82f6; background: rgba(59, 130, 246, 0.05); }
+        .upload-icon { font-size: 3rem; color: #3b82f6; margin-bottom: 1rem; }
+        .upload-title { font-size: var(--font-size-lg); font-weight: 600; }
+        .upload-description { color: var(--text-secondary); }
+        .upload-input { display: none; }
+        .files-list-container { background: var(--card-bg); border-radius: var(--border-radius); padding: 1.5rem; box-shadow: var(--shadow-md); }
+        .file-item { display: flex; align-items: center; gap: 1rem; padding: 1rem; background: var(--glass-bg); border-radius: var(--border-radius-sm); margin-bottom: 1rem; border: 1px solid var(--glass-border); }
+        .file-icon { width: 3rem; height: 3rem; background: var(--danger-gradient); border-radius: var(--border-radius-sm); display: flex; align-items: center; justify-content: center; color: white; font-size: 1.2rem; flex-shrink: 0; }
+        .file-info { flex: 1; }
+        .file-name { font-weight: 600; }
+        .file-details { display: flex; gap: 1rem; font-size: var(--font-size-sm); color: var(--text-secondary); }
+        .file-progress-bar { width: 100%; height: 6px; background: #e2e8f0; border-radius: 3px; margin-top: 0.5rem; overflow: hidden; }
+        .file-progress-fill { height: 100%; background: var(--success-gradient); border-radius: 3px; transition: width 0.3s ease; }
+        .file-status { font-size: var(--font-size-sm); font-weight: 500; display: flex; align-items: center; gap: 0.5rem; }
+        .file-actions { display: flex; gap: 0.5rem; align-items: center; }
+        .btn { padding: 0.6rem 1.2rem; border: none; border-radius: var(--border-radius-sm); font-family: inherit; font-weight: 600; cursor: pointer; transition: var(--transition-smooth); display: inline-flex; align-items: center; gap: 0.5rem; text-decoration: none; }
+        .btn-primary { background: var(--primary-gradient); color: white; }
+        .btn-primary:hover { transform: translateY(-1px); }
+        .btn-sm { padding: 0.4rem 0.8rem; font-size: var(--font-size-xs); }
+        .btn-danger { background: var(--danger-gradient); color: white; }
+        .btn-purple { background: var(--purple-gradient); color: white; }
+        .btn:disabled { opacity: 0.6; cursor: not-allowed; }
+        .loading-spinner { width: 16px; height: 16px; border: 2px solid currentColor; border-top-color: transparent; border-radius: 50%; animation: spin 1s linear infinite; }
+        @keyframes spin { to { transform: rotate(360deg); } }
+        .modal-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.5); display: none; align-items: center; justify-content: center; z-index: 2000; backdrop-filter: blur(5px); }
+        .modal-overlay.show { display: flex; }
+        .modal-content { background: white; padding: 2rem; border-radius: var(--border-radius); width: 90%; max-width: 800px; box-shadow: var(--shadow-lg); max-height: 90vh; display: flex; flex-direction: column; }
+        .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; padding-bottom: 1rem; border-bottom: 1px solid var(--glass-border); }
+        .modal-title { font-size: 1.25rem; font-weight: 700; }
+        .modal-close { background: none; border: none; font-size: 1.5rem; cursor: pointer; color: var(--text-muted); }
+        .modal-body { overflow-y: auto; line-height: 1.8; }
+        .modal-body h3 { margin-top: 1.5rem; margin-bottom: 0.5rem; font-size: 1.1rem; color: var(--text-primary); border-bottom: 2px solid rgba(59, 130, 246, 0.2); padding-bottom: 0.5rem; }
+        .modal-body ul { padding-right: 20px; }
+    </style>
+</head>
+<body>
+    <div class="dashboard-container">
+        <!-- Sidebar -->
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <a href="/" class="logo">
+                    <div class="logo-icon"><i class="fas fa-gavel"></i></div>
+                    <div class="logo-text">سامانه هوشمند</div>
+                </a>
+            </div>
+            <nav>
+                <div class="nav-section">
+                    <h6 class="nav-title">منوی اصلی</h6>
+                    <ul class="nav-menu">
+                        <li class="nav-item"><a href="/static/index.html" class="nav-link"><i class="fas fa-tachometer-alt nav-icon"></i><span>مرکز کنترل</span></a></li>
+                        <li class="nav-item"><a href="/static/analytics.html" class="nav-link"><i class="fas fa-chart-line nav-icon"></i><span>تحلیل داده</span></a></li>
+                    </ul>
+                </div>
+                <div class="nav-section">
+                    <h6 class="nav-title">مدیریت داده</h6>
+                    <ul class="nav-menu">
+                        <li class="nav-item"><a href="/static/upload.html" class="nav-link active"><i class="fas fa-cloud-upload-alt nav-icon"></i><span>آپلود اسناد</span></a></li>
+                        <li class="nav-item"><a href="/static/scraping.html" class="nav-link"><i class="fas fa-spider nav-icon"></i><span>اسکراپینگ وب</span></a></li>
+                        <li class="nav-item"><a href="/static/documents.html" class="nav-link"><i class="fas fa-folder-open nav-icon"></i><span>مدیریت اسناد</span></a></li>
+                        <li class="nav-item"><a href="/static/search.html" class="nav-link"><i class="fas fa-search nav-icon"></i><span>جستجوی پیشرفته</span></a></li>
+                    </ul>
+                </div>
+                <div class="nav-section">
+                    <h6 class="nav-title">سیستم</h6>
+                    <ul class="nav-menu">
+                        <li class="nav-item"><a href="/static/reports.html" class="nav-link"><i class="fas fa-file-export nav-icon"></i><span>گزارش‌گیری</span></a></li>
+                        <li class="nav-item"><a href="/static/system-health.html" class="nav-link"><i class="fas fa-heartbeat nav-icon"></i><span>سلامت سیستم</span></a></li>
+                        <li class="nav-item"><a href="/static/settings.html" class="nav-link"><i class="fas fa-cog nav-icon"></i><span>تنظیمات</span></a></li>
+                    </ul>
+                </div>
+            </nav>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <header class="page-header">
+                <h1 class="page-title"><i class="fas fa-cloud-upload-alt"></i>آپلود و تحلیل هوشمند اسناد</h1>
+            </header>
+
+            <section class="upload-area" id="uploadArea">
+                <div class="upload-icon"><i class="fas fa-file-pdf"></i></div>
+                <h2 class="upload-title">فایل‌های PDF خود را اینجا بکشید و رها کنید</h2>
+                <p class="upload-description">یا برای انتخاب فایل کلیک کنید (پشتیبانی از آپلود چندتایی)</p>
+                <input type="file" class="upload-input" id="fileInput" multiple accept=".pdf">
+            </section>
+
+            <section class="files-list-container" id="filesListContainer" style="display: none;">
+                <h2 style="font-size: var(--font-size-lg); font-weight: 700; margin-bottom: 1rem;">فایل‌های در صف پردازش</h2>
+                <div id="filesContainer"></div>
+            </section>
+        </main>
+    </div>
+
+    <!-- Analysis Modal -->
+    <div class="modal-overlay" id="analysisModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title" id="analysisModalTitle">✨ تحلیل هوشمند سند</h3>
+                <button class="modal-close" onclick="closeAnalysisModal()">&times;</button>
+            </div>
+            <div class="modal-body" id="analysisModalBody"></div>
+        </div>
+    </div>
+
+    <script type="module">
+        const filesMap = new Map();
+
+        function setupEventListeners() {
+            const uploadArea = document.getElementById('uploadArea');
+            const fileInput = document.getElementById('fileInput');
+            uploadArea.addEventListener('dragover', (e) => { e.preventDefault(); e.currentTarget.classList.add('dragover'); });
+            uploadArea.addEventListener('dragleave', (e) => e.currentTarget.classList.remove('dragover'));
+            uploadArea.addEventListener('drop', handleFileDrop);
+            fileInput.addEventListener('change', handleFileSelect);
+            uploadArea.addEventListener('click', () => fileInput.click());
+        }
+
+        function handleFileDrop(e) {
+            e.preventDefault();
+            e.currentTarget.classList.remove('dragover');
+            processFiles(e.dataTransfer.files);
+        }
+
+        function handleFileSelect(e) {
+            processFiles(e.target.files);
+            e.target.value = ''; 
+        }
+
+        function processFiles(fileList) {
+            document.getElementById('filesListContainer').style.display = 'block';
+            for (const file of fileList) {
+                if (file.type !== 'application/pdf') {
+                    window.notifications?.showError('فرمت نامعتبر', `فایل ${file.name} از نوع PDF نیست.`);
+                    continue;
+                }
+                const fileId = `file-${Date.now()}-${Math.random()}`;
+                filesMap.set(fileId, { file, status: 'queued', documentId: null });
+                renderFileItem(fileId, file);
+                uploadFile(fileId, file);
+            }
+        }
+
+        function renderFileItem(fileId, file) {
+            const container = document.getElementById('filesContainer');
+            const item = document.createElement('div');
+            item.className = 'file-item';
+            item.id = fileId;
+            item.innerHTML = `
+                <div class="file-icon"><i class="fas fa-file-pdf"></i></div>
+                <div class="file-info">
+                    <div class="file-name">${file.name}</div>
+                    <div class="file-details">
+                        <span>${(file.size / 1024 / 1024).toFixed(2)} MB</span>
+                    </div>
+                    <div class="file-progress-bar"><div class="file-progress-fill"></div></div>
+                </div>
+                <div class="file-status">
+                    <div class="loading-spinner"></div>
+                    <span>در صف آپلود</span>
+                </div>
+                <div class="file-actions"></div>
+            `;
+            container.prepend(item);
+        }
+
+        async function uploadFile(fileId, file) {
+            updateFileStatus(fileId, 'uploading', 'در حال آپلود و پردازش...');
+            const progressFill = document.querySelector(`#${fileId} .file-progress-fill`);
+            progressFill.style.width = '50%';
+
+            try {
+                const result = await window.legalAPI.processAndSave(file);
+                
+                const fileData = filesMap.get(fileId);
+                if (fileData) {
+                    fileData.documentId = result.document.id;
+                    fileData.status = 'completed';
+                }
+                
+                progressFill.style.width = '100%';
+                updateFileStatus(fileId, 'completed', 'تکمیل شد');
+                addAnalysisButton(fileId, result.document.id);
+                window.notifications?.showSuccess('پردازش موفق', `فایل ${file.name} با موفقیت پردازش شد.`);
+
+            } catch (error) {
+                console.error(`Upload failed for ${file.name}:`, error);
+                updateFileStatus(fileId, 'error', 'پردازش ناموفق');
+                window.notifications?.showError('پردازش ناموفق', `خطا در پردازش فایل ${file.name}.`);
+            }
+        }
+        
+        function updateFileStatus(fileId, status, text) {
+            const item = document.getElementById(fileId);
+            if (!item) return;
+            const statusEl = item.querySelector('.file-status');
+            
+            let iconHtml = '';
+            switch(status) {
+                case 'uploading': iconHtml = '<div class="loading-spinner"></div>'; break;
+                case 'processing': iconHtml = '<div class="loading-spinner"></div>'; break;
+                case 'completed': iconHtml = '<i class="fas fa-check-circle" style="color: var(--success-gradient);"></i>'; break;
+                case 'error': iconHtml = '<i class="fas fa-times-circle" style="color: var(--danger-gradient);"></i>'; break;
+            }
+            statusEl.innerHTML = `${iconHtml}<span>${text}</span>`;
+        }
+
+        function addAnalysisButton(fileId, documentId) {
+            const item = document.getElementById(fileId);
+            if (!item) return;
+            const actionsContainer = item.querySelector('.file-actions');
+            const button = document.createElement('button');
+            button.className = 'btn btn-purple btn-sm';
+            button.innerHTML = '<i class="fas fa-wand-magic-sparkles"></i> <span>✨ تحلیل هوشمند</span>';
+            button.onclick = (e) => {
+                e.stopPropagation();
+                showAnalysis(documentId);
+            };
+            actionsContainer.innerHTML = ''; 
+            actionsContainer.appendChild(button);
+        }
+
+        async function showAnalysis(documentId) {
+            const modal = document.getElementById('analysisModal');
+            const modalBody = document.getElementById('analysisModalBody');
+            
+            modal.classList.add('show');
+            modalBody.innerHTML = '<div class="loading-spinner" style="margin: 2rem auto;"></div>';
+
+            try {
+                const result = await window.legalAPI.analyzeDocument(documentId);
+                modalBody.innerHTML = marked.parse(result.analysis);
+            } catch (error) {
+                console.error("Analysis Error:", error);
+                modalBody.innerHTML = "<p>خطا در ارتباط با سرویس تحلیل هوشمند.</p>";
+            }
+        }
+
+        window.closeAnalysisModal = function() {
+            document.getElementById('analysisModal').classList.remove('show');
+        }
+
+        document.addEventListener('DOMContentLoaded', setupEventListeners);
+    </script>
+</body>
+</html>

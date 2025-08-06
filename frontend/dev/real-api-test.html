@@ -1,0 +1,674 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Real API Testing - Legal Dashboard</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .test-section {
+            background: white;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .success { color: #10b981; }
+        .error { color: #ef4444; }
+        .info { color: #3b82f6; }
+        .warning { color: #f59e0b; }
+        button {
+            background: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        button:hover {
+            background: #0056b3;
+        }
+        button:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+        }
+        .endpoint-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+        }
+        .endpoint-card {
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            padding: 15px;
+            background: white;
+            position: relative;
+        }
+        .endpoint-card.success {
+            border-color: #10b981;
+            background: #f0fdf4;
+        }
+        .endpoint-card.error {
+            border-color: #ef4444;
+            background: #fef2f2;
+        }
+        .endpoint-card.warning {
+            border-color: #f59e0b;
+            background: #fffbeb;
+        }
+        .endpoint-card.testing {
+            border-color: #3b82f6;
+            background: #eff6ff;
+        }
+        .status-indicator {
+            display: inline-block;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            margin-right: 8px;
+        }
+        .status-indicator.success { background: #10b981; }
+        .status-indicator.error { background: #ef4444; }
+        .status-indicator.warning { background: #f59e0b; }
+        .status-indicator.info { background: #3b82f6; }
+        .status-indicator.testing { 
+            background: #3b82f6; 
+            animation: pulse 1s infinite;
+        }
+        @keyframes pulse {
+            0% { opacity: 1; }
+            50% { opacity: 0.5; }
+            100% { opacity: 1; }
+        }
+        .response-data {
+            background: #f8f9fa;
+            padding: 10px;
+            border-radius: 4px;
+            margin-top: 10px;
+            font-family: 'Courier New', monospace;
+            font-size: 12px;
+            max-height: 200px;
+            overflow-y: auto;
+            white-space: pre-wrap;
+        }
+        .test-controls {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+        .summary-stats {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        .stat-card {
+            background: white;
+            padding: 15px;
+            border-radius: 8px;
+            text-align: center;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .stat-number {
+            font-size: 2rem;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        .stat-label {
+            color: #666;
+            font-size: 0.9rem;
+        }
+        .progress-bar {
+            width: 100%;
+            height: 4px;
+            background: #e5e7eb;
+            border-radius: 2px;
+            overflow: hidden;
+            margin: 10px 0;
+        }
+        .progress-fill {
+            height: 100%;
+            background: #3b82f6;
+            transition: width 0.3s ease;
+        }
+        .file-upload-test {
+            border: 2px dashed #ddd;
+            padding: 20px;
+            text-align: center;
+            border-radius: 8px;
+            margin: 20px 0;
+        }
+        .file-upload-test.dragover {
+            border-color: #3b82f6;
+            background: #eff6ff;
+        }
+        .test-results {
+            max-height: 400px;
+            overflow-y: auto;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            padding: 10px;
+            background: #f8f9fa;
+        }
+    </style>
+</head>
+<body>
+    <h1>🔍 Real API Testing - Legal Dashboard</h1>
+
+    <div class="test-section">
+        <h2>📊 Test Summary</h2>
+        <div class="summary-stats">
+            <div class="stat-card">
+                <div class="stat-number" id="totalTests">0</div>
+                <div class="stat-label">Total Tests</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number" id="passedTests">0</div>
+                <div class="stat-label">Passed</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number" id="failedTests">0</div>
+                <div class="stat-label">Failed</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number" id="successRate">0%</div>
+                <div class="stat-label">Success Rate</div>
+            </div>
+        </div>
+        <div class="progress-bar">
+            <div class="progress-fill" id="progressBar"></div>
+        </div>
+    </div>
+
+    <div class="test-section">
+        <h2>🎛️ Test Controls</h2>
+        <div class="test-controls">
+            <button type="button" onclick="runAllTests()" id="runAllBtn">Run All Tests</button>
+            <button type="button" onclick="runHealthTests()">Health Tests Only</button>
+            <button type="button" onclick="runDashboardTests()">Dashboard Tests</button>
+            <button type="button" onclick="runDocumentTests()">Document Tests</button>
+            <button type="button" onclick="runOCRTests()">OCR Tests</button>
+            <button type="button" onclick="runScrapingTests()">Scraping Tests</button>
+            <button type="button" onclick="clearResults()">Clear Results</button>
+            <button type="button" onclick="exportResults()">Export Results</button>
+        </div>
+    </div>
+
+    <div class="test-section">
+        <h2>📁 File Upload Test</h2>
+        <div class="file-upload-test" id="uploadZone">
+            <p>Drag and drop a file here or click to select</p>
+            <input type="file" id="testFileInput" accept=".pdf,.jpg,.jpeg,.png,.tiff" style="display: none;">
+            <button type="button" onclick="document.getElementById('testFileInput').click()">Select File</button>
+        </div>
+        <div id="uploadResults"></div>
+    </div>
+
+    <div class="test-section">
+        <h2>🔌 API Endpoint Tests</h2>
+        <div class="endpoint-grid" id="endpointGrid">
+            <!-- Endpoint cards will be generated here -->
+        </div>
+    </div>
+
+    <div class="test-section">
+        <h2>📋 Test Results</h2>
+        <div class="test-results" id="testResults">
+            <!-- Test results will be displayed here -->
+        </div>
+    </div>
+
+    <script src="../js/api-client.js"></script>
+    <script>
+        class RealAPITester {
+            constructor() {
+                this.baseURL = window.location.origin;
+                this.results = [];
+                this.testStats = {
+                    total: 0,
+                    passed: 0,
+                    failed: 0,
+                    successRate: 0
+                };
+                this.isRunning = false;
+                
+                this.endpoints = [
+                    // Health & System Tests
+                    { name: 'Health Check', url: '/api/health', method: 'GET', category: 'Health', expectedStatus: 200 },
+                    { name: 'API Docs', url: '/api/docs', method: 'GET', category: 'Health', expectedStatus: 200 },
+                    
+                    // Dashboard Tests
+                    { name: 'Dashboard Summary', url: '/api/dashboard/summary', method: 'GET', category: 'Dashboard', expectedStatus: 200 },
+                    { name: 'Charts Data', url: '/api/dashboard/charts-data', method: 'GET', category: 'Dashboard', expectedStatus: 200 },
+                    { name: 'AI Suggestions', url: '/api/dashboard/ai-suggestions', method: 'GET', category: 'Dashboard', expectedStatus: 200 },
+                    { name: 'Performance Metrics', url: '/api/dashboard/performance-metrics', method: 'GET', category: 'Dashboard', expectedStatus: 200 },
+                    { name: 'Trends', url: '/api/dashboard/trends', method: 'GET', category: 'Dashboard', expectedStatus: 200 },
+                    
+                    // Documents Tests
+                    { name: 'Documents List', url: '/api/documents', method: 'GET', category: 'Documents', expectedStatus: 200 },
+                    { name: 'Document Categories', url: '/api/documents/categories', method: 'GET', category: 'Documents', expectedStatus: 200 },
+                    { name: 'Document Sources', url: '/api/documents/sources', method: 'GET', category: 'Documents', expectedStatus: 200 },
+                    { name: 'Document Search', url: '/api/documents/search?q=test', method: 'GET', category: 'Documents', expectedStatus: 200 },
+                    
+                    // OCR Tests
+                    { name: 'OCR Status', url: '/api/ocr/status', method: 'GET', category: 'OCR', expectedStatus: 200 },
+                    { name: 'OCR Models', url: '/api/ocr/models', method: 'GET', category: 'OCR', expectedStatus: 200 },
+                    
+                    // Scraping Tests
+                    { name: 'Scraping Statistics', url: '/api/scraping/scrape/statistics', method: 'GET', category: 'Scraping', expectedStatus: 200 },
+                    { name: 'Scraping Status', url: '/api/scraping/scrape/status', method: 'GET', category: 'Scraping', expectedStatus: 200 },
+                    { name: 'Rating Summary', url: '/api/scraping/rating/summary', method: 'GET', category: 'Scraping', expectedStatus: 200 },
+                    { name: 'Scraping Health', url: '/api/scraping/health', method: 'GET', category: 'Scraping', expectedStatus: 200 },
+                    
+                    // Analytics Tests (Expected to fail)
+                    { name: 'Analytics Overview', url: '/api/analytics/overview', method: 'GET', category: 'Analytics', expectedStatus: 404 },
+                    { name: 'Analytics Performance', url: '/api/analytics/performance', method: 'GET', category: 'Analytics', expectedStatus: 404 },
+                    { name: 'Analytics Entities', url: '/api/analytics/entities', method: 'GET', category: 'Analytics', expectedStatus: 404 },
+                    { name: 'Analytics Quality', url: '/api/analytics/quality-analysis', method: 'GET', category: 'Analytics', expectedStatus: 404 }
+                ];
+                
+                this.initialize();
+            }
+
+            initialize() {
+                this.createEndpointCards();
+                this.setupFileUpload();
+                this.updateStats();
+            }
+
+            createEndpointCards() {
+                const grid = document.getElementById('endpointGrid');
+                grid.innerHTML = '';
+
+                this.endpoints.forEach((endpoint, index) => {
+                    const card = document.createElement('div');
+                    card.className = 'endpoint-card';
+                    card.id = `endpoint-${index}`;
+                    
+                    card.innerHTML = `
+                        <div class="status-indicator"></div>
+                        <strong>${endpoint.name}</strong>
+                        <div style="font-size: 0.8rem; color: #666; margin: 5px 0;">
+                            ${endpoint.method} ${endpoint.url}
+                        </div>
+                        <div class="response-data" id="response-${index}" style="display: none;"></div>
+                        <button onclick="tester.testSingleEndpoint(${index})" class="test-btn">
+                            Test
+                        </button>
+                    `;
+                    
+                    grid.appendChild(card);
+                });
+            }
+
+            setupFileUpload() {
+                const uploadZone = document.getElementById('uploadZone');
+                const fileInput = document.getElementById('testFileInput');
+
+                uploadZone.addEventListener('dragover', (e) => {
+                    e.preventDefault();
+                    uploadZone.classList.add('dragover');
+                });
+
+                uploadZone.addEventListener('dragleave', () => {
+                    uploadZone.classList.remove('dragover');
+                });
+
+                uploadZone.addEventListener('drop', (e) => {
+                    e.preventDefault();
+                    uploadZone.classList.remove('dragover');
+                    const files = e.dataTransfer.files;
+                    if (files.length > 0) {
+                        this.testFileUpload(files[0]);
+                    }
+                });
+
+                fileInput.addEventListener('change', (e) => {
+                    if (e.target.files.length > 0) {
+                        this.testFileUpload(e.target.files[0]);
+                    }
+                });
+            }
+
+            async testSingleEndpoint(index) {
+                const endpoint = this.endpoints[index];
+                const card = document.getElementById(`endpoint-${index}`);
+                const responseDiv = document.getElementById(`response-${index}`);
+                
+                // Set testing state
+                card.className = 'endpoint-card testing';
+                card.querySelector('.status-indicator').className = 'status-indicator testing';
+                card.querySelector('.test-btn').disabled = true;
+                
+                const startTime = Date.now();
+                
+                try {
+                    const response = await fetch(`${this.baseURL}${endpoint.url}`, {
+                        method: endpoint.method,
+                        headers: {
+                            'Content-Type': 'application/json'
+                        }
+                    });
+                    
+                    const responseTime = Date.now() - startTime;
+                    const responseText = await response.text();
+                    let responseData;
+                    
+                    try {
+                        responseData = JSON.parse(responseText);
+                    } catch {
+                        responseData = responseText;
+                    }
+                    
+                    const success = response.status === endpoint.expectedStatus;
+                    
+                    // Update card
+                    card.className = `endpoint-card ${success ? 'success' : 'error'}`;
+                    card.querySelector('.status-indicator').className = `status-indicator ${success ? 'success' : 'error'}`;
+                    card.querySelector('.test-btn').disabled = false;
+                    
+                    // Show response data
+                    responseDiv.style.display = 'block';
+                    responseDiv.innerHTML = `
+Status: ${response.status} ${response.statusText}
+Time: ${responseTime}ms
+Size: ${responseText.length} bytes
+
+Response:
+${JSON.stringify(responseData, null, 2)}
+                    `;
+                    
+                    // Log result
+                    this.logResult({
+                        endpoint: endpoint.name,
+                        url: endpoint.url,
+                        method: endpoint.method,
+                        status: response.status,
+                        expectedStatus: endpoint.expectedStatus,
+                        success: success,
+                        responseTime: responseTime,
+                        responseSize: responseText.length,
+                        responseData: responseData
+                    });
+                    
+                } catch (error) {
+                    card.className = 'endpoint-card error';
+                    card.querySelector('.status-indicator').className = 'status-indicator error';
+                    card.querySelector('.test-btn').disabled = false;
+                    
+                    responseDiv.style.display = 'block';
+                    responseDiv.innerHTML = `Error: ${error.message}`;
+                    
+                    this.logResult({
+                        endpoint: endpoint.name,
+                        url: endpoint.url,
+                        method: endpoint.method,
+                        status: 0,
+                        expectedStatus: endpoint.expectedStatus,
+                        success: false,
+                        error: error.message
+                    });
+                }
+                
+                this.updateStats();
+            }
+
+            async testFileUpload(file) {
+                const resultsDiv = document.getElementById('uploadResults');
+                resultsDiv.innerHTML = `<p>Testing file upload: ${file.name} (${file.size} bytes)</p>`;
+                
+                try {
+                    const formData = new FormData();
+                    formData.append('file', file);
+                    
+                    const startTime = Date.now();
+                    const response = await fetch(`${this.baseURL}/api/ocr/upload`, {
+                        method: 'POST',
+                        body: formData
+                    });
+                    
+                    const responseTime = Date.now() - startTime;
+                    const responseData = await response.json();
+                    
+                    const success = response.ok;
+                    
+                    resultsDiv.innerHTML = `
+                        <div class="${success ? 'success' : 'error'}">
+                            <h4>File Upload Test Results</h4>
+                            <p><strong>File:</strong> ${file.name}</p>
+                            <p><strong>Size:</strong> ${file.size} bytes</p>
+                            <p><strong>Status:</strong> ${response.status} ${response.statusText}</p>
+                            <p><strong>Response Time:</strong> ${responseTime}ms</p>
+                            <div class="response-data">
+                                ${JSON.stringify(responseData, null, 2)}
+                            </div>
+                        </div>
+                    `;
+                    
+                    this.logResult({
+                        endpoint: 'File Upload',
+                        url: '/api/ocr/upload',
+                        method: 'POST',
+                        status: response.status,
+                        success: success,
+                        responseTime: responseTime,
+                        fileSize: file.size,
+                        fileName: file.name,
+                        responseData: responseData
+                    });
+                    
+                } catch (error) {
+                    resultsDiv.innerHTML = `
+                        <div class="error">
+                            <h4>File Upload Test Failed</h4>
+                            <p>Error: ${error.message}</p>
+                        </div>
+                    `;
+                    
+                    this.logResult({
+                        endpoint: 'File Upload',
+                        url: '/api/ocr/upload',
+                        method: 'POST',
+                        status: 0,
+                        success: false,
+                        error: error.message,
+                        fileName: file.name
+                    });
+                }
+                
+                this.updateStats();
+            }
+
+            async runAllTests() {
+                if (this.isRunning) return;
+                
+                this.isRunning = true;
+                document.getElementById('runAllBtn').disabled = true;
+                document.getElementById('runAllBtn').textContent = 'Running...';
+                
+                this.clearResults();
+                
+                for (let i = 0; i < this.endpoints.length; i++) {
+                    await this.testSingleEndpoint(i);
+                    await this.delay(100); // Small delay between tests
+                }
+                
+                this.isRunning = false;
+                document.getElementById('runAllBtn').disabled = false;
+                document.getElementById('runAllBtn').textContent = 'Run All Tests';
+            }
+
+            async runHealthTests() {
+                const healthEndpoints = this.endpoints.filter(e => e.category === 'Health');
+                for (let i = 0; i < this.endpoints.length; i++) {
+                    if (this.endpoints[i].category === 'Health') {
+                        await this.testSingleEndpoint(i);
+                        await this.delay(100);
+                    }
+                }
+            }
+
+            async runDashboardTests() {
+                const dashboardEndpoints = this.endpoints.filter(e => e.category === 'Dashboard');
+                for (let i = 0; i < this.endpoints.length; i++) {
+                    if (this.endpoints[i].category === 'Dashboard') {
+                        await this.testSingleEndpoint(i);
+                        await this.delay(100);
+                    }
+                }
+            }
+
+            async runDocumentTests() {
+                const documentEndpoints = this.endpoints.filter(e => e.category === 'Documents');
+                for (let i = 0; i < this.endpoints.length; i++) {
+                    if (this.endpoints[i].category === 'Documents') {
+                        await this.testSingleEndpoint(i);
+                        await this.delay(100);
+                    }
+                }
+            }
+
+            async runOCRTests() {
+                const ocrEndpoints = this.endpoints.filter(e => e.category === 'OCR');
+                for (let i = 0; i < this.endpoints.length; i++) {
+                    if (this.endpoints[i].category === 'OCR') {
+                        await this.testSingleEndpoint(i);
+                        await this.delay(100);
+                    }
+                }
+            }
+
+            async runScrapingTests() {
+                const scrapingEndpoints = this.endpoints.filter(e => e.category === 'Scraping');
+                for (let i = 0; i < this.endpoints.length; i++) {
+                    if (this.endpoints[i].category === 'Scraping') {
+                        await this.testSingleEndpoint(i);
+                        await this.delay(100);
+                    }
+                }
+            }
+
+            logResult(result) {
+                this.results.push({
+                    ...result,
+                    timestamp: new Date().toISOString()
+                });
+                
+                const resultsDiv = document.getElementById('testResults');
+                const resultEntry = document.createElement('div');
+                resultEntry.className = `test-result ${result.success ? 'success' : 'error'}`;
+                resultEntry.innerHTML = `
+                    <strong>${result.endpoint}</strong> - 
+                    ${result.success ? '✅ PASS' : '❌ FAIL'} 
+                    (${result.status || 'ERROR'}) - 
+                    ${result.responseTime ? result.responseTime + 'ms' : 'N/A'}
+                    <br><small>${new Date().toLocaleTimeString()}</small>
+                `;
+                
+                resultsDiv.appendChild(resultEntry);
+                resultsDiv.scrollTop = resultsDiv.scrollHeight;
+            }
+
+            updateStats() {
+                const total = this.results.length;
+                const passed = this.results.filter(r => r.success).length;
+                const failed = total - passed;
+                const successRate = total > 0 ? Math.round((passed / total) * 100) : 0;
+                
+                this.testStats = { total, passed, failed, successRate };
+                
+                document.getElementById('totalTests').textContent = total;
+                document.getElementById('passedTests').textContent = passed;
+                document.getElementById('failedTests').textContent = failed;
+                document.getElementById('successRate').textContent = successRate + '%';
+                
+                const progressBar = document.getElementById('progressBar');
+                progressBar.style.width = successRate + '%';
+                progressBar.style.background = successRate >= 80 ? '#10b981' : successRate >= 60 ? '#f59e0b' : '#ef4444';
+            }
+
+            clearResults() {
+                this.results = [];
+                document.getElementById('testResults').innerHTML = '';
+                this.updateStats();
+                
+                // Reset all endpoint cards
+                this.endpoints.forEach((endpoint, index) => {
+                    const card = document.getElementById(`endpoint-${index}`);
+                    card.className = 'endpoint-card';
+                    card.querySelector('.status-indicator').className = 'status-indicator';
+                    card.querySelector('.test-btn').disabled = false;
+                    document.getElementById(`response-${index}`).style.display = 'none';
+                });
+            }
+
+            exportResults() {
+                const data = {
+                    timestamp: new Date().toISOString(),
+                    stats: this.testStats,
+                    results: this.results
+                };
+                
+                const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `api-test-results-${new Date().toISOString().slice(0, 19).replace(/:/g, '-')}.json`;
+                a.click();
+                URL.revokeObjectURL(url);
+            }
+
+            delay(ms) {
+                return new Promise(resolve => setTimeout(resolve, ms));
+            }
+        }
+
+        // Global tester instance
+        const tester = new RealAPITester();
+
+        // Global functions for button clicks
+        function runAllTests() {
+            tester.runAllTests();
+        }
+
+        function runHealthTests() {
+            tester.runHealthTests();
+        }
+
+        function runDashboardTests() {
+            tester.runDashboardTests();
+        }
+
+        function runDocumentTests() {
+            tester.runDocumentTests();
+        }
+
+        function runOCRTests() {
+            tester.runOCRTests();
+        }
+
+        function runScrapingTests() {
+            tester.runScrapingTests();
+        }
+
+        function clearResults() {
+            tester.clearResults();
+        }
+
+        function exportResults() {
+            tester.exportResults();
+        }
+
+        console.log('🔍 Real API Tester initialized');
+    </script>
+</body>
+</html> 

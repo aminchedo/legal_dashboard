@@ -1,0 +1,54 @@
+{
+  "file_exists": true,
+  "analytics_sections": {
+    "overview": true,
+    "trends": true,
+    "predictions": true,
+    "quality": true,
+    "health": true,
+    "clustering": true
+  },
+  "analytics_css": {
+    "analytics_dashboard": true,
+    "analytics_grid": true,
+    "analytics_card": true,
+    "overview_stats": true,
+    "trends_chart": true,
+    "predictions_chart": true,
+    "quality_chart": true,
+    "health_chart": true,
+    "clustering_chart": true
+  },
+  "analytics_javascript": {
+    "refresh_overview": true,
+    "refresh_trends": true,
+    "refresh_predictions": true,
+    "refresh_quality": true,
+    "refresh_health": true,
+    "refresh_clustering": true,
+    "analytics_endpoints": true,
+    "chart_functions": true
+  },
+  "analytics_elements": {
+    "overview_content": true,
+    "trends_content": true,
+    "predictions_content": true,
+    "quality_content": true,
+    "health_content": true,
+    "clustering_content": true,
+    "refresh_button": true,
+    "chart_canvases": true
+  },
+  "rtl_support": {
+    "rtl_dir": true,
+    "persian_lang": true,
+    "persian_text": true,
+    "vazirmatn_font": true
+  },
+  "responsive_design": {
+    "media_queries": true,
+    "grid_layout": true,
+    "flexbox": true,
+    "responsive_charts": true
+  }
+}

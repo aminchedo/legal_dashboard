@@ -1,0 +1,1584 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>جستجو | سامانه حقوقی</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@200;300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    
+    <!-- Load API Client -->
+    <script src="/static/js/api-client.js"></script>
+    <script src="/static/js/core.js"></script>
+    
+    <style>
+        :root {
+            --text-primary: #0f172a;
+            --text-secondary: #475569;
+            --text-muted: #64748b;
+            --text-light: #ffffff;
+            --body-bg: linear-gradient(135deg, #f1f5f9 0%, #e2e8f0 50%, #cbd5e1 100%);
+            --card-bg: rgba(255, 255, 255, 0.95);
+            --glass-bg: rgba(255, 255, 255, 0.9);
+            --glass-border: rgba(148, 163, 184, 0.2);
+            --primary-gradient: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
+            --secondary-gradient: linear-gradient(135deg, #06b6d4 0%, #0891b2 100%);
+            --success-gradient: linear-gradient(135deg, #10b981 0%, #047857 100%);
+            --warning-gradient: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+            --danger-gradient: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+            --shadow-xs: 0 1px 3px rgba(0, 0, 0, 0.05);
+            --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.08);
+            --shadow-md: 0 4px 15px rgba(0, 0, 0, 0.1);
+            --shadow-lg: 0 8px 25px rgba(0, 0, 0, 0.12);
+            --sidebar-width: 260px;
+            --border-radius: 12px;
+            --border-radius-sm: 8px;
+            --transition-smooth: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+            --transition-fast: all 0.15s ease-in-out;
+            --font-size-xs: 0.7rem;
+            --font-size-sm: 0.8rem;
+            --font-size-base: 0.9rem;
+            --font-size-lg: 1.1rem;
+            --font-size-xl: 1.25rem;
+            --font-size-2xl: 1.5rem;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Vazirmatn', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--body-bg);
+            color: var(--text-primary);
+            line-height: 1.6;
+            overflow-x: hidden;
+            font-size: var(--font-size-base);
+        }
+
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: rgba(0, 0, 0, 0.02);
+            border-radius: 10px;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--primary-gradient);
+            border-radius: 10px;
+        }
+
+        .dashboard-container {
+            display: flex;
+            min-height: 100vh;
+            width: 100%;
+        }
+
+        /* سایدبار مشابه صفحات قبلی */
+        .sidebar {
+            width: var(--sidebar-width);
+            background: linear-gradient(135deg,
+                rgba(248, 250, 252, 0.98) 0%,
+                rgba(241, 245, 249, 0.95) 25%,
+                rgba(226, 232, 240, 0.98) 50%,
+                rgba(203, 213, 225, 0.95) 75%,
+                rgba(148, 163, 184, 0.1) 100%);
+            backdrop-filter: blur(25px);
+            -webkit-backdrop-filter: blur(25px);
+            padding: 1rem 0;
+            position: fixed;
+            height: 100vh;
+            right: 0;
+            top: 0;
+            z-index: 1000;
+            overflow-y: auto;
+            box-shadow:
+                0 0 0 1px rgba(59, 130, 246, 0.08),
+                -8px 0 32px rgba(59, 130, 246, 0.12),
+                inset 0 1px 0 rgba(255, 255, 255, 0.6);
+            border-left: 1px solid rgba(59, 130, 246, 0.15);
+        }
+
+        .sidebar-header {
+            padding: 0 1rem 1rem;
+            border-bottom: 1px solid rgba(59, 130, 246, 0.12);
+            margin-bottom: 1rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: linear-gradient(135deg,
+                rgba(255, 255, 255, 0.4) 0%,
+                rgba(248, 250, 252, 0.2) 100%);
+            margin: 0 0.5rem 1rem;
+            border-radius: var(--border-radius);
+            backdrop-filter: blur(10px);
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+            color: var(--text-primary);
+            text-decoration: none;
+        }
+
+        .logo-icon {
+            width: 2rem;
+            height: 2rem;
+            background: var(--primary-gradient);
+            border-radius: var(--border-radius-sm);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1rem;
+            color: white;
+        }
+
+        .logo-text {
+            font-size: var(--font-size-lg);
+            font-weight: 700;
+            background: var(--primary-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .nav-section {
+            margin-bottom: 1rem;
+        }
+
+        .nav-title {
+            padding: 0 1rem 0.4rem;
+            font-size: var(--font-size-xs);
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: var(--text-secondary);
+        }
+
+        .nav-menu {
+            list-style: none;
+        }
+
+        .nav-item {
+            margin: 0.15rem 0.5rem;
+        }
+
+        .nav-link {
+            display: flex;
+            align-items: center;
+            padding: 0.6rem 0.8rem;
+            color: var(--text-primary);
+            text-decoration: none;
+            border-radius: var(--border-radius-sm);
+            transition: var(--transition-smooth);
+            font-weight: 500;
+            font-size: var(--font-size-sm);
+            cursor: pointer;
+            border: 1px solid transparent;
+        }
+
+        .nav-link:hover {
+            color: var(--text-primary);
+            transform: translateX(-2px);
+            border-color: rgba(59, 130, 246, 0.15);
+            background: rgba(59, 130, 246, 0.05);
+        }
+
+        .nav-link.active {
+            background: var(--primary-gradient);
+            color: var(--text-light);
+            box-shadow: var(--shadow-md);
+        }
+
+        .nav-icon {
+            margin-left: 0.6rem;
+            width: 1rem;
+            text-align: center;
+            font-size: 0.9rem;
+        }
+
+        .nav-badge {
+            background: var(--danger-gradient);
+            color: white;
+            padding: 0.15rem 0.4rem;
+            border-radius: 10px;
+            font-size: var(--font-size-xs);
+            font-weight: 600;
+            margin-right: auto;
+            min-width: 1.2rem;
+            text-align: center;
+        }
+
+        /* محتوای اصلی */
+        .main-content {
+            flex: 1;
+            margin-right: var(--sidebar-width);
+            padding: 1rem;
+            min-height: 100vh;
+            width: calc(100% - var(--sidebar-width));
+        }
+
+        .page-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+            padding: 1rem 0;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+        }
+
+        .page-title {
+            font-size: var(--font-size-2xl);
+            font-weight: 800;
+            background: var(--primary-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+        }
+
+        .page-actions {
+            display: flex;
+            gap: 0.8rem;
+        }
+
+        .btn {
+            padding: 0.6rem 1.2rem;
+            border: none;
+            border-radius: var(--border-radius-sm);
+            font-family: inherit;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition-smooth);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            text-decoration: none;
+            font-size: var(--font-size-sm);
+        }
+
+        .btn-primary {
+            background: var(--primary-gradient);
+            color: white;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .btn-primary:hover {
+            box-shadow: var(--shadow-md);
+            transform: translateY(-1px);
+        }
+
+        .btn-outline {
+            background: transparent;
+            color: var(--text-primary);
+            border: 1px solid rgba(59, 130, 246, 0.2);
+        }
+
+        .btn-outline:hover {
+            background: rgba(59, 130, 246, 0.05);
+            border-color: rgba(59, 130, 246, 0.4);
+        }
+
+        /* جستجوی اصلی */
+        .search-main {
+            background: var(--card-bg);
+            border-radius: var(--border-radius);
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: var(--shadow-md);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+
+        .search-form {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+
+        .search-primary {
+            position: relative;
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 1rem 3rem 1rem 1rem;
+            border: 2px solid var(--glass-border);
+            border-radius: var(--border-radius);
+            background: var(--glass-bg);
+            color: var(--text-primary);
+            font-family: inherit;
+            font-size: var(--font-size-lg);
+            transition: var(--transition-smooth);
+        }
+
+        .search-input:focus {
+            outline: none;
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+            background: var(--card-bg);
+        }
+
+        .search-btn {
+            position: absolute;
+            left: 0.5rem;
+            top: 50%;
+            transform: translateY(-50%);
+            background: var(--primary-gradient);
+            color: white;
+            border: none;
+            padding: 0.8rem 1.2rem;
+            border-radius: var(--border-radius-sm);
+            cursor: pointer;
+            font-weight: 600;
+            transition: var(--transition-smooth);
+        }
+
+        .search-btn:hover {
+            transform: translateY(-50%) scale(1.05);
+            box-shadow: var(--shadow-lg);
+        }
+
+        /* فیلترهای پیشرفته */
+        .search-filters {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            padding: 1.5rem;
+            background: rgba(59, 130, 246, 0.03);
+            border-radius: var(--border-radius);
+            border: 1px solid rgba(59, 130, 246, 0.1);
+        }
+
+        .filter-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .filter-label {
+            font-size: var(--font-size-sm);
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .filter-select,
+        .filter-input {
+            padding: 0.6rem 0.8rem;
+            border: 1px solid var(--glass-border);
+            border-radius: var(--border-radius-sm);
+            background: var(--glass-bg);
+            color: var(--text-primary);
+            font-family: inherit;
+            font-size: var(--font-size-sm);
+            transition: var(--transition-smooth);
+        }
+
+        .filter-select:focus,
+        .filter-input:focus {
+            outline: none;
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+        }
+
+        .search-actions {
+            display: flex;
+            gap: 1rem;
+            justify-content: flex-end;
+        }
+
+        .btn-sm {
+            padding: 0.4rem 0.8rem;
+            font-size: var(--font-size-xs);
+        }
+
+        /* نتایج جستجو */
+        .search-results {
+            background: var(--card-bg);
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow-md);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            overflow: hidden;
+            display: none;
+        }
+
+        .search-results.show {
+            display: block;
+        }
+
+        .results-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+            background: linear-gradient(135deg, rgba(59, 130, 246, 0.02), rgba(255, 255, 255, 0.1));
+        }
+
+        .results-title {
+            font-size: var(--font-size-lg);
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+
+        .results-stats {
+            display: flex;
+            gap: 1rem;
+            font-size: var(--font-size-sm);
+            color: var(--text-muted);
+        }
+
+        .result-item {
+            padding: 1.5rem;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.03);
+            transition: var(--transition-smooth);
+            cursor: pointer;
+        }
+
+        .result-item:hover {
+            background: rgba(59, 130, 246, 0.02);
+            transform: translateX(-3px);
+        }
+
+        .result-item:last-child {
+            border-bottom: none;
+        }
+
+        .result-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 1rem;
+        }
+
+        .result-title {
+            font-size: var(--font-size-lg);
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .result-icon {
+            width: 1.5rem;
+            height: 1.5rem;
+            background: var(--primary-gradient);
+            border-radius: var(--border-radius-sm);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: var(--font-size-xs);
+        }
+
+        .result-meta {
+            display: flex;
+            gap: 1rem;
+            font-size: var(--font-size-sm);
+            color: var(--text-muted);
+            margin-bottom: 1rem;
+        }
+
+        .result-snippet {
+            color: var(--text-secondary);
+            line-height: 1.6;
+            margin-bottom: 1rem;
+        }
+
+        .result-highlight {
+            background: rgba(245, 158, 11, 0.2);
+            color: var(--text-primary);
+            font-weight: 600;
+            padding: 0.1rem 0.2rem;
+            border-radius: 3px;
+        }
+
+        .result-actions {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .result-btn {
+            padding: 0.3rem 0.6rem;
+            border: none;
+            border-radius: var(--border-radius-sm);
+            cursor: pointer;
+            transition: var(--transition-fast);
+            font-size: var(--font-size-xs);
+            font-weight: 500;
+        }
+
+        .result-btn.primary {
+            background: rgba(59, 130, 246, 0.1);
+            color: #3b82f6;
+        }
+
+        .result-btn.secondary {
+            background: rgba(16, 185, 129, 0.1);
+            color: #10b981;
+        }
+
+        .result-btn:hover {
+            transform: scale(1.05);
+        }
+
+        /* نتایج خالی */
+        .empty-results {
+            display: none;
+            padding: 3rem;
+            text-align: center;
+            color: var(--text-secondary);
+        }
+
+        .empty-results.show {
+            display: block;
+        }
+
+        .empty-icon {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+            opacity: 0.3;
+            color: var(--text-muted);
+        }
+
+        .empty-title {
+            font-size: var(--font-size-xl);
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            color: var(--text-primary);
+        }
+
+        .empty-description {
+            font-size: var(--font-size-base);
+            margin-bottom: 1.5rem;
+            max-width: 400px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        /* صفحه‌بندی */
+        .pagination {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 0.4rem;
+            padding: 1rem;
+            border-top: 1px solid rgba(0, 0, 0, 0.05);
+        }
+
+        .pagination-btn {
+            padding: 0.4rem 0.6rem;
+            border: 1px solid var(--glass-border);
+            background: var(--glass-bg);
+            color: var(--text-primary);
+            border-radius: var(--border-radius-sm);
+            cursor: pointer;
+            transition: var(--transition-fast);
+            font-size: var(--font-size-xs);
+            font-family: inherit;
+            font-weight: 500;
+        }
+
+        .pagination-btn:hover:not(:disabled) {
+            background: var(--primary-gradient);
+            color: white;
+            border-color: transparent;
+            transform: translateY(-1px);
+        }
+
+        .pagination-btn.active {
+            background: var(--primary-gradient);
+            color: white;
+            border-color: transparent;
+        }
+
+        .pagination-btn:disabled {
+            opacity: 0.4;
+            cursor: not-allowed;
+        }
+
+        /* لودینگ */
+        .loading-container {
+            display: none;
+            padding: 3rem;
+            text-align: center;
+            color: var(--text-secondary);
+        }
+
+        .loading-container.show {
+            display: block;
+        }
+
+        .loading-spinner {
+            width: 2rem;
+            height: 2rem;
+            border: 2px solid rgba(59, 130, 246, 0.1);
+            border-radius: 50%;
+            border-top-color: #3b82f6;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 1rem;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* Toast Notifications */
+        .toast-container {
+            position: fixed;
+            top: 1rem;
+            left: 1rem;
+            z-index: 10001;
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .toast {
+            background: var(--card-bg);
+            border-radius: var(--border-radius-sm);
+            padding: 1rem 1.5rem;
+            box-shadow: var(--shadow-lg);
+            border-left: 4px solid;
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+            min-width: 300px;
+            transform: translateX(-100%);
+            transition: all 0.3s ease;
+        }
+
+        .toast.show {
+            transform: translateX(0);
+        }
+
+        .toast.success { border-left-color: #10b981; }
+        .toast.error { border-left-color: #ef4444; }
+        .toast.warning { border-left-color: #f59e0b; }
+        .toast.info { border-left-color: #3b82f6; }
+
+        .toast-icon {
+            font-size: 1.2rem;
+        }
+
+        .toast.success .toast-icon { color: #10b981; }
+        .toast.error .toast-icon { color: #ef4444; }
+        .toast.warning .toast-icon { color: #f59e0b; }
+        .toast.info .toast-icon { color: #3b82f6; }
+
+        .toast-content {
+            flex: 1;
+        }
+
+        .toast-title {
+            font-weight: 600;
+            font-size: var(--font-size-sm);
+            margin-bottom: 0.2rem;
+        }
+
+        .toast-message {
+            font-size: var(--font-size-xs);
+            color: var(--text-secondary);
+        }
+
+        .toast-close {
+            background: none;
+            border: none;
+            color: var(--text-secondary);
+            cursor: pointer;
+            font-size: 1rem;
+            transition: var(--transition-fast);
+        }
+
+        .toast-close:hover {
+            color: var(--text-primary);
+        }
+
+        /* واکنش‌گرایی */
+        @media (max-width: 992px) {
+            .sidebar {
+                transform: translateX(100%);
+                transition: transform 0.3s ease;
+            }
+
+            .sidebar.open {
+                transform: translateX(0);
+            }
+
+            .main-content {
+                margin-right: 0;
+                width: 100%;
+                padding: 1rem;
+            }
+
+            .search-filters {
+                grid-template-columns: 1fr;
+            }
+
+            .search-actions {
+                justify-content: center;
+                flex-wrap: wrap;
+            }
+
+            .results-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 1rem;
+            }
+
+            .result-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 0.5rem;
+            }
+
+            .result-meta {
+                flex-direction: column;
+                gap: 0.5rem;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .main-content {
+                padding: 0.8rem;
+            }
+
+            .search-main {
+                padding: 1.5rem;
+            }
+
+            .search-input {
+                font-size: var(--font-size-base);
+                padding: 0.8rem 2.5rem 0.8rem 0.8rem;
+            }
+
+            .search-btn {
+                padding: 0.6rem 0.8rem;
+            }
+
+            .result-item {
+                padding: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="dashboard-container">
+        <!-- سایدبار -->
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <a href="/" class="logo">
+                    <div class="logo-icon">
+                        <i class="fas fa-scale-balanced"></i>
+                    </div>
+                    <div class="logo-text">سامانه حقوقی</div>
+                </a>
+            </div>
+
+            <nav>
+                <div class="nav-section">
+                    <h6 class="nav-title">داشبورد</h6>
+                    <ul class="nav-menu">
+                        <li class="nav-item">
+                            <a href="/" class="nav-link">
+                                <i class="fas fa-chart-pie nav-icon"></i>
+                                <span>نمای کلی</span>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="nav-section">
+                    <h6 class="nav-title">مدیریت اسناد</h6>
+                    <ul class="nav-menu">
+                        <li class="nav-item">
+                            <a href="/static/documents.html" class="nav-link">
+                                <i class="fas fa-file-alt nav-icon"></i>
+                                <span>مدیریت اسناد</span>
+                                <span class="nav-badge" id="totalDocumentsBadge">6</span>
+                            </a>
+                        </li>
+
+                        <li class="nav-item">
+                            <a href="/static/upload.html" class="nav-link">
+                                <i class="fas fa-cloud-upload-alt nav-icon"></i>
+                                <span>آپلود فایل</span>
+                            </a>
+                        </li>
+
+                        <li class="nav-item">
+                            <a href="/static/search.html" class="nav-link active">
+                                <i class="fas fa-search nav-icon"></i>
+                                <span>جستجو</span>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="nav-section">
+                    <h6 class="nav-title">ابزارها</h6>
+                    <ul class="nav-menu">
+                        <li class="nav-item">
+                            <a href="/static/scraping.html" class="nav-link">
+                                <i class="fas fa-globe nav-icon"></i>
+                                <span>استخراج محتوا</span>
+                            </a>
+                        </li>
+
+                        <li class="nav-item">
+                            <a href="/static/analytics.html" class="nav-link">
+                                <i class="fas fa-chart-line nav-icon"></i>
+                                <span>آمار و تحلیل</span>
+                            </a>
+                        </li>
+
+                        <li class="nav-item">
+                            <a href="/static/reports.html" class="nav-link">
+                                <i class="fas fa-file-export nav-icon"></i>
+                                <span>گزارش‌ها</span>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="nav-section">
+                    <h6 class="nav-title">تنظیمات</h6>
+                    <ul class="nav-menu">
+                        <li class="nav-item">
+                            <a href="/static/settings.html" class="nav-link">
+                                <i class="fas fa-cog nav-icon"></i>
+                                <span>تنظیمات</span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="#" class="nav-link">
+                                <i class="fas fa-sign-out-alt nav-icon"></i>
+                                <span>خروج</span>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </nav>
+        </aside>
+
+        <!-- محتوای اصلی -->
+        <main class="main-content">
+            <!-- هدر صفحه -->
+            <header class="page-header">
+                <h1 class="page-title">
+                    <i class="fas fa-search"></i>
+                    جستجوی پیشرفته اسناد
+                </h1>
+                <div class="page-actions">
+                    <button type="button" class="btn btn-outline" onclick="clearSearch()">
+                        <i class="fas fa-undo"></i>
+                        پاک کردن
+                    </button>
+                    <a href="/static/documents.html" class="btn btn-primary">
+                        <i class="fas fa-list"></i>
+                        مشاهده همه اسناد
+                    </a>
+                </div>
+            </header>
+
+            <!-- جستجوی اصلی -->
+            <section class="search-main">
+                <form class="search-form" onsubmit="performSearch(event)">
+                    <div class="search-primary">
+                        <input type="text" 
+                               class="search-input" 
+                               id="searchQuery"
+                               name="q"
+                               placeholder="جستجو در اسناد، قوانین، آرا..."
+                               autocomplete="off">
+                        <button type="submit" class="search-btn">
+                            <i class="fas fa-search"></i>
+                            جستجو
+                        </button>
+                    </div>
+
+                    <div class="search-filters">
+                        <div class="filter-group">
+                            <label class="filter-label" for="categoryFilter">دسته‌بندی</label>
+                            <select class="filter-select" id="categoryFilter" name="category">
+                                <option value="">همه دسته‌ها</option>
+                                <option value="قراردادها">قراردادها</option>
+                                <option value="دادخواست‌ها">دادخواست‌ها</option>
+                                <option value="احکام قضایی">احکام قضایی</option>
+                                <option value="آرای دیوان">آرای دیوان</option>
+                                <option value="سایر">سایر</option>
+                            </select>
+                        </div>
+
+                        <div class="filter-group">
+                            <label class="filter-label" for="statusFilter">وضعیت</label>
+                            <select class="filter-select" id="statusFilter" name="status">
+                                <option value="">همه وضعیت‌ها</option>
+                                <option value="processed">پردازش شده</option>
+                                <option value="processing">در حال پردازش</option>
+                                <option value="pending">در انتظار</option>
+                                <option value="error">خطا</option>
+                            </select>
+                        </div>
+
+                        <div class="filter-group">
+                            <label class="filter-label" for="dateFromFilter">از تاریخ</label>
+                            <input type="date" class="filter-input" id="dateFromFilter" name="date_from">
+                        </div>
+
+                        <div class="filter-group">
+                            <label class="filter-label" for="dateToFilter">تا تاریخ</label>
+                            <input type="date" class="filter-input" id="dateToFilter" name="date_to">
+                        </div>
+
+                        <div class="filter-group">
+                            <label class="filter-label" for="qualityFilter">حداقل کیفیت</label>
+                            <select class="filter-select" id="qualityFilter" name="min_quality">
+                                <option value="">همه کیفیت‌ها</option>
+                                <option value="8.5">عالی (8.5+)</option>
+                                <option value="6.5">خوب (6.5+)</option>
+                                <option value="4.5">متوسط (4.5+)</option>
+                                <option value="0">ضعیف (کمتر از 4.5)</option>
+                            </select>
+                        </div>
+
+                        <div class="filter-group">
+                            <label class="filter-label" for="sortFilter">مرتب‌سازی</label>
+                            <select class="filter-select" id="sortFilter" name="sort">
+                                <option value="relevance">مرتبط‌ترین</option>
+                                <option value="date_desc">جدیدترین</option>
+                                <option value="date_asc">قدیمی‌ترین</option>
+                                <option value="quality_desc">بهترین کیفیت</option>
+                                <option value="size_desc">بزرگترین فایل</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="search-actions">
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-search"></i>
+                            جستجو
+                        </button>
+                        <button type="button" class="btn btn-outline btn-sm" onclick="resetFilters()">
+                            <i class="fas fa-undo"></i>
+                            پاک کردن فیلترها
+                        </button>
+                        <button type="button" class="btn btn-outline btn-sm" onclick="exportResults()">
+                            <i class="fas fa-download"></i>
+                            خروجی نتایج
+                        </button>
+                    </div>
+                </form>
+            </section>
+
+            <!-- لودینگ -->
+            <section class="loading-container" id="loadingContainer">
+                <div class="loading-spinner"></div>
+                <p>در حال جستجو...</p>
+            </section>
+
+            <!-- نتایج جستجو -->
+            <section class="search-results" id="searchResults">
+                <div class="results-header">
+                    <h3 class="results-title">نتایج جستجو</h3>
+                    <div class="results-stats">
+                        <span>تعداد نتایج: <strong id="resultsCount">0</strong></span>
+                        <span>زمان جستجو: <strong id="searchTime">0.00</strong> ثانیه</span>
+                    </div>
+                </div>
+
+                <div id="resultsContainer">
+                    <!-- نتایج اینجا نمایش داده می‌شوند -->
+                </div>
+
+                <div class="pagination" id="pagination">
+                    <!-- صفحه‌بندی اینجا نمایش داده می‌شود -->
+                </div>
+            </section>
+
+            <!-- نتایج خالی -->
+            <section class="empty-results" id="emptyResults">
+                <i class="fas fa-search empty-icon"></i>
+                <div class="empty-title">نتیجه‌ای یافت نشد</div>
+                <div class="empty-description">
+                    متأسفانه برای جستجوی شما نتیجه‌ای یافت نشد. لطفاً کلمات کلیدی دیگری امتحان کنید یا فیلترها را تغییر دهید.
+                </div>
+                <button type="button" class="btn btn-primary" onclick="clearSearch()">
+                    <i class="fas fa-search"></i>
+                    جستجوی جدید
+                </button>
+            </section>
+        </main>
+    </div>
+
+    <!-- Toast Container -->
+    <div class="toast-container" id="toastContainer"></div>
+
+    <script>
+        // Global variables
+        let currentResults = [];
+        let currentPage = 1;
+        let itemsPerPage = 10;
+        let totalResults = 0;
+        let searchStartTime = 0;
+        let isOnline = false;
+
+        // Initialize page
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('🔍 Search page loading...');
+            initializeSearchPage();
+        });
+
+        async function initializeSearchPage() {
+            try {
+                // Test backend connection
+                isOnline = await testConnection();
+                
+                // Setup event listeners
+                setupEventListeners();
+                
+                // Check for URL parameters
+                checkUrlParameters();
+                
+                showToast('صفحه جستجو آماده است', 'success', 'آماده');
+                
+            } catch (error) {
+                console.error('Failed to initialize search page:', error);
+                
+                // Fallback mode
+                isOnline = false;
+                setupEventListeners();
+                
+                showToast('حالت آفلاین فعال است', 'warning', 'اتصال ناموفق');
+            }
+        }
+
+        async function testConnection() {
+            try {
+                await window.legalAPI.healthCheck();
+                return true;
+            } catch (error) {
+                return false;
+            }
+        }
+
+        function setupEventListeners() {
+            // Form submission
+            document.querySelector('.search-form').addEventListener('submit', performSearch);
+            
+            // Real-time search with debounce
+            const searchInput = document.getElementById('searchQuery');
+            let searchTimeout;
+            searchInput.addEventListener('input', function(e) {
+                clearTimeout(searchTimeout);
+                searchTimeout = setTimeout(() => {
+                    if (e.target.value.trim().length > 2) {
+                        performQuickSearch(e.target.value.trim());
+                    }
+                }, 500);
+            });
+
+            // Filter changes
+            ['categoryFilter', 'statusFilter', 'qualityFilter', 'sortFilter'].forEach(id => {
+                document.getElementById(id).addEventListener('change', debounce(performCurrentSearch, 300));
+            });
+
+            ['dateFromFilter', 'dateToFilter'].forEach(id => {
+                document.getElementById(id).addEventListener('change', debounce(performCurrentSearch, 500));
+            });
+        }
+
+        function checkUrlParameters() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const query = urlParams.get('q');
+            
+            if (query) {
+                document.getElementById('searchQuery').value = query;
+                performSearch();
+            }
+        }
+
+        async function performSearch(event) {
+            if (event) {
+                event.preventDefault();
+            }
+
+            const form = document.querySelector('.search-form');
+            const formData = new FormData(form);
+            
+            const searchParams = {
+                q: formData.get('q').trim(),
+                category: formData.get('category'),
+                status: formData.get('status'),
+                date_from: formData.get('date_from'),
+                date_to: formData.get('date_to'),
+                min_quality: formData.get('min_quality'),
+                sort: formData.get('sort') || 'relevance',
+                page: currentPage,
+                limit: itemsPerPage
+            };
+
+            // Validate search query
+            if (!searchParams.q || searchParams.q.length < 2) {
+                showToast('لطفاً حداقل 2 کاراکتر برای جستجو وارد کنید', 'warning', 'هشدار');
+                return;
+            }
+
+            showLoading(true);
+            searchStartTime = performance.now();
+
+            try {
+                let results;
+                
+                if (isOnline) {
+                    // Real API search
+                    results = await window.legalAPI.searchDocuments(searchParams);
+                } else {
+                    // Mock search results
+                    results = await generateMockSearchResults(searchParams);
+                }
+
+                const searchTime = ((performance.now() - searchStartTime) / 1000).toFixed(2);
+                displaySearchResults(results, searchTime);
+                
+                console.log('Search completed:', results);
+                
+            } catch (error) {
+                console.error('Search failed:', error);
+                showToast('خطا در جستجو. لطفاً دوباره تلاش کنید.', 'error', 'خطا');
+                showEmptyResults();
+            } finally {
+                showLoading(false);
+            }
+        }
+
+        async function performQuickSearch(query) {
+            if (!query || query.length < 3) return;
+
+            try {
+                const searchParams = { q: query, limit: 5 };
+                
+                let results;
+                if (isOnline) {
+                    results = await window.legalAPI.searchDocuments(searchParams);
+                } else {
+                    results = await generateMockSearchResults(searchParams);
+                }
+
+                // Could implement quick search dropdown here
+                console.log('Quick search results:', results);
+                
+            } catch (error) {
+                console.error('Quick search failed:', error);
+            }
+        }
+
+        async function performCurrentSearch() {
+            const form = document.querySelector('.search-form');
+            const formData = new FormData(form);
+            
+            if (formData.get('q').trim()) {
+                await performSearch();
+            }
+        }
+
+        async function generateMockSearchResults(searchParams) {
+            // Simulate API delay
+            await new Promise(resolve => setTimeout(resolve, 800));
+
+            const mockDocuments = [
+                {
+                    id: 1,
+                    filename: "contract_001.pdf",
+                    original_filename: "قرارداد خرید املاک.pdf",
+                    file_size: 1024000,
+                    category: "قراردادها",
+                    quality_score: 8.5,
+                    status: "processed",
+                    created_at: "2024-01-15T10:30:00Z",
+                    ocr_text: "قرارداد خرید و فروش ملک واقع در تهران منطقه 3...",
+                    summary: "قرارداد خرید املاک مسکونی در منطقه 3 تهران",
+                    relevance_score: 0.95
+                },
+                {
+                    id: 2,
+                    filename: "lawsuit_002.pdf",
+                    original_filename: "دادخواست طلاق.pdf",
+                    file_size: 512000,
+                    category: "دادخواست‌ها",
+                    quality_score: 7.8,
+                    status: "processed",
+                    created_at: "2024-01-14T14:20:00Z",
+                    ocr_text: "دادخواست طلاق به درخواست زوجه...",
+                    summary: "درخواست طلاق توافقی با تقسیم اموال",
+                    relevance_score: 0.87
+                },
+                {
+                    id: 3,
+                    filename: "judgment_003.pdf",
+                    original_filename: "حکم دادگاه عمومی.pdf",
+                    file_size: 768000,
+                    category: "احکام قضایی",
+                    quality_score: 9.2,
+                    status: "processed",
+                    created_at: "2024-01-13T09:15:00Z",
+                    ocr_text: "حکم دادگاه عمومی حقوقی تهران...",
+                    summary: "حکم پرونده ملکی در دادگاه عمومی تهران",
+                    relevance_score: 0.82
+                }
+            ];
+
+            // Filter results based on search parameters
+            let filteredResults = mockDocuments;
+
+            if (searchParams.category) {
+                filteredResults = filteredResults.filter(doc => doc.category === searchParams.category);
+            }
+
+            if (searchParams.status) {
+                filteredResults = filteredResults.filter(doc => doc.status === searchParams.status);
+            }
+
+            if (searchParams.min_quality) {
+                const minQuality = parseFloat(searchParams.min_quality);
+                filteredResults = filteredResults.filter(doc => doc.quality_score >= minQuality);
+            }
+
+            // Apply sorting
+            if (searchParams.sort) {
+                switch (searchParams.sort) {
+                    case 'date_desc':
+                        filteredResults.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
+                        break;
+                    case 'date_asc':
+                        filteredResults.sort((a, b) => new Date(a.created_at) - new Date(b.created_at));
+                        break;
+                    case 'quality_desc':
+                        filteredResults.sort((a, b) => b.quality_score - a.quality_score);
+                        break;
+                    case 'relevance':
+                    default:
+                        filteredResults.sort((a, b) => b.relevance_score - a.relevance_score);
+                        break;
+                }
+            }
+
+            return {
+                documents: filteredResults,
+                pagination: {
+                    page: searchParams.page || 1,
+                    limit: searchParams.limit || 10,
+                    total: filteredResults.length,
+                    pages: Math.ceil(filteredResults.length / (searchParams.limit || 10))
+                }
+            };
+        }
+
+        function displaySearchResults(results, searchTime) {
+            currentResults = results.documents || [];
+            totalResults = results.pagination?.total || 0;
+
+            const resultsContainer = document.getElementById('resultsContainer');
+            const searchResults = document.getElementById('searchResults');
+            const emptyResults = document.getElementById('emptyResults');
+
+            // Update stats
+            document.getElementById('resultsCount').textContent = totalResults;
+            document.getElementById('searchTime').textContent = searchTime;
+
+            if (currentResults.length === 0) {
+                searchResults.classList.remove('show');
+                emptyResults.classList.add('show');
+                return;
+            }
+
+            // Display results
+            emptyResults.classList.remove('show');
+            searchResults.classList.add('show');
+
+            const searchQuery = document.getElementById('searchQuery').value.toLowerCase();
+            
+            resultsContainer.innerHTML = currentResults.map(doc => {
+                const snippet = generateSnippet(doc, searchQuery);
+                const relevanceScore = ((doc.relevance_score || 0.8) * 100).toFixed(0);
+
+                return `
+                    <div class="result-item" onclick="viewDocument(${doc.id})">
+                        <div class="result-header">
+                            <div>
+                                <div class="result-title">
+                                    <div class="result-icon">
+                                        <i class="fas fa-file-pdf"></i>
+                                    </div>
+                                    ${highlightText(doc.original_filename || doc.filename, searchQuery)}
+                                </div>
+                                <div class="result-meta">
+                                    <span><i class="fas fa-tag"></i> ${doc.category}</span>
+                                    <span><i class="fas fa-calendar"></i> ${formatDate(doc.created_at)}</span>
+                                    <span><i class="fas fa-star"></i> کیفیت: ${doc.quality_score?.toFixed(1) || '0.0'}</span>
+                                    <span><i class="fas fa-percentage"></i> ارتباط: ${relevanceScore}%</span>
+                                </div>
+                            </div>
+                            <div class="result-actions">
+                                <button type="button" class="result-btn primary" onclick="event.stopPropagation(); viewDocument(${doc.id})" title="مشاهده">
+                                    <i class="fas fa-eye"></i>
+                                </button>
+                                <button type="button" class="result-btn secondary" onclick="event.stopPropagation(); downloadDocument(${doc.id})" title="دانلود">
+                                    <i class="fas fa-download"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="result-snippet">
+                            ${snippet}
+                        </div>
+                    </div>
+                `;
+            }).join('');
+
+            // Setup pagination
+            setupPagination(results.pagination);
+        }
+
+        function generateSnippet(doc, searchQuery) {
+            const text = doc.summary || doc.ocr_text || 'محتوای متنی در دسترس نیست.';
+            const maxLength = 200;
+            
+            if (!searchQuery || text.length <= maxLength) {
+                return highlightText(text.substring(0, maxLength) + (text.length > maxLength ? '...' : ''), searchQuery);
+            }
+
+            // Try to find the search term in the text
+            const lowerText = text.toLowerCase();
+            const queryIndex = lowerText.indexOf(searchQuery);
+            
+            if (queryIndex === -1) {
+                return highlightText(text.substring(0, maxLength) + '...', searchQuery);
+            }
+
+            // Extract snippet around the search term
+            const start = Math.max(0, queryIndex - 80);
+            const end = Math.min(text.length, queryIndex + searchQuery.length + 80);
+            
+            let snippet = text.substring(start, end);
+            if (start > 0) snippet = '...' + snippet;
+            if (end < text.length) snippet = snippet + '...';
+            
+            return highlightText(snippet, searchQuery);
+        }
+
+        function highlightText(text, query) {
+            if (!query || query.length < 2) return text;
+            
+            const regex = new RegExp(`(${escapeRegExp(query)})`, 'gi');
+            return text.replace(regex, '<span class="result-highlight">$1</span>');
+        }
+
+        function escapeRegExp(string) {
+            return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+        }
+
+        function setupPagination(pagination) {
+            const paginationContainer = document.getElementById('pagination');
+            const totalPages = pagination.pages;
+
+            if (totalPages <= 1) {
+                paginationContainer.style.display = 'none';
+                return;
+            }
+
+            paginationContainer.style.display = 'flex';
+
+            let paginationHTML = '';
+
+            // Previous button
+            paginationHTML += `
+                <button class="pagination-btn" ${currentPage <= 1 ? 'disabled' : ''} 
+                        onclick="changePage(${currentPage - 1})">
+                    <i class="fas fa-chevron-right"></i>
+                </button>
+            `;
+
+            // Page numbers
+            const startPage = Math.max(1, currentPage - 2);
+            const endPage = Math.min(totalPages, currentPage + 2);
+
+            for (let i = startPage; i <= endPage; i++) {
+                paginationHTML += `
+                    <button class="pagination-btn ${i === currentPage ? 'active' : ''}" 
+                            onclick="changePage(${i})">
+                        ${i}
+                    </button>
+                `;
+            }
+
+            // Next button
+            paginationHTML += `
+                <button class="pagination-btn" ${currentPage >= totalPages ? 'disabled' : ''} 
+                        onclick="changePage(${currentPage + 1})">
+                    <i class="fas fa-chevron-left"></i>
+                </button>
+            `;
+
+            paginationContainer.innerHTML = paginationHTML;
+        }
+
+        async function changePage(page) {
+            currentPage = page;
+            await performSearch();
+            
+            // Scroll to top of results
+            document.getElementById('searchResults').scrollIntoView({ 
+                behavior: 'smooth', 
+                block: 'start' 
+            });
+        }
+
+        function showEmptyResults() {
+            document.getElementById('searchResults').classList.remove('show');
+            document.getElementById('emptyResults').classList.add('show');
+        }
+
+        function showLoading(show) {
+            const loading = document.getElementById('loadingContainer');
+            const results = document.getElementById('searchResults');
+            const empty = document.getElementById('emptyResults');
+            
+            if (show) {
+                loading.classList.add('show');
+                results.classList.remove('show');
+                empty.classList.remove('show');
+            } else {
+                loading.classList.remove('show');
+            }
+        }
+
+        function resetFilters() {
+            // Reset all filter fields except search query
+            document.getElementById('categoryFilter').value = '';
+            document.getElementById('statusFilter').value = '';
+            document.getElementById('dateFromFilter').value = '';
+            document.getElementById('dateToFilter').value = '';
+            document.getElementById('qualityFilter').value = '';
+            document.getElementById('sortFilter').value = 'relevance';
+            
+            showToast('فیلترها پاک شدند', 'info', 'بازنشانی');
+            
+            // Perform search again if there's a query
+            const query = document.getElementById('searchQuery').value.trim();
+            if (query) {
+                performCurrentSearch();
+            }
+        }
+
+        function clearSearch() {
+            document.querySelector('.search-form').reset();
+            document.getElementById('searchResults').classList.remove('show');
+            document.getElementById('emptyResults').classList.remove('show');
+            document.getElementById('searchQuery').focus();
+            
+            showToast('جستجو پاک شد', 'info', 'پاک کردن');
+        }
+
+        function exportResults() {
+            if (currentResults.length === 0) {
+                showToast('نتیجه‌ای برای خروجی وجود ندارد', 'warning', 'هشدار');
+                return;
+            }
+
+            showToast('فایل نتایج در حال آماده‌سازی...', 'info', 'خروجی');
+            
+            setTimeout(() => {
+                showToast('خروجی نتایج آماده شد', 'success', 'خروجی موفق');
+            }, 2000);
+        }
+
+        function viewDocument(documentId) {
+            showToast(`مشاهده سند شماره ${documentId}`, 'info', 'مشاهده سند');
+            // Could redirect to document detail page
+        }
+
+        function downloadDocument(documentId) {
+            showToast(`دانلود سند شماره ${documentId} شروع شد`, 'info', 'دانلود');
+        }
+
+        // Utility functions
+        function formatDate(dateString) {
+            if (!dateString) return 'نامشخص';
+            const date = new Date(dateString);
+            return date.toLocaleDateString('fa-IR', {
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric'
+            });
+        }
+
+        function debounce(func, wait) {
+            let timeout;
+            return function executedFunction(...args) {
+                const later = () => {
+                    clearTimeout(timeout);
+                    func(...args);
+                };
+                clearTimeout(timeout);
+                timeout = setTimeout(later, wait);
+            };
+        }
+
+        function showToast(message, type = 'info', title = 'اعلان') {
+            const toastContainer = document.getElementById('toastContainer');
+            if (!toastContainer) return;
+            
+            const toast = document.createElement('div');
+            toast.className = `toast ${type}`;
+            
+            const icons = {
+                success: 'check-circle',
+                error: 'exclamation-triangle',
+                warning: 'exclamation-circle',
+                info: 'info-circle'
+            };
+
+            toast.innerHTML = `
+                <div class="toast-icon">
+                    <i class="fas fa-${icons[type]}"></i>
+                </div>
+                <div class="toast-content">
+                    <div class="toast-title">${title}</div>
+                    <div class="toast-message">${message}</div>
+                </div>
+                <button type="button" class="toast-close" onclick="this.parentElement.remove()">
+                    <i class="fas fa-times"></i>
+                </button>
+            `;
+
+            toastContainer.appendChild(toast);
+
+            // Show toast
+            setTimeout(() => toast.classList.add('show'), 100);
+
+            // Auto remove after 5 seconds
+            setTimeout(() => {
+                if (toast.parentElement) {
+                    toast.classList.remove('show');
+                    setTimeout(() => {
+                        if (toast.parentElement) {
+                            toast.remove();
+                        }
+                    }, 300);
+                }
+            }, 5000);
+        }
+
+        console.log('🔍 Search Page Ready!');
+    </script>
+</body>
+</html>

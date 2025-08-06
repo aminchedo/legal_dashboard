@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>جستجوی هوشمند | سامانه حقوقی</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@200;300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    
+    <!-- JS Files -->
+    <script src="/static/js/api-client.js" type="module"></script>
+    <script src="/static/js/core.js" type="module"></script>
+    <script src="/static/js/notifications.js" type="module"></script>
+
+    <style>
+        :root {
+            --text-primary: #0f172a; --text-secondary: #475569; --text-muted: #64748b; --text-light: #ffffff;
+            --body-bg: linear-gradient(135deg, #f1f5f9 0%, #e2e8f0 50%, #cbd5e1 100%);
+            --card-bg: rgba(255, 255, 255, 0.95); --glass-bg: rgba(255, 255, 255, 0.9);
+            --glass-border: rgba(148, 163, 184, 0.2);
+            --primary-gradient: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
+            --purple-gradient: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%);
+            --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.08); --shadow-md: 0 4px 15px rgba(0, 0, 0, 0.1);
+            --sidebar-width: 280px; --border-radius: 12px; --border-radius-sm: 8px;
+            --transition-smooth: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+            --font-size-sm: 0.875rem; --font-size-base: 1rem; --font-size-lg: 1.125rem;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Vazirmatn', sans-serif; background: var(--body-bg); color: var(--text-primary); line-height: 1.6; font-size: var(--font-size-sm); }
+        .dashboard-container { display: flex; min-height: 100vh; width: 100%; }
+        .sidebar { width: var(--sidebar-width); background: linear-gradient(135deg, rgba(248, 250, 252, 0.98) 0%, rgba(241, 245, 249, 0.95) 100%); backdrop-filter: blur(25px); padding: 1rem 0; position: fixed; height: 100vh; right: 0; top: 0; z-index: 1000; overflow-y: auto; box-shadow: -8px 0 32px rgba(59, 130, 246, 0.12); border-left: 1px solid rgba(59, 130, 246, 0.15); }
+        .sidebar-header { padding: 0 1rem 1rem; border-bottom: 1px solid rgba(59, 130, 246, 0.12); margin-bottom: 1rem; display: flex; align-items: center; background: linear-gradient(135deg, rgba(255, 255, 255, 0.4) 0%, rgba(248, 250, 252, 0.2) 100%); margin: 0 0.5rem 1rem; border-radius: var(--border-radius); backdrop-filter: blur(10px); }
+        .logo { display: flex; align-items: center; gap: 0.6rem; color: var(--text-primary); text-decoration: none; }
+        .logo-icon { width: 2.2rem; height: 2.2rem; background: var(--primary-gradient); border-radius: var(--border-radius-sm); display: flex; align-items: center; justify-content: center; font-size: 1.1rem; color: white; }
+        .logo-text { font-size: var(--font-size-lg); font-weight: 700; background: var(--primary-gradient); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; }
+        .nav-section { margin-bottom: 1rem; }
+        .nav-title { padding: 0 1rem 0.4rem; font-size: 0.75rem; font-weight: 600; text-transform: uppercase; color: var(--text-secondary); }
+        .nav-menu { list-style: none; }
+        .nav-item { margin: 0.15rem 0.5rem; }
+        .nav-link { display: flex; align-items: center; padding: 0.7rem 1rem; color: var(--text-primary); text-decoration: none; border-radius: var(--border-radius-sm); transition: var(--transition-smooth); font-weight: 500; cursor: pointer; border: 1px solid transparent; }
+        .nav-link:hover { transform: translateX(-3px); border-color: rgba(59, 130, 246, 0.15); background: rgba(59, 130, 246, 0.05); }
+        .nav-link.active { background: var(--primary-gradient); color: var(--text-light); box-shadow: var(--shadow-md); }
+        .nav-icon { margin-left: 0.8rem; width: 1.2rem; text-align: center; font-size: 1rem; }
+        .main-content { flex: 1; margin-right: var(--sidebar-width); padding: 2rem; width: calc(100% - var(--sidebar-width)); }
+        .page-header { margin-bottom: 2rem; }
+        .page-title { font-size: 1.75rem; font-weight: 800; display: flex; align-items: center; gap: 0.75rem; }
+        .search-container { background: var(--card-bg); border-radius: var(--border-radius); padding: 2rem; box-shadow: var(--shadow-md); border-top: 4px solid; border-image: linear-gradient(to left, #6366f1, #a855f7) 1; }
+        .search-input-wrapper { position: relative; }
+        .search-input { width: 100%; padding: 1rem 1.5rem; border: 2px solid var(--glass-border); border-radius: var(--border-radius); font-size: var(--font-size-lg); font-family: 'Vazirmatn', sans-serif; transition: var(--transition-smooth); }
+        .search-input:focus { outline: none; border-color: #8b5cf6; box-shadow: 0 0 0 4px rgba(139, 92, 246, 0.1); }
+        .search-button { position: absolute; left: 0.75rem; top: 0.75rem; background: var(--purple-gradient); color: white; border: none; padding: 0.6rem 1.2rem; border-radius: var(--border-radius-sm); font-weight: 600; cursor: pointer; transition: var(--transition-smooth); }
+        .search-button:hover { transform: scale(1.05); }
+        .search-button:disabled { opacity: 0.6; cursor: not-allowed; }
+        .loading-spinner { width: 16px; height: 16px; border: 2px solid currentColor; border-top-color: transparent; border-radius: 50%; animation: spin 1s linear infinite; }
+        @keyframes spin { to { transform: rotate(360deg); } }
+        .results-container { margin-top: 2rem; }
+        .results-summary { margin-bottom: 1.5rem; color: var(--text-secondary); background: var(--glass-bg); padding: 0.75rem 1rem; border-radius: var(--border-radius-sm); border: 1px solid var(--glass-border); }
+        .result-item { background: var(--glass-bg); border: 1px solid var(--glass-border); border-radius: var(--border-radius); padding: 1.5rem; margin-bottom: 1rem; transition: var(--transition-smooth); }
+        .result-item:hover { transform: translateY(-3px); box-shadow: var(--shadow-sm); border-color: rgba(139, 92, 246, 0.3); }
+        .result-title { font-size: var(--font-size-lg); font-weight: 600; margin-bottom: 0.5rem; }
+        .result-snippet { line-height: 1.7; }
+        .result-snippet mark { background: rgba(139, 92, 246, 0.2); padding: 2px 4px; border-radius: 4px; }
+        .result-meta { display: flex; gap: 1rem; font-size: var(--font-size-sm); color: var(--text-muted); margin-top: 1rem; }
+        .empty-state { text-align: center; padding: 3rem; background: var(--glass-bg); border-radius: var(--border-radius); }
+    </style>
+</head>
+<body>
+    <div class="dashboard-container">
+        <!-- Sidebar -->
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <a href="/" class="logo">
+                    <div class="logo-icon"><i class="fas fa-gavel"></i></div>
+                    <div class="logo-text">سامانه هوشمند</div>
+                </a>
+            </div>
+            <nav>
+                <div class="nav-section">
+                    <h6 class="nav-title">منوی اصلی</h6>
+                    <ul class="nav-menu">
+                        <li class="nav-item"><a href="/static/index.html" class="nav-link"><i class="fas fa-tachometer-alt nav-icon"></i><span>مرکز کنترل</span></a></li>
+                        <li class="nav-item"><a href="/static/analytics.html" class="nav-link"><i class="fas fa-chart-line nav-icon"></i><span>تحلیل داده</span></a></li>
+                    </ul>
+                </div>
+                <div class="nav-section">
+                    <h6 class="nav-title">مدیریت داده</h6>
+                    <ul class="nav-menu">
+                        <li class="nav-item"><a href="/static/upload.html" class="nav-link"><i class="fas fa-cloud-upload-alt nav-icon"></i><span>آپلود اسناد</span></a></li>
+                        <li class="nav-item"><a href="/static/scraping.html" class="nav-link"><i class="fas fa-spider nav-icon"></i><span>اسکراپینگ وب</span></a></li>
+                        <li class="nav-item"><a href="/static/documents.html" class="nav-link"><i class="fas fa-folder-open nav-icon"></i><span>مدیریت اسناد</span></a></li>
+                        <li class="nav-item"><a href="/static/search.html" class="nav-link active"><i class="fas fa-search nav-icon"></i><span>جستجوی پیشرفته</span></a></li>
+                    </ul>
+                </div>
+                <div class="nav-section">
+                    <h6 class="nav-title">سیستم</h6>
+                    <ul class="nav-menu">
+                        <li class="nav-item"><a href="/static/reports.html" class="nav-link"><i class="fas fa-file-export nav-icon"></i><span>گزارش‌گیری</span></a></li>
+                        <li class="nav-item"><a href="/static/system-health.html" class="nav-link"><i class="fas fa-heartbeat nav-icon"></i><span>سلامت سیستم</span></a></li>
+                        <li class="nav-item"><a href="/static/settings.html" class="nav-link"><i class="fas fa-cog nav-icon"></i><span>تنظیمات</span></a></li>
+                    </ul>
+                </div>
+            </nav>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <header class="page-header">
+                <h1 class="page-title"><i class="fas fa-search-plus"></i>جستجوی هوشمند حقوقی</h1>
+            </header>
+
+            <section class="search-container">
+                <form id="searchForm">
+                    <div class="search-input-wrapper">
+                        <input type="text" id="searchInput" class="search-input" placeholder="سوال خود را به زبان ساده بپرسید، مثال: آرای دیوان عدالت در خصوص شکایت از شهرداری تهران">
+                        <button type="submit" id="searchButton" class="search-button">
+                            <i class="fas fa-search"></i>
+                            <span id="searchButtonText">جستجو</span>
+                        </button>
+                    </div>
+                </form>
+            </section>
+
+            <section class="results-container" id="resultsContainer">
+                <div class="empty-state" id="emptyState">
+                    <i class="fas fa-book-open" style="font-size: 3rem; color: var(--text-muted); margin-bottom: 1rem;"></i>
+                    <p>نتایج جستجوی هوشمند شما اینجا نمایش داده می‌شود.</p>
+                </div>
+                <div id="resultsList"></div>
+            </section>
+        </main>
+    </div>
+
+    <script type="module">
+        const searchForm = document.getElementById('searchForm');
+        const searchInput = document.getElementById('searchInput');
+        const searchButton = document.getElementById('searchButton');
+        const searchButtonText = document.getElementById('searchButtonText');
+        const emptyState = document.getElementById('emptyState');
+        const resultsList = document.getElementById('resultsList');
+
+        searchForm.addEventListener('submit', handleSearch);
+
+        async function handleSearch(e) {
+            e.preventDefault();
+            const query = searchInput.value.trim();
+            if (!query) {
+                window.notifications?.showWarning('ورودی خالی', 'لطفا عبارت جستجو را وارد کنید.');
+                return;
+            }
+
+            setLoading(true);
+            resultsList.innerHTML = '';
+            emptyState.style.display = 'none';
+
+            try {
+                const results = await window.legalAPI.naturalLanguageSearch(query);
+                displayResults(results, query);
+            } catch (error) {
+                console.error("Natural Language Search Error:", error);
+                window.notifications?.showError('خطا در جستجو', 'ارتباط با سرویس جستجوی هوشمند برقرار نشد.');
+                displayEmptyState("خطایی در هنگام جستجو رخ داد. لطفاً دوباره تلاش کنید.");
+            } finally {
+                setLoading(false);
+            }
+        }
+
+        function displayResults(results, query) {
+            if (!results || !results.items || results.items.length === 0) {
+                displayEmptyState("متاسفانه نتیجه‌ای برای جستجوی شما یافت نشد.");
+                return;
+            }
+
+            const interpretedFilters = results.interpreted_filters;
+            let filterText = 'فیلترهای اعمال شده: ';
+            let filtersApplied = [];
+            if (interpretedFilters.keywords) filtersApplied.push(`<b>کلیدواژه:</b> ${interpretedFilters.keywords}`);
+            if (interpretedFilters.category) filtersApplied.push(`<b>دسته‌بندی:</b> ${interpretedFilters.category}`);
+            if (interpretedFilters.date_from) filtersApplied.push(`<b>از تاریخ:</b> ${new Date(interpretedFilters.date_from).toLocaleDateString('fa-IR')}`);
+            if (interpretedFilters.date_to) filtersApplied.push(`<b>تا تاریخ:</b> ${new Date(interpretedFilters.date_to).toLocaleDateString('fa-IR')}`);
+
+            resultsList.innerHTML = `
+                <div class="results-summary">
+                    <p><strong>${results.total}</strong> نتیجه در <strong>${results.search_time_seconds.toFixed(2)}</strong> ثانیه یافت شد.</p>
+                    <p style="font-size: var(--font-size-sm);">${filtersApplied.join(' | ')}</p>
+                </div>
+                ${results.items.map(doc => createResultItem(doc, query)).join('')}
+            `;
+        }
+
+        function createResultItem(doc, query) {
+             const snippet = doc.full_text ? doc.full_text.substring(0, 250) + '...' : 'محتوایی برای نمایش وجود ندارد.';
+            return `
+                <div class="result-item">
+                    <h3 class="result-title">${doc.title}</h3>
+                    <div class="result-meta">
+                        <span><i class="fas fa-tag"></i> ${doc.category || 'نامشخص'}</span>
+                        <span><i class="fas fa-calendar-alt"></i> ${new Date(doc.created_at).toLocaleDateString('fa-IR')}</span>
+                        <span><i class="fas fa-star"></i> امتیاز: ${(doc.ai_score || 0).toFixed(1)}</span>
+                    </div>
+                    <p class="result-snippet">${highlightText(snippet, query)}</p>
+                </div>
+            `;
+        }
+        
+        function highlightText(text, query) {
+            if (!query) return text;
+            const terms = query.split(/\s+/).filter(term => term.length > 2);
+            let highlightedText = text;
+            terms.forEach(term => {
+                try {
+                    const regex = new RegExp(`(${term})`, 'gi');
+                    highlightedText = highlightedText.replace(regex, '<mark>$1</mark>');
+                } catch (e) {
+                    console.warn("Invalid regex term:", term);
+                }
+            });
+            return highlightedText;
+        }
+
+        function displayEmptyState(message) {
+            resultsList.innerHTML = '';
+            emptyState.style.display = 'block';
+            emptyState.querySelector('p').textContent = message;
+        }
+
+        function setLoading(isLoading) {
+            const originalBtnContent = '<i class="fas fa-search"></i><span id="searchButtonText">جستجو</span>';
+            const loadingBtnContent = '<div class="loading-spinner"></div>';
+            
+            searchInput.disabled = isLoading;
+            searchButton.disabled = isLoading;
+            searchButton.innerHTML = isLoading ? loadingBtnContent : originalBtnContent;
+        }
+    </script>
+</body>
+</html>

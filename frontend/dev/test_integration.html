@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>تست اتصال فرانت‌اند و بک‌اند</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .test-section {
+            background: white;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .success { color: green; }
+        .error { color: red; }
+        .info { color: blue; }
+        button {
+            background: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        button:hover {
+            background: #0056b3;
+        }
+        pre {
+            background: #f8f9fa;
+            padding: 10px;
+            border-radius: 4px;
+            overflow-x: auto;
+        }
+    </style>
+</head>
+<body>
+    <h1>تست اتصال فرانت‌اند و بک‌اند</h1>
+    
+    <div class="test-section">
+        <h2>تست اتصال API</h2>
+        <button onclick="testConnection()">تست اتصال</button>
+        <div id="connectionResult"></div>
+    </div>
+
+    <div class="test-section">
+        <h2>تست دریافت آمار داشبورد</h2>
+        <button onclick="testDashboardSummary()">دریافت آمار</button>
+        <div id="dashboardResult"></div>
+    </div>
+
+    <div class="test-section">
+        <h2>تست دریافت اسناد</h2>
+        <button onclick="testDocuments()">دریافت اسناد</button>
+        <div id="documentsResult"></div>
+    </div>
+
+    <div class="test-section">
+        <h2>تست شروع جمع‌آوری</h2>
+        <button onclick="testScraping()">شروع جمع‌آوری</button>
+        <div id="scrapingResult"></div>
+    </div>
+
+    <script>
+        const API_BASE = 'http://localhost:8000';
+
+        async function testConnection() {
+            const resultDiv = document.getElementById('connectionResult');
+            resultDiv.innerHTML = '<p class="info">در حال تست اتصال...</p>';
+            
+            try {
+                const response = await fetch(`${API_BASE}/api/dashboard-summary`);
+                if (response.ok) {
+                    resultDiv.innerHTML = '<p class="success">✅ اتصال موفق! سرور در دسترس است.</p>';
+                } else {
+                    resultDiv.innerHTML = `<p class="error">❌ خطا در اتصال: ${response.status} ${response.statusText}</p>`;
+                }
+            } catch (error) {
+                resultDiv.innerHTML = `<p class="error">❌ خطا در اتصال: ${error.message}</p>`;
+            }
+        }
+
+        async function testDashboardSummary() {
+            const resultDiv = document.getElementById('dashboardResult');
+            resultDiv.innerHTML = '<p class="info">در حال دریافت آمار...</p>';
+            
+            try {
+                const response = await fetch(`${API_BASE}/api/dashboard-summary`);
+                if (response.ok) {
+                    const data = await response.json();
+                    resultDiv.innerHTML = `
+                        <p class="success">✅ آمار دریافت شد:</p>
+                        <pre>${JSON.stringify(data, null, 2)}</pre>
+                    `;
+                } else {
+                    resultDiv.innerHTML = `<p class="error">❌ خطا در دریافت آمار: ${response.status}</p>`;
+                }
+            } catch (error) {
+                resultDiv.innerHTML = `<p class="error">❌ خطا در دریافت آمار: ${error.message}</p>`;
+            }
+        }
+
+        async function testDocuments() {
+            const resultDiv = document.getElementById('documentsResult');
+            resultDiv.innerHTML = '<p class="info">در حال دریافت اسناد...</p>';
+            
+            try {
+                const response = await fetch(`${API_BASE}/api/documents?limit=5`);
+                if (response.ok) {
+                    const data = await response.json();
+                    resultDiv.innerHTML = `
+                        <p class="success">✅ اسناد دریافت شد (${data.length} سند):</p>
+                        <pre>${JSON.stringify(data, null, 2)}</pre>
+                    `;
+                } else {
+                    resultDiv.innerHTML = `<p class="error">❌ خطا در دریافت اسناد: ${response.status}</p>`;
+                }
+            } catch (error) {
+                resultDiv.innerHTML = `<p class="error">❌ خطا در دریافت اسناد: ${error.message}</p>`;
+            }
+        }
+
+        async function testScraping() {
+            const resultDiv = document.getElementById('scrapingResult');
+            resultDiv.innerHTML = '<p class="info">در حال شروع جمع‌آوری...</p>';
+            
+            try {
+                const response = await fetch(`${API_BASE}/api/scrape-trigger`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ manual_trigger: true })
+                });
+                
+                if (response.ok) {
+                    const data = await response.json();
+                    resultDiv.innerHTML = `
+                        <p class="success">✅ جمع‌آوری شروع شد:</p>
+                        <pre>${JSON.stringify(data, null, 2)}</pre>
+                    `;
+                } else {
+                    resultDiv.innerHTML = `<p class="error">❌ خطا در شروع جمع‌آوری: ${response.status}</p>`;
+                }
+            } catch (error) {
+                resultDiv.innerHTML = `<p class="error">❌ خطا در شروع جمع‌آوری: ${error.message}</p>`;
+            }
+        }
+
+        // Auto-test on page load
+        window.addEventListener('load', () => {
+            setTimeout(testConnection, 1000);
+        });
+    </script>
+</body>
+</html> 
