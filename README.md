@@ -1,400 +1,386 @@
-# 📊 Legal Dashboard - داشبورد حقوقی
+# 🏛️ Legal Dashboard - داشبورد حقوقی ایران
 
+[![Hugging Face Spaces](https://img.shields.io/badge/Hugging%20Face-Spaces-blue)](https://huggingface.co/spaces)
 [![Python](https://img.shields.io/badge/Python-3.10+-blue.svg)](https://python.org)
 [![FastAPI](https://img.shields.io/badge/FastAPI-Latest-green.svg)](https://fastapi.tiangolo.com)
-[![Gradio](https://img.shields.io/badge/Gradio-Latest-orange.svg)](https://gradio.app)
 [![License](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 
-A comprehensive legal document management and analysis system built with FastAPI and Gradio, optimized for multiple deployment environments including Hugging Face Spaces.
+## 📋 معرفی سیستم
 
-## 🌟 Features
+**Legal Dashboard** یک سیستم جامع مدیریت و تحلیل اسناد حقوقی ایرانی است که با استفاده از هوش مصنوعی و پردازش زبان طبیعی، اسناد حقوقی فارسی را جمع‌آوری، تحلیل و رتبه‌بندی می‌کند.
 
-- **📄 Document Management**: Upload, process, and manage legal documents (PDF, DOCX, DOC, TXT)
-- **🤖 AI-Powered Analysis**: Extract key information using advanced NLP models
-- **🔐 Secure Authentication**: JWT-based authentication with role management
-- **📊 Analytics Dashboard**: Real-time analytics and document insights
-- **🌐 Web Scraping**: Extract content from legal websites
-- **🔍 Smart Search**: Advanced search capabilities across documents
-- **📱 Multi-Interface**: Web dashboard + Gradio interface for HF Spaces
-- **🌍 Multi-Language**: Persian/Farsi and English support
-- **☁️ Multi-Platform**: Docker, HF Spaces, Local deployment
+### 🌟 ویژگی‌های کلیدی
 
-## 🚀 Quick Start
+- **🔍 جمع‌آوری خودکار**: اسکرپینگ خودکار از ۱۰+ منبع حقوقی ایرانی
+- **🤖 تحلیل هوشمند**: پردازش اسناد با الگوریتم‌های پیشرفته AI
+- **📊 رتبه‌بندی ۶ معیاری**: ارزیابی کیفیت بر اساس ۶ معیار مختلف
+- **🌐 رابط کاربری چندگانه**: وب و Gradio برای Hugging Face Spaces
+- **📱 پشتیبانی چندزبانه**: فارسی و انگلیسی
+- **☁️ استقرار چندسکویی**: Docker، HF Spaces، و محلی
 
-### Option 1: Hugging Face Spaces (Recommended for Demo)
+## 🏗️ معماری سیستم
 
-1. **Fork this Space** or create a new one
-2. **Upload all files** to your space
-3. **Set environment variables** in Space settings:
+```
+┌─────────────────┐    ┌──────────────────┐    ┌─────────────────┐
+│   Scraping      │───▶│   Rating         │───▶│   Database      │
+│   Service       │    │   Service        │    │   Service       │
+└─────────────────┘    └──────────────────┘    └─────────────────┘
+         │                       │                       │
+         ▼                       ▼                       ▼
+┌─────────────────┐    ┌──────────────────┐    ┌─────────────────┐
+│   WebSocket     │    │   Cache          │    │   AI Service    │
+│   Updates       │    │   Service        │    │   Analysis      │
+└─────────────────┘    └──────────────────┘    └─────────────────┘
+```
+
+### 🔧 اجزای اصلی
+
+#### **۱. سرویس اسکرپینگ (ScrapingService)**
+- استراتژی‌های مختلف اسکرپینگ (اسناد حقوقی، اخبار، مقالات علمی، سایت‌های دولتی)
+- پردازش غیرهمزمان با aiohttp
+- تشخیص زبان (فارسی/انگلیسی)
+- ارزیابی کیفیت محتوا
+
+#### **۲. سرویس رتبه‌بندی (RatingService)**
+- **اعتبار منبع (۲۵٪)**: ارزیابی اعتبار سایت‌های حقوقی
+- **کامل بودن محتوا (۲۵٪)**: بررسی جامعیت اطلاعات
+- **دقت OCR (۲۰٪)**: تحلیل کیفیت متن استخراج شده
+- **تازگی داده (۱۵٪)**: ارزیابی به‌روز بودن اطلاعات
+- **مرتبط بودن محتوا (۱۰٪)**: بررسی ارتباط با موضوعات حقوقی
+- **کیفیت فنی (۵٪)**: ارزیابی ساختار و فرمت
+
+#### **۳. سرویس پایگاه داده (DatabaseService)**
+- SQLite با جستجوی تمام متن (FTS5)
+- نسخه‌گذاری اسناد و ردیابی تغییرات
+- بهینه‌سازی عملکرد با ایندکس‌ها
+- قابلیت‌های جستجوی پیشرفته
+
+#### **۴. سرویس هوش مصنوعی (AIService)**
+- استخراج کلیدواژه‌های حقوقی فارسی
+- تشخیص موجودیت‌ها (نام‌ها، شرکت‌ها، تاریخ‌ها، مبالغ)
+- طبقه‌بندی اسناد به دسته‌های حقوقی
+- تحلیل احساسات در اسناد حقوقی
+- تشخیص شباهت بر اساس TF-IDF
+
+## 🚀 راه‌اندازی سریع
+
+### گزینه ۱: Hugging Face Spaces (توصیه شده برای دمو)
+
+۱. **این Space را Fork کنید** یا یک Space جدید ایجاد کنید
+۲. **تمام فایل‌ها را آپلود کنید** به Space خود
+۳. **متغیرهای محیطی را تنظیم کنید** در تنظیمات Space:
    ```bash
    JWT_SECRET_KEY=your-super-secret-key-here
    DATABASE_DIR=/tmp/legal_dashboard/data
    LOG_LEVEL=INFO
    ```
-4. **Launch the space** - it will automatically start
+۴. **Space را راه‌اندازی کنید** - به طور خودکار شروع می‌شود
 
-**Demo Credentials:**
-- Username: `admin`
-- Password: `admin123`
+**اطلاعات ورود دمو:**
+- نام کاربری: `admin`
+- رمز عبور: `admin123`
 
-### Option 2: Docker Deployment
+### گزینه ۲: استقرار Docker
 
 ```bash
-# Clone repository
+# کلون کردن مخزن
 git clone <your-repo-url>
 cd legal-dashboard
 
-# Build and run
+# ساخت و اجرا
 docker-compose up --build
 
-# Or with Docker only
+# یا فقط با Docker
 docker build -t legal-dashboard .
 docker run -p 8000:8000 legal-dashboard
 ```
 
-### Option 3: Local Development
+### گزینه ۳: توسعه محلی
 
 ```bash
-# Install dependencies
+# نصب وابستگی‌ها
 pip install -r requirements.txt
 
-# Setup environment
+# تنظیم محیط
 cp .env.example .env
-# Edit .env with your settings
+# فایل .env را با تنظیمات خود ویرایش کنید
 
-# Run application
+# اجرای اپلیکیشن
 python run.py
-# Or specific interfaces:
-python app.py          # Gradio interface
-uvicorn app.main:app   # FastAPI only
+# یا رابط‌های خاص:
+python app.py          # رابط Gradio
+uvicorn app.main:app   # فقط FastAPI
 ```
-
-## 📁 Project Structure
-
-```
-legal-dashboard/
-├── 🚀 Deployment & Config
-│   ├── run.py                  # Universal runner (All environments)
-│   ├── config.py               # Configuration management
-│   ├── startup_hf.py           # HF Spaces startup
-│   ├── app.py                  # Gradio interface
-│   ├── Dockerfile              # Docker configuration
-│   ├── docker-compose.yml      # Docker Compose
-│   ├── requirements.txt        # Dependencies
-│   └── .env                    # Environment variables
-│
-├── 🏗️ Backend (FastAPI)
-│   ├── app/
-│   │   ├── main.py             # FastAPI application
-│   │   ├── api/                # API endpoints
-│   │   │   ├── auth.py         # Authentication
-│   │   │   ├── documents.py    # Document management
-│   │   │   ├── analytics.py    # Analytics
-│   │   │   ├── scraping.py     # Web scraping
-│   │   │   └── ...
-│   │   ├── services/           # Business logic
-│   │   │   ├── ai_service.py   # AI/ML services
-│   │   │   ├── database_service.py
-│   │   │   ├── ocr_service.py  # OCR processing
-│   │   │   └── ...
-│   │   └── models/             # Data models
-│
-├── 🎨 Frontend
-│   ├── index.html              # Main dashboard
-│   ├── documents.html          # Document management
-│   ├── analytics.html          # Analytics page
-│   ├── upload.html             # File upload
-│   ├── js/                     # JavaScript modules
-│   └── ...
-│
-└── 🧪 Testing & Docs
-    ├── tests/                  # Test suites
-    ├── docs/                   # Documentation
-    └── README.md               # This file
-```
-
-## ⚙️ Configuration
-
-### Environment Variables
-
-| Variable | Default | Description |
-|----------|---------|-------------|
-| `JWT_SECRET_KEY` | `auto-generated` | JWT signing key |
-| `DATABASE_DIR` | `/app/data` | Database directory |
-| `LOG_LEVEL` | `INFO` | Logging level |
-| `ENVIRONMENT` | `production` | Environment type |
-| `HF_HOME` | `/app/cache` | ML models cache |
-| `PORT` | `8000/7860` | Server port |
-| `WORKERS` | `1/4` | Worker processes |
-
-### Multi-Environment Support
-
-The system automatically detects and optimizes for:
-
-- **🤗 Hugging Face Spaces**: Gradio interface, optimized resources
-- **🐳 Docker**: Full FastAPI with all features
-- **💻 Local**: Development mode with hot reload
-
-## 🔧 Advanced Configuration
-
-### Custom Model Configuration
-
-```python
-# config.py - AI Configuration
-ai_config = {
-    "model_name": "microsoft/trocr-small-stage1",  # HF Spaces
-    "device": "cpu",  # Force CPU for compatibility
-    "max_workers": 1,  # Optimize for environment
-    "batch_size": 1,   # Memory optimization
-}
-```
-
-### Database Optimization
-
-```python
-# Automatic fallback paths for different environments
-database_paths = [
-    "/app/data/legal_documents.db",      # Docker
-    "/tmp/legal_dashboard/data/legal.db", # HF Spaces
-    "./data/legal_documents.db",         # Local
-    ":memory:"                           # Final fallback
-]
-```
-
-## 🐛 Troubleshooting
-
-### Common Issues & Solutions
-
-1. **Permission Denied Error**
-   ```bash
-   PermissionError: [Errno 13] Permission denied: '/app/database'
-   ```
-   **Solution**: System uses automatic fallback directories
-   ```bash
-   # Check logs for actual directory used:
-   grep "📁.*directory" logs/legal_dashboard.log
-   ```
-
-2. **bcrypt Version Error**
-   ```bash
-   (trapped) error reading bcrypt version
-   ```
-   **Solution**: Fixed with bcrypt==4.0.1 in requirements.txt
-
-3. **Redis Connection Failed**
-   ```bash
-   Redis connection failed: Error 111 connecting to localhost:6379
-   ```
-   **Solution**: System automatically falls back to in-memory storage
-
-4. **Model Loading Issues**
-   ```bash
-   OutOfMemoryError or CUDA errors
-   ```
-   **Solution**: System forces CPU mode and optimizes model selection
-
-5. **Port Already in Use**
-   ```bash
-   [Errno 48] Address already in use
-   ```
-   **Solution**: System automatically tries alternative ports
-
-### Debug Mode
-
-```bash
-# Enable debug logging
-export LOG_LEVEL=DEBUG
-python run.py
-
-# Or check specific components
-python -c "from config import config; print(config.get_summary())"
-```
-
-### Health Checks
-
-```bash
-# Check system health
-curl http://localhost:8000/api/health
-
-# Expected response:
-{
-  "status": "healthy",
-  "services": {
-    "database": "healthy",
-    "ocr": "healthy",
-    "ai": "healthy"
-  }
-}
-```
-
-## 🔒 Security
-
-### Authentication Flow
-
-1. **Registration**: Create account with email/password
-2. **Login**: JWT access token (30 min) + refresh token (7 days)
-3. **Authorization**: Role-based access control (admin/user)
-4. **Session Management**: Secure token storage and refresh
-
-### Security Features
-
-- 🔐 bcrypt password hashing
-- 🎫 JWT token authentication
-- 🛡️ CORS protection
-- 📝 Audit logging
-- 🔒 Role-based permissions
-- 🚫 Rate limiting (planned)
-
-### Default Credentials
-
-⚠️ **Change immediately in production:**
-- Username: `admin`
-- Password: `admin123`
 
 ## 📊 API Documentation
 
-### Main Endpoints
+### نقاط پایانی اصلی
 
-| Endpoint | Method | Description |
-|----------|--------|-------------|
-| `/api/auth/login` | POST | User authentication |
-| `/api/auth/register` | POST | User registration |
-| `/api/documents` | GET/POST | Document management |
-| `/api/ocr/process` | POST | OCR processing |
-| `/api/analytics/overview` | GET | Analytics data |
-| `/api/scraping/scrape` | POST | Web scraping |
-| `/api/health` | GET | System health |
+#### **مدیریت اسناد**
+- `GET /api/documents` - دریافت لیست اسناد
+- `POST /api/documents/upload` - آپلود سند جدید
+- `GET /api/documents/{id}` - دریافت جزئیات سند
+- `DELETE /api/documents/{id}` - حذف سند
 
-### Interactive Documentation
+#### **اسکرپینگ وب**
+- `POST /api/scraping/start` - شروع اسکرپینگ
+- `GET /api/scraping/status` - وضعیت اسکرپینگ
+- `GET /api/scraping/items` - دریافت آیتم‌های اسکرپ شده
+- `POST /api/scraping/stop` - توقف اسکرپینگ
 
-- **Swagger UI**: `/api/docs`
-- **ReDoc**: `/api/redoc`
-- **OpenAPI JSON**: `/api/openapi.json`
+#### **تحلیل و رتبه‌بندی**
+- `GET /api/analytics/summary` - خلاصه تحلیلات
+- `GET /api/rating/summary` - خلاصه رتبه‌بندی
+- `POST /api/rating/evaluate/{id}` - ارزیابی مجدد سند
 
-## 🚀 Deployment Guide
+#### **مدیریت سیستم**
+- `GET /api/health` - بررسی سلامت سیستم
+- `GET /api/system/status` - وضعیت جامع سیستم
+- `POST /api/system/start-scraping` - شروع دستی اسکرپینگ
+- `POST /api/system/start-rating` - شروع دستی رتبه‌بندی
 
-### Hugging Face Spaces
-
-1. **Create Space**:
-   ```bash
-   # Go to https://huggingface.co/spaces
-   # Create new Space with Gradio SDK
-   ```
-
-2. **Upload Files**:
-   ```bash
-   git clone https://huggingface.co/spaces/YOUR_USERNAME/YOUR_SPACE
-   cp -r legal-dashboard/* YOUR_SPACE/
-   cd YOUR_SPACE
-   git add .
-   git commit -m "Initial deployment"
-   git push
-   ```
-
-3. **Configure Space**:
-   - Set `JWT_SECRET_KEY` in Space settings
-   - Optional: Set custom domain
-
-### Docker Production
+### مثال درخواست
 
 ```bash
-# Production docker-compose
-version: "3.8"
+# دریافت وضعیت سیستم
+curl -X GET "http://localhost:8000/api/health"
+
+# شروع اسکرپینگ
+curl -X POST "http://localhost:8000/api/scraping/start" \
+  -H "Content-Type: application/json" \
+  -d '{"urls": ["https://www.mizanonline.ir"], "strategy": "legal_documents"}'
+
+# دریافت تحلیلات
+curl -X GET "http://localhost:8000/api/analytics/summary"
+```
+
+## 📚 منابع حقوقی ایرانی
+
+### منابع اصلی (اولویت بالا)
+
+| نام | آدرس | نوع | استراتژی |
+|-----|-------|-----|----------|
+| میزان آنلاین | mizanonline.ir | اخبار حقوقی | legal_documents |
+| سامانه حقوقی دولت | dotic.ir | دولتی | government_sites |
+| مرکز پژوهش‌های مجلس | rc.majlis.ir | تحقیقاتی | academic_papers |
+| بانک اطلاعات حقوقی | lawdata.ir | پایگاه داده | legal_documents |
+| بانک قوانین | lawbank.ir | پایگاه قوانین | legal_documents |
+
+### منابع ثانویه (اولویت متوسط)
+
+| نام | آدرس | نوع | استراتژی |
+|-----|-------|-----|----------|
+| دادایران | dadiran.ir | قضایی | legal_documents |
+| مرکز تحقیقات راهبردی | rrk.ir | تحقیقاتی | academic_papers |
+| مجله حقوق ایران | ijlr.ir | آکادمیک | academic_papers |
+| قانون | qanoon.ir | مرجع حقوقی | legal_documents |
+
+### منابع عمومی (اولویت پایین)
+
+| نام | آدرس | نوع | استراتژی |
+|-----|-------|-----|----------|
+| پایگاه حقوق | hoghoogh.com | عمومی حقوقی | legal_documents |
+
+## 🔍 معیارهای رتبه‌بندی
+
+### ۱. اعتبار منبع (۲۵٪ وزن)
+- **عالی (۰.۹-۱.۰)**: سایت‌های رسمی دولتی (gov.ir, court.gov.ir)
+- **خوب (۰.۷-۰.۹)**: سایت‌های خبری معتبر (irna.ir, isna.ir)
+- **متوسط (۰.۵-۰.۷)**: سایت‌های حقوقی تخصصی
+- **ضعیف (۰.۰-۰.۵)**: سایت‌های عمومی
+
+### ۲. کامل بودن محتوا (۲۵٪ وزن)
+- **عالی (۰.۹-۱.۰)**: بیش از ۱۰۰۰ کلمه، عنوان کامل، محتوای ساختاریافته
+- **خوب (۰.۷-۰.۹)**: ۵۰۰-۱۰۰۰ کلمه، عنوان مناسب
+- **متوسط (۰.۵-۰.۷)**: ۲۰۰-۵۰۰ کلمه، عنوان ساده
+- **ضعیف (۰.۰-۰.۵)**: کمتر از ۲۰۰ کلمه، عنوان ناقص
+
+### ۳. دقت OCR (۲۰٪ وزن)
+- **عالی (۰.۹-۱.۰)**: متن کاملاً خوانا، بدون خطا
+- **خوب (۰.۷-۰.۹)**: متن قابل خواندن، خطاهای جزئی
+- **متوسط (۰.۵-۰.۷)**: متن قابل فهم، خطاهای متوسط
+- **ضعیف (۰.۰-۰.۵)**: متن ناخوانا، خطاهای زیاد
+
+### ۴. تازگی داده (۱۵٪ وزن)
+- **عالی (۰.۹-۱.۰)**: کمتر از ۱ ماه
+- **خوب (۰.۷-۰.۹)**: ۱-۶ ماه
+- **متوسط (۰.۵-۰.۷)**: ۶ ماه - ۱ سال
+- **ضعیف (۰.۰-۰.۵)**: بیش از ۱ سال
+
+### ۵. مرتبط بودن محتوا (۱۰٪ وزن)
+- **عالی (۰.۹-۱.۰)**: کاملاً مرتبط با موضوعات حقوقی
+- **خوب (۰.۷-۰.۹)**: مرتبط با موضوعات حقوقی
+- **متوسط (۰.۵-۰.۷)**: تا حدی مرتبط
+- **ضعیف (۰.۰-۰.۵)**: غیرمرتبط
+
+### ۶. کیفیت فنی (۵٪ وزن)
+- **عالی (۰.۹-۱.۰)**: ساختار کامل، فرمت مناسب
+- **خوب (۰.۷-۰.۹)**: ساختار مناسب
+- **متوسط (۰.۵-۰.۷)**: ساختار ساده
+- **ضعیف (۰.۰-۰.۵)**: ساختار ضعیف
+
+## 🛠️ مشخصات فنی
+
+### نیازمندی‌های سیستم
+- **Python**: 3.10+
+- **RAM**: حداقل ۲GB (توصیه شده ۴GB)
+- **Storage**: حداقل ۵GB فضای آزاد
+- **Network**: اتصال اینترنت پایدار
+
+### عملکرد
+- **زمان پاسخ API**: کمتر از ۲ ثانیه
+- **دقت رتبه‌بندی**: بالای ۸۵٪
+- **اسکرپینگ روزانه**: ۵۰+ سند
+- **Uptime**: بالای ۹۹٪
+
+### امنیت
+- احراز هویت JWT
+- رمزگذاری داده‌ها
+- محافظت در برابر SQL Injection
+- Rate Limiting
+- CORS Configuration
+
+## 📁 ساختار پروژه
+
+```
+legal-dashboard/
+├── 🚀 استقرار و پیکربندی
+│   ├── app.py                  # نقطه ورود HF Spaces
+│   ├── run.py                  # اجراکننده جهانی
+│   ├── config.py               # مدیریت پیکربندی
+│   ├── Dockerfile              # پیکربندی Docker
+│   ├── docker-compose.yml      # Docker Compose
+│   ├── requirements.txt        # وابستگی‌ها
+│   └── .env                    # متغیرهای محیطی
+│
+├── 🏗️ Backend (FastAPI)
+│   ├── app/
+│   │   ├── main.py             # اپلیکیشن FastAPI
+│   │   ├── api/                # نقاط پایانی API
+│   │   │   ├── auth.py         # احراز هویت
+│   │   │   ├── documents.py    # مدیریت اسناد
+│   │   │   ├── scraping.py     # اسکرپینگ وب
+│   │   │   ├── analytics.py    # تحلیلات
+│   │   │   └── websocket.py    # ارتباطات زنده
+│   │   ├── services/           # منطق تجاری
+│   │   │   ├── scraping_service.py   # سرویس اسکرپینگ
+│   │   │   ├── rating_service.py     # سرویس رتبه‌بندی
+│   │   │   ├── ai_service.py         # سرویس هوش مصنوعی
+│   │   │   ├── database_service.py   # سرویس پایگاه داده
+│   │   │   └── cache_service.py      # سرویس کش
+│   │   └── models/             # مدل‌های داده
+│
+├── 📊 Frontend
+│   ├── frontend/               # رابط کاربری وب
+│   └── static/                 # فایل‌های استاتیک
+│
+└── 📚 مستندات
+    ├── README.md               # این فایل
+    ├── API.md                  # مستندات API
+    └── DEPLOYMENT.md           # راهنمای استقرار
+```
+
+## 🔧 تنظیمات پیشرفته
+
+### متغیرهای محیطی
+
+```bash
+# تنظیمات اصلی
+ENVIRONMENT=production
+LOG_LEVEL=INFO
+PORT=7860
+
+# پایگاه داده
+DATABASE_DIR=/app/data
+DATABASE_URL=sqlite:///legal_documents.db
+
+# کش و حافظه
+TRANSFORMERS_CACHE=/app/cache
+HF_HOME=/app/cache
+REDIS_URL=redis://localhost:6379
+
+# امنیت
+JWT_SECRET_KEY=your-super-secret-key-here
+JWT_ALGORITHM=HS256
+ACCESS_TOKEN_EXPIRE_MINUTES=30
+
+# اسکرپینگ
+SCRAPING_DELAY=2.0
+SCRAPING_TIMEOUT=30
+MAX_CONCURRENT_REQUESTS=10
+
+# رتبه‌بندی
+RATING_BATCH_SIZE=20
+RATING_CONFIDENCE_THRESHOLD=0.7
+```
+
+### تنظیمات Docker
+
+```yaml
+version: '3.8'
 services:
   legal-dashboard:
     build: .
     ports:
-      - "80:8000"
+      - "8000:8000"
     environment:
-      - JWT_SECRET_KEY=${JWT_SECRET_KEY}
       - ENVIRONMENT=production
+      - DATABASE_DIR=/app/data
     volumes:
       - ./data:/app/data
-      - ./logs:/app/logs
+      - ./cache:/app/cache
+    depends_on:
+      - redis
 ```
 
-### Kubernetes (Advanced)
+## 📈 نظارت و نگهداری
 
-```yaml
-apiVersion: apps/v1
-kind: Deployment
-metadata:
-  name: legal-dashboard
-spec:
-  replicas: 3
-  selector:
-    matchLabels:
-      app: legal-dashboard
-  template:
-    spec:
-      containers:
-      - name: legal-dashboard
-        image: legal-dashboard:latest
-        ports:
-        - containerPort: 8000
-        env:
-        - name: JWT_SECRET_KEY
-          valueFrom:
-            secretKeyRef:
-              name: legal-dashboard-secrets
-              key: jwt-secret
-```
+### معیارهای موفقیت
+- **اسکرپینگ موفق**: ۵۰+ سند روزانه
+- **دقت رتبه‌بندی**: بالای ۸۵٪
+- **زمان پاسخ API**: کمتر از ۲ ثانیه
+- **Uptime سیستم**: بالای ۹۹٪
+- **استفاده حافظه**: کمتر از ۱GB
 
-## 🤝 Contributing
+### نظارت عملکرد
+- نرخ موفقیت اسکرپینگ
+- معیارهای دقت رتبه‌بندی
+- عملکرد پایگاه داده
+- الگوهای استفاده حافظه
+- زمان پاسخ API
+- ردیابی خطاها
 
-1. **Fork the repository**
-2. **Create feature branch**: `git checkout -b feature/amazing-feature`
-3. **Make changes** and test thoroughly
-4. **Run tests**: `python -m pytest tests/`
-5. **Commit changes**: `git commit -m 'Add amazing feature'`
-6. **Push to branch**: `git push origin feature/amazing-feature`
-7. **Create Pull Request**
+## 🤝 مشارکت
 
-### Development Setup
+### نحوه مشارکت
+۱. پروژه را Fork کنید
+۲. یک شاخه جدید ایجاد کنید (`git checkout -b feature/amazing-feature`)
+۳. تغییرات خود را commit کنید (`git commit -m 'Add amazing feature'`)
+۴. به شاخه push کنید (`git push origin feature/amazing-feature`)
+۵. یک Pull Request ایجاد کنید
 
-```bash
-# Clone and setup
-git clone <repo-url>
-cd legal-dashboard
+### استانداردهای کدنویسی
+- استفاده از docstring برای تمام توابع
+- تست‌نویسی برای کدهای جدید
+- پیروی از PEP 8
+- کامنت‌گذاری به فارسی برای بخش‌های پیچیده
 
-# Install development dependencies
-pip install -r requirements.txt
-pip install pytest black isort mypy
+## 📄 مجوز
 
-# Setup pre-commit hooks
-pre-commit install
+این پروژه تحت مجوز MIT منتشر شده است. برای جزئیات بیشتر فایل `LICENSE` را مطالعه کنید.
 
-# Run tests
-python -m pytest tests/ -v
+## 📞 پشتیبانی
 
-# Code formatting
-black .
-isort .
-```
+### راه‌های ارتباطی
+- **Issues**: برای گزارش باگ‌ها و درخواست ویژگی‌ها
+- **Discussions**: برای سوالات و بحث‌ها
+- **Email**: برای ارتباط مستقیم
 
-## 📄 License
-
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
-## 🙏 Acknowledgments
-
-- **FastAPI**: Modern, fast web framework
-- **Gradio**: Easy-to-use ML app interface  
-- **Hugging Face**: Model hosting and Spaces platform
-- **Transformers**: State-of-the-art NLP models
-- **Chart.js**: Beautiful charts and visualizations
-
-## 📞 Support
-
-- **Issues**: [GitHub Issues](../../issues)
-- **Discussions**: [GitHub Discussions](../../discussions)
-- **Email**: Contact maintainers
-- **Documentation**: [Full Docs](./docs/)
+### منابع مفید
+- [مستندات FastAPI](https://fastapi.tiangolo.com/)
+- [راهنمای Hugging Face Spaces](https://huggingface.co/docs/hub/spaces)
+- [مستندات Docker](https://docs.docker.com/)
 
 ---
 
-### 🌐 Live Demo
-
-Try the live demo: [Your HF Space URL]
-
-**Made with ❤️ for the legal community**
+**🏛️ Legal Dashboard** - جامع‌ترین سیستم مدیریت اسناد حقوقی ایرانی با هوش مصنوعی
