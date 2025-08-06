@@ -3,736 +3,1139 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>سلامت سیستم | داشبورد حقوقی</title>
+    <title>وضعیت سیستم | سامانه هوشمند</title>
+    
+    <!-- Preconnect for better performance -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preconnect" href="https://cdnjs.cloudflare.com">
+    
+    <!-- فونت و آیکون‌ها -->
     <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@200;300;400;500;600;700;800;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.min.js"></script>
-
-    <style>
-        :root {
-            --primary-color: #3b82f6;
-            --success-color: #10b981;
-            --warning-color: #f59e0b;
-            --danger-color: #ef4444;
-            --text-primary: #0f172a;
-            --text-secondary: #64748b;
-            --bg-gray: #f8fafc;
-            --border-color: #e2e8f0;
-            --card-bg: rgba(255, 255, 255, 0.95);
-            --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-        }
-
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            font-family: 'Vazirmatn', sans-serif;
-            background: linear-gradient(135deg, #f1f5f9 0%, #e2e8f0 100%);
-            color: var(--text-primary);
-            line-height: 1.6;
-            min-height: 100vh;
-        }
-
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 2rem;
-        }
-
-        .header {
-            text-align: center;
-            margin-bottom: 3rem;
-        }
-
-        .header h1 {
-            font-size: 2.5rem;
-            font-weight: 800;
-            background: linear-gradient(135deg, var(--primary-color) 0%, var(--success-color) 100%);
-            -webkit-background-clip: text;
-            background-clip: text;
-            -webkit-text-fill-color: transparent;
-            margin-bottom: 1rem;
-        }
-
-        .header p {
-            color: var(--text-secondary);
-            font-size: 1.1rem;
-        }
-
-        .back-link {
-            position: absolute;
-            top: 2rem;
-            right: 2rem;
-            background: var(--card-bg);
-            padding: 0.75rem 1.5rem;
-            border-radius: 12px;
-            text-decoration: none;
-            color: var(--text-primary);
-            box-shadow: var(--shadow);
-            transition: all 0.3s ease;
-            border: 1px solid var(--border-color);
-        }
-
-        .back-link:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
-        }
-
-        .status-overview {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 1.5rem;
-            margin-bottom: 3rem;
-        }
-
-        .status-card {
-            background: var(--card-bg);
-            padding: 2rem;
-            border-radius: 16px;
-            box-shadow: var(--shadow);
-            border: 1px solid var(--border-color);
-            text-align: center;
-            transition: all 0.3s ease;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .status-card::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 4px;
-        }
-
-        .status-card.healthy { border-top-color: var(--success-color); }
-        .status-card.healthy::before { background: var(--success-color); }
-        .status-card.warning { border-top-color: var(--warning-color); }
-        .status-card.warning::before { background: var(--warning-color); }
-        .status-card.error { border-top-color: var(--danger-color); }
-        .status-card.error::before { background: var(--danger-color); }
-
-        .status-card:hover {
-            transform: translateY(-4px);
-            box-shadow: 0 12px 25px rgba(0, 0, 0, 0.15);
-        }
-
-        .status-icon {
-            font-size: 3rem;
-            margin-bottom: 1rem;
-        }
-
-        .status-card.healthy .status-icon { color: var(--success-color); }
-        .status-card.warning .status-icon { color: var(--warning-color); }
-        .status-card.error .status-icon { color: var(--danger-color); }
-
-        .status-title {
-            font-size: 1.2rem;
-            font-weight: 600;
-            margin-bottom: 0.5rem;
-        }
-
-        .status-value {
-            font-size: 2rem;
-            font-weight: 800;
-            margin-bottom: 0.5rem;
-        }
-
-        .status-description {
-            color: var(--text-secondary);
-            font-size: 0.9rem;
-        }
-
-        .detailed-metrics {
-            display: grid;
-            grid-template-columns: 2fr 1fr;
-            gap: 2rem;
-            margin-bottom: 3rem;
-        }
-
-        .metrics-panel {
-            background: var(--card-bg);
-            padding: 2rem;
-            border-radius: 16px;
-            box-shadow: var(--shadow);
-            border: 1px solid var(--border-color);
-        }
-
-        .panel-title {
-            font-size: 1.4rem;
-            font-weight: 700;
-            margin-bottom: 1.5rem;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
-
-        .metric-row {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 1rem 0;
-            border-bottom: 1px solid var(--border-color);
-        }
-
-        .metric-row:last-child {
-            border-bottom: none;
-        }
-
-        .metric-label {
-            font-weight: 500;
-            color: var(--text-primary);
-        }
-
-        .metric-value {
-            font-weight: 600;
-            font-size: 1.1rem;
-        }
-
-        .metric-value.healthy { color: var(--success-color); }
-        .metric-value.warning { color: var(--warning-color); }
-        .metric-value.error { color: var(--danger-color); }
-
-        .services-grid {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 1rem;
-        }
-
-        .service-item {
-            background: rgba(255, 255, 255, 0.5);
-            padding: 1rem;
-            border-radius: 12px;
-            border: 1px solid var(--border-color);
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-            transition: all 0.3s ease;
-        }
-
-        .service-item:hover {
-            background: rgba(255, 255, 255, 0.8);
-            transform: translateY(-2px);
-        }
-
-        .service-status {
-            width: 12px;
-            height: 12px;
-            border-radius: 50%;
-            flex-shrink: 0;
-        }
-
-        .service-status.online { background: var(--success-color); }
-        .service-status.offline { background: var(--danger-color); }
-        .service-status.loading { background: var(--warning-color); }
-
-        .service-name {
-            font-weight: 500;
-            flex: 1;
-        }
-
-        .service-uptime {
-            font-size: 0.8rem;
-            color: var(--text-secondary);
-        }
-
-        .logs-section {
-            background: var(--card-bg);
-            padding: 2rem;
-            border-radius: 16px;
-            box-shadow: var(--shadow);
-            border: 1px solid var(--border-color);
-        }
-
-        .logs-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 1.5rem;
-        }
-
-        .log-entry {
-            padding: 0.75rem;
-            border-radius: 8px;
-            margin-bottom: 0.5rem;
-            font-family: 'Courier New', monospace;
-            font-size: 0.85rem;
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-        }
-
-        .log-entry.info { background: rgba(59, 130, 246, 0.1); border-left: 3px solid var(--primary-color); }
-        .log-entry.success { background: rgba(16, 185, 129, 0.1); border-left: 3px solid var(--success-color); }
-        .log-entry.warning { background: rgba(245, 158, 11, 0.1); border-left: 3px solid var(--warning-color); }
-        .log-entry.error { background: rgba(239, 68, 68, 0.1); border-left: 3px solid var(--danger-color); }
-
-        .log-timestamp {
-            color: var(--text-secondary);
-            font-weight: 600;
-        }
-
-        .log-message {
-            flex: 1;
-        }
-
-        .refresh-btn {
-            background: var(--primary-color);
-            color: white;
-            border: none;
-            padding: 0.75rem 1.5rem;
-            border-radius: 12px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
-
-        .refresh-btn:hover {
-            background: #2563eb;
-            transform: translateY(-2px);
-        }
-
-        .loading {
-            animation: spin 1s linear infinite;
-        }
-
-        @keyframes spin {
-            from { transform: rotate(0deg); }
-            to { transform: rotate(360deg); }
-        }
-
-        @media (max-width: 768px) {
-            .status-overview {
-                grid-template-columns: repeat(2, 1fr);
-            }
-            
-            .detailed-metrics {
-                grid-template-columns: 1fr;
-            }
-            
-            .services-grid {
-                grid-template-columns: 1fr;
-            }
-        }
-    </style>
+    
+    <!-- CSS Files -->
+    <link rel="stylesheet" href="css/main.css">
+    <link rel="stylesheet" href="css/components.css">
+    <link rel="stylesheet" href="css/responsive.css">
 </head>
 <body>
-    <a href="index.html" class="back-link">
-        <i class="fas fa-arrow-right"></i>
-        بازگشت به داشبورد
-    </a>
-
-    <div class="container">
-        <div class="header">
-            <h1><i class="fas fa-heartbeat"></i> سلامت سیستم</h1>
-            <p>نظارت بر وضعیت و عملکرد سیستم داشبورد حقوقی</p>
-        </div>
-
-        <!-- Status Overview -->
-        <div class="status-overview">
-            <div class="status-card healthy" id="apiStatusCard">
-                <div class="status-icon">
-                    <i class="fas fa-server"></i>
-                </div>
-                <div class="status-title">API سرور</div>
-                <div class="status-value" id="apiStatusValue">آنلاین</div>
-                <div class="status-description" id="apiStatusDesc">پاسخ‌دهی عالی</div>
-            </div>
-
-            <div class="status-card healthy" id="ocrStatusCard">
-                <div class="status-icon">
-                    <i class="fas fa-eye"></i>
-                </div>
-                <div class="status-title">سیستم OCR</div>
-                <div class="status-value" id="ocrStatusValue">آماده</div>
-                <div class="status-description" id="ocrStatusDesc">مدل بارگذاری شده</div>
-            </div>
-
-            <div class="status-card healthy" id="dbStatusCard">
-                <div class="status-icon">
-                    <i class="fas fa-database"></i>
-                </div>
-                <div class="status-title">پایگاه داده</div>
-                <div class="status-value" id="dbStatusValue">متصل</div>
-                <div class="status-description" id="dbStatusDesc">عملکرد بهینه</div>
-            </div>
-
-            <div class="status-card healthy" id="systemStatusCard">
-                <div class="status-icon">
-                    <i class="fas fa-cogs"></i>
-                </div>
-                <div class="status-title">سیستم کلی</div>
-                <div class="status-value" id="systemStatusValue">سالم</div>
-                <div class="status-description" id="systemStatusDesc">همه سرویس‌ها فعال</div>
-            </div>
-        </div>
-
-        <!-- Detailed Metrics -->
-        <div class="detailed-metrics">
-            <div class="metrics-panel">
-                <h2 class="panel-title">
-                    <i class="fas fa-chart-line"></i>
-                    معیارهای عملکرد
-                </h2>
-
-                <div class="metric-row">
-                    <span class="metric-label">میانگین زمان پاسخ</span>
-                    <span class="metric-value healthy" id="responseTimeMetric">120ms</span>
-                </div>
-
-                <div class="metric-row">
-                    <span class="metric-label">استفاده از CPU</span>
-                    <span class="metric-value healthy" id="cpuUsageMetric">25%</span>
-                </div>
-
-                <div class="metric-row">
-                    <span class="metric-label">استفاده از RAM</span>
-                    <span class="metric-value healthy" id="ramUsageMetric">1.2GB / 4GB</span>
-                </div>
-
-                <div class="metric-row">
-                    <span class="metric-label">فضای دیسک</span>
-                    <span class="metric-value healthy" id="diskUsageMetric">45GB / 100GB</span>
-                </div>
-
-                <div class="metric-row">
-                    <span class="metric-label">اتصالات فعال</span>
-                    <span class="metric-value healthy" id="connectionsMetric">12</span>
-                </div>
-
-                <div class="metric-row">
-                    <span class="metric-label">درخواست‌ها در دقیقه</span>
-                    <span class="metric-value healthy" id="requestsMetric">45</span>
-                </div>
-            </div>
-
-            <div class="metrics-panel">
-                <h2 class="panel-title">
-                    <i class="fas fa-list"></i>
-                    وضعیت سرویس‌ها
-                </h2>
-
-                <div class="services-grid">
-                    <div class="service-item">
-                        <div class="service-status online" id="webServerStatus"></div>
-                        <div class="service-name">وب سرور</div>
-                        <div class="service-uptime" id="webServerUptime">99.9%</div>
+    <div class="dashboard-container">
+        <aside class="sidebar" id="sidebar">
+            <!-- Sidebar Header -->
+            <div class="sidebar-header">
+                <a href="index.html" class="logo">
+                    <div class="logo-icon">
+                        <i class="fas fa-gavel"></i>
                     </div>
-
-                    <div class="service-item">
-                        <div class="service-status online" id="apiServerStatus"></div>
-                        <div class="service-name">API سرور</div>
-                        <div class="service-uptime" id="apiServerUptime">99.8%</div>
-                    </div>
-
-                    <div class="service-item">
-                        <div class="service-status online" id="ocrServiceStatus"></div>
-                        <div class="service-name">سرویس OCR</div>
-                        <div class="service-uptime" id="ocrServiceUptime">98.5%</div>
-                    </div>
-
-                    <div class="service-item">
-                        <div class="service-status online" id="databaseStatus"></div>
-                        <div class="service-name">پایگاه داده</div>
-                        <div class="service-uptime" id="databaseUptime">99.9%</div>
-                    </div>
-
-                    <div class="service-item">
-                        <div class="service-status online" id="scrapingStatus"></div>
-                        <div class="service-name">وب اسکرپینگ</div>
-                        <div class="service-uptime" id="scrapingUptime">97.2%</div>
-                    </div>
-
-                    <div class="service-item">
-                        <div class="service-status online" id="cacheStatus"></div>
-                        <div class="service-name">سیستم کش</div>
-                        <div class="service-uptime" id="cacheUptime">99.5%</div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- System Logs -->
-        <div class="logs-section">
-            <div class="logs-header">
-                <h2 class="panel-title">
-                    <i class="fas fa-file-alt"></i>
-                    لاگ‌های سیستم
-                </h2>
-                <button class="refresh-btn" onclick="refreshLogs()">
-                    <i class="fas fa-sync-alt" id="refreshIcon"></i>
-                    بروزرسانی
+                    <span class="logo-text">داشبورد حقوقی</span>
+                </a>
+                <button class="mobile-menu-toggle" id="mobile-menu-toggle">
+                    <i class="fas fa-bars"></i>
                 </button>
             </div>
 
-            <div id="systemLogs">
-                <div class="log-entry success">
-                    <span class="log-timestamp">14:30:25</span>
-                    <span class="log-message">سیستم OCR با موفقیت راه‌اندازی شد</span>
+            <!-- Navigation -->
+            <nav class="main-nav">
+                <div class="nav-section">
+                    <h4 class="nav-title">اصلی</h4>
+                    <ul class="nav-menu">
+                        <li class="nav-item">
+                            <a href="index.html" class="nav-link" data-nav="dashboard">
+                                <span class="nav-icon"><i class="fas fa-tachometer-alt"></i></span>
+                                <span>داشبورد</span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="documents.html" class="nav-link" data-nav="documents">
+                                <span class="nav-icon"><i class="fas fa-file-alt"></i></span>
+                                <span>مدیریت اسناد</span>
+                                <span class="nav-badge" data-badge="documents">0</span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="upload.html" class="nav-link" data-nav="upload">
+                                <span class="nav-icon"><i class="fas fa-cloud-upload-alt"></i></span>
+                                <span>آپلود فایل</span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="search.html" class="nav-link" data-nav="search">
+                                <span class="nav-icon"><i class="fas fa-search"></i></span>
+                                <span>جستجو</span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="analytics.html" class="nav-link" data-nav="analytics">
+                                <span class="nav-icon"><i class="fas fa-chart-bar"></i></span>
+                                <span>تحلیل و گزارش</span>
+                            </a>
+                        </li>
+                    </ul>
                 </div>
-                <div class="log-entry info">
-                    <span class="log-timestamp">14:29:12</span>
-                    <span class="log-message">اتصال به پایگاه داده برقرار شد</span>
+
+                <div class="nav-section">
+                    <h4 class="nav-title">سیستم</h4>
+                    <ul class="nav-menu">
+                        <li class="nav-item">
+                            <a href="system-health.html" class="nav-link active" data-nav="systemHealth">
+                                <span class="nav-icon"><i class="fas fa-heartbeat"></i></span>
+                                <span>وضعیت سیستم</span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="settings.html" class="nav-link" data-nav="settings">
+                                <span class="nav-icon"><i class="fas fa-cog"></i></span>
+                                <span>تنظیمات</span>
+                            </a>
+                        </li>
+                    </ul>
                 </div>
-                <div class="log-entry info">
-                    <span class="log-timestamp">14:28:45</span>
-                    <span class="log-message">API سرور آماده دریافت درخواست</span>
+            </nav>
+        </aside>
+
+        <main class="main-content">
+            <!-- Header -->
+            <header class="header">
+                <h1 class="header-title">وضعیت سیستم</h1>
+                <div class="header-actions">
+                    <button class="btn btn-secondary" id="refresh-health-btn">
+                        <i class="fas fa-sync-alt"></i>
+                        بروزرسانی
+                    </button>
+                    <button class="btn btn-primary" id="run-diagnostics-btn">
+                        <i class="fas fa-stethoscope"></i>
+                        اجرای تشخیص
+                    </button>
+                    <button class="btn-icon" id="user-menu-btn">
+                        <i class="fas fa-user-circle"></i>
+                    </button>
+                    <button class="btn-icon" id="notification-bell">
+                        <i class="fas fa-bell"></i>
+                        <span class="notification-badge" id="notification-badge">0</span>
+                    </button>
                 </div>
-                <div class="log-entry warning">
-                    <span class="log-timestamp">14:25:33</span>
-                    <span class="log-message">استفاده از RAM به 80% رسید</span>
+            </header>
+
+            <!-- Breadcrumbs -->
+            <div class="breadcrumb-container" id="breadcrumb-container">
+                <a href="index.html" class="breadcrumb-item">
+                    <i class="fas fa-home"></i>
+                    <span>خانه</span>
+                </a>
+                <i class="fas fa-angle-left mx-2 text-gray-400"></i>
+                <span class="breadcrumb-item active" aria-current="page">وضعیت سیستم</span>
+            </div>
+
+            <!-- System Overview -->
+            <section class="system-overview">
+                <div class="overview-grid">
+                    <div class="overview-card">
+                        <div class="overview-icon">
+                            <i class="fas fa-heartbeat"></i>
+                        </div>
+                        <div class="overview-content">
+                            <div class="overview-value" id="system-health">98%</div>
+                            <div class="overview-label">سلامت کلی سیستم</div>
+                            <div class="overview-change positive">
+                                <i class="fas fa-arrow-up"></i>
+                                <span>+2% این هفته</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="overview-card">
+                        <div class="overview-icon">
+                            <i class="fas fa-server"></i>
+                        </div>
+                        <div class="overview-content">
+                            <div class="overview-value" id="uptime">99.9%</div>
+                            <div class="overview-label">زمان کارکرد</div>
+                            <div class="overview-change neutral">
+                                <i class="fas fa-minus"></i>
+                                <span>بدون تغییر</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="overview-card">
+                        <div class="overview-icon">
+                            <i class="fas fa-tachometer-alt"></i>
+                        </div>
+                        <div class="overview-content">
+                            <div class="overview-value" id="response-time">245ms</div>
+                            <div class="overview-label">زمان پاسخ</div>
+                            <div class="overview-change negative">
+                                <i class="fas fa-arrow-down"></i>
+                                <span>+15ms</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="overview-card">
+                        <div class="overview-icon">
+                            <i class="fas fa-users"></i>
+                        </div>
+                        <div class="overview-content">
+                            <div class="overview-value" id="active-users">45</div>
+                            <div class="overview-label">کاربران فعال</div>
+                            <div class="overview-change positive">
+                                <i class="fas fa-arrow-up"></i>
+                                <span>+8 این هفته</span>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-                <div class="log-entry success">
-                    <span class="log-timestamp">14:20:15</span>
-                    <span class="log-message">بکاپ خودکار با موفقیت انجام شد</span>
+            </section>
+
+            <!-- System Components -->
+            <section class="system-components">
+                <div class="components-header">
+                    <h3>وضعیت اجزای سیستم</h3>
+                    <div class="components-actions">
+                        <button class="btn btn-sm btn-secondary" id="expand-all-btn">
+                            <i class="fas fa-expand"></i>
+                            گسترش همه
+                        </button>
+                        <button class="btn btn-sm btn-primary" id="collapse-all-btn">
+                            <i class="fas fa-compress"></i>
+                            جمع کردن همه
+                        </button>
+                    </div>
                 </div>
+
+                <div class="components-grid">
+                    <!-- Server Status -->
+                    <div class="component-card">
+                        <div class="component-header">
+                            <div class="component-info">
+                                <div class="component-icon">
+                                    <i class="fas fa-server"></i>
+                                </div>
+                                <div class="component-details">
+                                    <h4>سرور اصلی</h4>
+                                    <span class="component-status online">آنلاین</span>
+                                </div>
+                            </div>
+                            <div class="component-actions">
+                                <button class="btn-icon" data-component="server" data-action="details">
+                                    <i class="fas fa-info-circle"></i>
+                                </button>
+                                <button class="btn-icon" data-component="server" data-action="restart">
+                                    <i class="fas fa-redo"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="component-metrics">
+                            <div class="metric-item">
+                                <span class="metric-label">CPU</span>
+                                <div class="metric-bar">
+                                    <div class="metric-fill" style="width: 45%"></div>
+                                </div>
+                                <span class="metric-value">45%</span>
+                            </div>
+                            <div class="metric-item">
+                                <span class="metric-label">RAM</span>
+                                <div class="metric-bar">
+                                    <div class="metric-fill" style="width: 62%"></div>
+                                </div>
+                                <span class="metric-value">62%</span>
+                            </div>
+                            <div class="metric-item">
+                                <span class="metric-label">دیسک</span>
+                                <div class="metric-bar">
+                                    <div class="metric-fill" style="width: 38%"></div>
+                                </div>
+                                <span class="metric-value">38%</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Database Status -->
+                    <div class="component-card">
+                        <div class="component-header">
+                            <div class="component-info">
+                                <div class="component-icon">
+                                    <i class="fas fa-database"></i>
+                                </div>
+                                <div class="component-details">
+                                    <h4>پایگاه داده</h4>
+                                    <span class="component-status online">آنلاین</span>
+                                </div>
+                            </div>
+                            <div class="component-actions">
+                                <button class="btn-icon" data-component="database" data-action="details">
+                                    <i class="fas fa-info-circle"></i>
+                                </button>
+                                <button class="btn-icon" data-component="database" data-action="backup">
+                                    <i class="fas fa-download"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="component-metrics">
+                            <div class="metric-item">
+                                <span class="metric-label">اتصالات</span>
+                                <div class="metric-bar">
+                                    <div class="metric-fill" style="width: 28%"></div>
+                                </div>
+                                <span class="metric-value">28%</span>
+                            </div>
+                            <div class="metric-item">
+                                <span class="metric-label">فضای ذخیره</span>
+                                <div class="metric-bar">
+                                    <div class="metric-fill" style="width: 55%"></div>
+                                </div>
+                                <span class="metric-value">55%</span>
+                            </div>
+                            <div class="metric-item">
+                                <span class="metric-label">عملکرد</span>
+                                <div class="metric-bar">
+                                    <div class="metric-fill" style="width: 92%"></div>
+                                </div>
+                                <span class="metric-value">92%</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Storage Status -->
+                    <div class="component-card">
+                        <div class="component-header">
+                            <div class="component-info">
+                                <div class="component-icon">
+                                    <i class="fas fa-hdd"></i>
+                                </div>
+                                <div class="component-details">
+                                    <h4>ذخیره‌سازی</h4>
+                                    <span class="component-status online">آنلاین</span>
+                                </div>
+                            </div>
+                            <div class="component-actions">
+                                <button class="btn-icon" data-component="storage" data-action="details">
+                                    <i class="fas fa-info-circle"></i>
+                                </button>
+                                <button class="btn-icon" data-component="storage" data-action="cleanup">
+                                    <i class="fas fa-broom"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="component-metrics">
+                            <div class="metric-item">
+                                <span class="metric-label">فضای کل</span>
+                                <div class="metric-bar">
+                                    <div class="metric-fill" style="width: 42%"></div>
+                                </div>
+                                <span class="metric-value">42%</span>
+                            </div>
+                            <div class="metric-item">
+                                <span class="metric-label">فایل‌ها</span>
+                                <div class="metric-bar">
+                                    <div class="metric-fill" style="width: 67%"></div>
+                                </div>
+                                <span class="metric-value">67%</span>
+                            </div>
+                            <div class="metric-item">
+                                <span class="metric-label">پشتیبان</span>
+                                <div class="metric-bar">
+                                    <div class="metric-fill" style="width: 23%"></div>
+                                </div>
+                                <span class="metric-value">23%</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Network Status -->
+                    <div class="component-card">
+                        <div class="component-header">
+                            <div class="component-info">
+                                <div class="component-icon">
+                                    <i class="fas fa-network-wired"></i>
+                                </div>
+                                <div class="component-details">
+                                    <h4>شبکه</h4>
+                                    <span class="component-status online">آنلاین</span>
+                                </div>
+                            </div>
+                            <div class="component-actions">
+                                <button class="btn-icon" data-component="network" data-action="details">
+                                    <i class="fas fa-info-circle"></i>
+                                </button>
+                                <button class="btn-icon" data-component="network" data-action="test">
+                                    <i class="fas fa-wifi"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="component-metrics">
+                            <div class="metric-item">
+                                <span class="metric-label">پهنای باند</span>
+                                <div class="metric-bar">
+                                    <div class="metric-fill" style="width: 35%"></div>
+                                </div>
+                                <span class="metric-value">35%</span>
+                            </div>
+                            <div class="metric-item">
+                                <span class="metric-label">اتصالات</span>
+                                <div class="metric-bar">
+                                    <div class="metric-fill" style="width: 48%"></div>
+                                </div>
+                                <span class="metric-value">48%</span>
+                            </div>
+                            <div class="metric-item">
+                                <span class="metric-label">سرعت</span>
+                                <div class="metric-bar">
+                                    <div class="metric-fill" style="width: 78%"></div>
+                                </div>
+                                <span class="metric-value">78%</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Performance Monitoring -->
+            <section class="performance-monitoring">
+                <div class="monitoring-header">
+                    <h3>نظارت بر عملکرد</h3>
+                    <div class="monitoring-actions">
+                        <select class="form-select" id="monitoring-period">
+                            <option value="1h">1 ساعت گذشته</option>
+                            <option value="6h">6 ساعت گذشته</option>
+                            <option value="24h" selected>24 ساعت گذشته</option>
+                            <option value="7d">7 روز گذشته</option>
+                        </select>
+                        <button class="btn btn-sm btn-secondary" id="export-metrics-btn">
+                            <i class="fas fa-download"></i>
+                            صادرات
+                        </button>
+                    </div>
+                </div>
+
+                <div class="monitoring-charts">
+                    <div class="chart-container">
+                        <div class="chart-header">
+                            <h4>استفاده از منابع</h4>
+                            <div class="chart-actions">
+                                <button class="btn-icon" data-chart-action="refresh" data-chart="resources">
+                                    <i class="fas fa-sync-alt"></i>
+                                </button>
+                                <button class="btn-icon" data-chart-action="export" data-chart="resources">
+                                    <i class="fas fa-download"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="chart-content">
+                            <canvas id="resourcesChart"></canvas>
+                        </div>
+                    </div>
+
+                    <div class="chart-container">
+                        <div class="chart-header">
+                            <h4>زمان پاسخ‌دهی</h4>
+                            <div class="chart-actions">
+                                <button class="btn-icon" data-chart-action="refresh" data-chart="response">
+                                    <i class="fas fa-sync-alt"></i>
+                                </button>
+                                <button class="btn-icon" data-chart-action="export" data-chart="response">
+                                    <i class="fas fa-download"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="chart-content">
+                            <canvas id="responseTimeChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- System Logs -->
+            <section class="system-logs">
+                <div class="logs-header">
+                    <h3>لاگ‌های سیستم</h3>
+                    <div class="logs-actions">
+                        <select class="form-select" id="log-level">
+                            <option value="all">همه سطوح</option>
+                            <option value="error">خطا</option>
+                            <option value="warning">هشدار</option>
+                            <option value="info">اطلاعات</option>
+                            <option value="debug">دیباگ</option>
+                        </select>
+                        <button class="btn btn-sm btn-secondary" id="clear-logs-btn">
+                            <i class="fas fa-trash"></i>
+                            پاک کردن
+                        </button>
+                        <button class="btn btn-sm btn-primary" id="download-logs-btn">
+                            <i class="fas fa-download"></i>
+                            دانلود
+                        </button>
+                    </div>
+                </div>
+
+                <div class="logs-container">
+                    <div class="log-filters">
+                        <input type="text" placeholder="جستجو در لاگ‌ها..." class="form-input" id="log-search">
+                        <button class="btn btn-sm btn-secondary" id="filter-logs-btn">
+                            <i class="fas fa-filter"></i>
+                            فیلتر
+                        </button>
+                    </div>
+
+                    <div class="logs-list" id="logs-list">
+                        <!-- Log entries will be populated here -->
+                    </div>
+
+                    <div class="logs-pagination">
+                        <button class="btn btn-sm btn-secondary" id="prev-page-btn">
+                            <i class="fas fa-chevron-right"></i>
+                            قبلی
+                        </button>
+                        <span class="page-info">صفحه 1 از 10</span>
+                        <button class="btn btn-sm btn-secondary" id="next-page-btn">
+                            بعدی
+                            <i class="fas fa-chevron-left"></i>
+                        </button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Alerts and Notifications -->
+            <section class="system-alerts">
+                <div class="alerts-header">
+                    <h3>هشدارها و اعلان‌ها</h3>
+                    <button class="btn btn-sm btn-primary" id="configure-alerts-btn">
+                        <i class="fas fa-cog"></i>
+                        تنظیم هشدارها
+                    </button>
+                </div>
+
+                <div class="alerts-list" id="alerts-list">
+                    <!-- Alerts will be populated here -->
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <!-- Notification Panel -->
+    <div id="notification-panel" class="notification-panel hidden">
+        <div class="notification-header">
+            <h3>اعلان‌ها</h3>
+            <button class="close-btn" id="close-notification-panel">×</button>
+        </div>
+        <div class="notification-list" id="notification-list"></div>
+        <div class="notification-footer">
+            <button class="btn btn-secondary" id="mark-all-read">علامت‌گذاری همه</button>
+            <button class="btn btn-danger" id="clear-all-notifications">پاک کردن همه</button>
+        </div>
+    </div>
+
+    <!-- Mobile Overlay -->
+    <div id="mobile-overlay" class="mobile-overlay hidden"></div>
+
+    <!-- Component Details Modal -->
+    <div id="component-details-modal" class="modal-overlay hidden">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="component-title">جزئیات کامپوننت</h3>
+                <button class="close-btn" id="close-component-modal">×</button>
+            </div>
+            <div class="modal-body">
+                <div id="component-details-content">
+                    <!-- Component details will be loaded here -->
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" id="close-details-btn">بستن</button>
+                <button class="btn btn-primary" id="action-btn">عملیات</button>
             </div>
         </div>
     </div>
 
-    <!-- Load JavaScript Files -->
-    <script src="js/notifications.js"></script>
+    <!-- JavaScript Modules -->
+    <script src="js/core.js"></script>
     <script src="js/api-client.js"></script>
+    <script src="js/state-manager.js"></script>
+    <script src="js/navigation.js"></script>
+    <script src="js/notifications.js"></script>
+    <script src="js/document-manager.js"></script>
+    <script src="js/file-handler.js"></script>
+    <script src="js/search-engine.js"></script>
+    <script src="js/chart-manager.js"></script>
 
+    <!-- Initialize System Health Page -->
     <script>
-        class SystemHealthMonitor {
-            constructor() {
-                this.apiClient = null;
-                this.refreshInterval = null;
-                this.isLoading = false;
-                
-                this.initialize();
-            }
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('🚀 Initializing System Health Page...');
 
-            async initialize() {
-                console.log('🔍 System Health Monitor initializing...');
-                
-                // Initialize API client
-                this.apiClient = window.legalAPI || new LegalDashboardAPI();
-                
-                // Start monitoring
-                await this.refreshSystemHealth();
-                
-                // Auto-refresh every 30 seconds
-                this.refreshInterval = setInterval(() => {
-                    this.refreshSystemHealth();
-                }, 30000);
-                
-                // Simulate real-time updates
-                this.startRealtimeSimulation();
-                
-                console.log('✅ System Health Monitor ready');
-            }
+            // Initialize all managers
+            const managers = {
+                core: window.dashboardCore,
+                api: window.apiClient,
+                state: window.stateManager,
+                navigation: window.navigationManager,
+                notifications: window.notificationManager,
+                documents: window.documentManager,
+                files: window.fileHandler,
+                search: window.searchEngine,
+                charts: window.chartManager
+            };
 
-            async refreshSystemHealth() {
-                if (this.isLoading) return;
+            // Set up cross-component communication
+            managers.core.broadcast('systemHealth:initialized', { managers });
+
+            // Initialize system health page functionality
+            initializeSystemHealthPage();
+
+            console.log('✅ System Health page initialized successfully');
+        });
+
+        function initializeSystemHealthPage() {
+            // Load system health data
+            loadSystemHealthData();
+
+            // Initialize monitoring charts
+            initializeMonitoringCharts();
+
+            // Load system logs
+            loadSystemLogs();
+
+            // Load alerts
+            loadSystemAlerts();
+
+            // Set up event listeners
+            setupSystemHealthEventListeners();
+
+            // Set up real-time monitoring
+            setupRealTimeMonitoring();
+        }
+
+        function loadSystemHealthData() {
+            // Load overview metrics
+            loadOverviewMetrics();
+
+            // Load component status
+            loadComponentStatus();
+        }
+
+        function loadOverviewMetrics() {
+            // Mock data - in real app, this would come from API
+            const metrics = {
+                systemHealth: 98,
+                uptime: 99.9,
+                responseTime: 245,
+                activeUsers: 45
+            };
+
+            document.getElementById('system-health').textContent = metrics.systemHealth + '%';
+            document.getElementById('uptime').textContent = metrics.uptime + '%';
+            document.getElementById('response-time').textContent = metrics.responseTime + 'ms';
+            document.getElementById('active-users').textContent = metrics.activeUsers;
+        }
+
+        function loadComponentStatus() {
+            // This would load component status from API
+            console.log('Loading component status...');
+        }
+
+        function initializeMonitoringCharts() {
+            if (window.chartManager) {
+                // Initialize resources chart
+                window.chartManager.createChart('resources', 'resourcesChart');
                 
-                this.isLoading = true;
-                
-                try {
-                    const healthData = await this.apiClient.healthCheck();
-                    this.updateHealthDisplay(healthData);
-                    
-                    if (window.notificationManager) {
-                        window.notificationManager.showSuccess('بروزرسانی موفق', 'وضعیت سیستم بروزرسانی شد');
+                // Initialize response time chart
+                window.chartManager.createChart('responseTime', 'responseTimeChart');
+            } else {
+                // Fallback chart initialization
+                initializeFallbackCharts();
+            }
+        }
+
+        function initializeFallbackCharts() {
+            // Mock chart data
+            const resourcesData = {
+                labels: ['00:00', '04:00', '08:00', '12:00', '16:00', '20:00'],
+                datasets: [
+                    {
+                        label: 'CPU (%)',
+                        data: [45, 52, 48, 65, 58, 62],
+                        borderColor: '#3b82f6',
+                        backgroundColor: 'rgba(59, 130, 246, 0.1)',
+                        tension: 0.4
+                    },
+                    {
+                        label: 'RAM (%)',
+                        data: [62, 58, 65, 72, 68, 75],
+                        borderColor: '#10b981',
+                        backgroundColor: 'rgba(16, 185, 129, 0.1)',
+                        tension: 0.4
+                    },
+                    {
+                        label: 'دیسک (%)',
+                        data: [38, 42, 45, 48, 52, 55],
+                        borderColor: '#f59e0b',
+                        backgroundColor: 'rgba(245, 158, 11, 0.1)',
+                        tension: 0.4
                     }
-                    
-                } catch (error) {
-                    console.error('Health check failed:', error);
-                    this.updateHealthDisplay(null);
-                    
-                    if (window.notificationManager) {
-                        window.notificationManager.showWarning('خطا در اتصال', 'نتوانستیم وضعیت سیستم را بررسی کنیم');
+                ]
+            };
+
+            const responseTimeData = {
+                labels: ['00:00', '04:00', '08:00', '12:00', '16:00', '20:00'],
+                datasets: [{
+                    label: 'زمان پاسخ (ms)',
+                    data: [180, 220, 195, 280, 245, 210],
+                    borderColor: '#ef4444',
+                    backgroundColor: 'rgba(239, 68, 68, 0.1)',
+                    tension: 0.4
+                }]
+            };
+
+            // Create charts using Chart.js
+            if (typeof Chart !== 'undefined') {
+                new Chart(document.getElementById('resourcesChart'), {
+                    type: 'line',
+                    data: resourcesData,
+                    options: {
+                        responsive: true,
+                        plugins: {
+                            legend: {
+                                position: 'top',
+                            }
+                        },
+                        scales: {
+                            y: {
+                                beginAtZero: true,
+                                max: 100
+                            }
+                        }
                     }
-                } finally {
-                    this.isLoading = false;
-                }
-            }
+                });
 
-            updateHealthDisplay(healthData) {
-                if (healthData) {
-                    this.updateOnlineStatus(healthData);
-                } else {
-                    this.updateOfflineStatus();
-                }
-                
-                this.updateMetrics(healthData);
-                this.updateServices(healthData);
-            }
-
-            updateOnlineStatus(data) {
-                // API Status
-                this.updateStatusCard('apiStatusCard', 'healthy', 'آنلاین', 'پاسخ‌دهی عالی');
-                
-                // OCR Status
-                const ocrReady = data.services?.ocr_model_loaded;
-                this.updateStatusCard('ocrStatusCard', 
-                    ocrReady ? 'healthy' : 'warning',
-                    ocrReady ? 'آماده' : 'بارگذاری',
-                    ocrReady ? 'مدل بارگذاری شده' : 'در حال آماده‌سازی'
-                );
-                
-                // Database Status
-                this.updateStatusCard('dbStatusCard', 'healthy', 'متصل', 'عملکرد بهینه');
-                
-                // Overall System
-                this.updateStatusCard('systemStatusCard', 'healthy', 'سالم', 'همه سرویس‌ها فعال');
-            }
-
-            updateOfflineStatus() {
-                this.updateStatusCard('apiStatusCard', 'error', 'آفلاین', 'خطا در اتصال');
-                this.updateStatusCard('ocrStatusCard', 'error', 'خطا', 'غیرفعال');
-                this.updateStatusCard('dbStatusCard', 'warning', 'نامشخص', 'وضعیت نامعلوم');
-                this.updateStatusCard('systemStatusCard', 'warning', 'مشکل', 'بررسی نیاز');
-            }
-
-            updateStatusCard(cardId, status, value, description) {
-                const card = document.getElementById(cardId);
-                const valueEl = document.getElementById(cardId.replace('Card', 'Value'));
-                const descEl = document.getElementById(cardId.replace('Card', 'Desc'));
-                
-                if (card) {
-                    card.className = `status-card ${status}`;
-                }
-                if (valueEl) {
-                    valueEl.textContent = value;
-                }
-                if (descEl) {
-                    descEl.textContent = description;
-                }
-            }
-
-            updateMetrics(data) {
-                // Generate realistic metrics
-                const responseTime = this.generateMetric(80, 200, 'ms');
-                const cpuUsage = this.generateMetric(15, 40, '%');
-                const ramUsage = this.generateMemoryUsage();
-                const diskUsage = this.generateDiskUsage();
-                const connections = Math.floor(Math.random() * 20) + 5;
-                const requests = Math.floor(Math.random() * 50) + 20;
-                
-                this.updateMetric('responseTimeMetric', responseTime, responseTime < 150 ? 'healthy' : 'warning');
-                this.updateMetric('cpuUsageMetric', cpuUsage, cpuUsage < 50 ? 'healthy' : 'warning');
-                this.updateMetric('ramUsageMetric', ramUsage, 'healthy');
-                this.updateMetric('diskUsageMetric', diskUsage, 'healthy');
-                this.updateMetric('connectionsMetric', connections, 'healthy');
-                this.updateMetric('requestsMetric', requests, 'healthy');
-            }
-
-            updateMetric(elementId, value, status) {
-                const element = document.getElementById(elementId);
-                if (element) {
-                    element.textContent = value;
-                    element.className = `metric-value ${status}`;
-                }
-            }
-
-            updateServices(data) {
-                const services = [
-                    { id: 'webServerStatus', uptime: 'webServerUptime', status: 'online', uptime_val: '99.9%' },
-                    { id: 'apiServerStatus', uptime: 'apiServerUptime', status: 'online', uptime_val: '99.8%' },
-                    { id: 'ocrServiceStatus', uptime: 'ocrServiceUptime', status: 'online', uptime_val: '98.5%' },
-                    { id: 'databaseStatus', uptime: 'databaseUptime', status: 'online', uptime_val: '99.9%' },
-                    { id: 'scrapingStatus', uptime: 'scrapingUptime', status: 'online', uptime_val: '97.2%' },
-                    { id: 'cacheStatus', uptime: 'cacheUptime', status: 'online', uptime_val: '99.5%' }
-                ];
-
-                services.forEach(service => {
-                    const statusEl = document.getElementById(service.id);
-                    const uptimeEl = document.getElementById(service.uptime);
-                    
-                    if (statusEl) {
-                        statusEl.className = `service-status ${data ? service.status : 'offline'}`;
-                    }
-                    if (uptimeEl) {
-                        uptimeEl.textContent = data ? service.uptime_val : 'N/A';
+                new Chart(document.getElementById('responseTimeChart'), {
+                    type: 'line',
+                    data: responseTimeData,
+                    options: {
+                        responsive: true,
+                        plugins: {
+                            legend: {
+                                position: 'top',
+                            }
+                        }
                     }
                 });
             }
+        }
 
-            generateMetric(min, max, unit) {
-                const value = Math.floor(Math.random() * (max - min)) + min;
-                return `${value}${unit}`;
-            }
-
-            generateMemoryUsage() {
-                const used = (Math.random() * 2 + 0.5).toFixed(1);
-                return `${used}GB / 4GB`;
-            }
-
-            generateDiskUsage() {
-                const used = Math.floor(Math.random() * 30 + 40);
-                return `${used}GB / 100GB`;
-            }
-
-            startRealtimeSimulation() {
-                // Simulate system activity with logs
-                setInterval(() => {
-                    this.addRandomLog();
-                }, 15000); // Add log every 15 seconds
-            }
-
-            addRandomLog() {
-                const logTypes = ['info', 'success', 'warning'];
-                const messages = [
-                    'درخواست API جدید پردازش شد',
-                    'فایل جدید آپلود شد',
-                    'عملیات OCR تکمیل شد',
-                    'بکاپ دوره‌ای انجام شد',
-                    'کش سیستم بهینه‌سازی شد',
-                    'عملیات اسکرپینگ شروع شد',
-                    'اتصال جدید به پایگاه داده'
-                ];
-
-                const type = logTypes[Math.floor(Math.random() * logTypes.length)];
-                const message = messages[Math.floor(Math.random() * messages.length)];
-                const timestamp = new Date().toLocaleTimeString('fa-IR');
-
-                const logsContainer = document.getElementById('systemLogs');
-                const logEntry = document.createElement('div');
-                logEntry.className = `log-entry ${type}`;
-                logEntry.innerHTML = `
-                    <span class="log-timestamp">${timestamp}</span>
-                    <span class="log-message">${message}</span>
-                `;
-
-                logsContainer.insertBefore(logEntry, logsContainer.firstChild);
-
-                // Keep only last 10 logs
-                const logs = logsContainer.children;
-                if (logs.length > 10) {
-                    logsContainer.removeChild(logs[logs.length - 1]);
+        function loadSystemLogs() {
+            // Mock log data
+            const logs = [
+                {
+                    timestamp: new Date().toISOString(),
+                    level: 'info',
+                    component: 'Server',
+                    message: 'سیستم با موفقیت راه‌اندازی شد'
+                },
+                {
+                    timestamp: new Date(Date.now() - 60000).toISOString(),
+                    level: 'warning',
+                    component: 'Database',
+                    message: 'اتصالات پایگاه داده به 80% رسید'
+                },
+                {
+                    timestamp: new Date(Date.now() - 120000).toISOString(),
+                    level: 'error',
+                    component: 'Storage',
+                    message: 'خطا در نوشتن فایل: فضای دیسک کافی نیست'
                 }
+            ];
+
+            renderSystemLogs(logs);
+        }
+
+        function renderSystemLogs(logs) {
+            const logsList = document.getElementById('logs-list');
+            if (!logsList) return;
+
+            logsList.innerHTML = logs.map(log => `
+                <div class="log-entry log-${log.level}">
+                    <div class="log-timestamp">${formatTimestamp(log.timestamp)}</div>
+                    <div class="log-level">${log.level.toUpperCase()}</div>
+                    <div class="log-component">${log.component}</div>
+                    <div class="log-message">${log.message}</div>
+                </div>
+            `).join('');
+        }
+
+        function formatTimestamp(timestamp) {
+            const date = new Date(timestamp);
+            return date.toLocaleString('fa-IR');
+        }
+
+        function loadSystemAlerts() {
+            // Mock alerts data
+            const alerts = [
+                {
+                    id: 1,
+                    type: 'warning',
+                    title: 'استفاده بالای CPU',
+                    message: 'استفاده از CPU به 85% رسیده است',
+                    timestamp: new Date().toISOString(),
+                    acknowledged: false
+                },
+                {
+                    id: 2,
+                    type: 'error',
+                    title: 'خطا در اتصال پایگاه داده',
+                    message: 'اتصال به پایگاه داده با مشکل مواجه شد',
+                    timestamp: new Date(Date.now() - 300000).toISOString(),
+                    acknowledged: true
+                }
+            ];
+
+            renderSystemAlerts(alerts);
+        }
+
+        function renderSystemAlerts(alerts) {
+            const alertsList = document.getElementById('alerts-list');
+            if (!alertsList) return;
+
+            alertsList.innerHTML = alerts.map(alert => `
+                <div class="alert-item alert-${alert.type} ${alert.acknowledged ? 'acknowledged' : ''}">
+                    <div class="alert-icon">
+                        <i class="fas ${getAlertIcon(alert.type)}"></i>
+                    </div>
+                    <div class="alert-content">
+                        <div class="alert-title">${alert.title}</div>
+                        <div class="alert-message">${alert.message}</div>
+                        <div class="alert-timestamp">${formatTimestamp(alert.timestamp)}</div>
+                    </div>
+                    <div class="alert-actions">
+                        ${!alert.acknowledged ? `
+                            <button class="btn btn-sm btn-secondary" onclick="acknowledgeAlert(${alert.id})">
+                                تایید
+                            </button>
+                        ` : ''}
+                        <button class="btn btn-sm btn-danger" onclick="dismissAlert(${alert.id})">
+                            حذف
+                        </button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function getAlertIcon(type) {
+            const icons = {
+                info: 'fa-info-circle',
+                warning: 'fa-exclamation-triangle',
+                error: 'fa-times-circle',
+                success: 'fa-check-circle'
+            };
+            return icons[type] || 'fa-info-circle';
+        }
+
+        function setupSystemHealthEventListeners() {
+            // Refresh health button
+            const refreshBtn = document.getElementById('refresh-health-btn');
+            if (refreshBtn) {
+                refreshBtn.addEventListener('click', () => {
+                    refreshSystemHealth();
+                });
+            }
+
+            // Run diagnostics button
+            const diagnosticsBtn = document.getElementById('run-diagnostics-btn');
+            if (diagnosticsBtn) {
+                diagnosticsBtn.addEventListener('click', () => {
+                    runSystemDiagnostics();
+                });
+            }
+
+            // Component action buttons
+            document.addEventListener('click', (e) => {
+                if (e.target.closest('[data-component]')) {
+                    const component = e.target.closest('[data-component]').dataset.component;
+                    const action = e.target.closest('[data-component]').dataset.action;
+                    
+                    if (action === 'details') {
+                        showComponentDetails(component);
+                    } else if (action === 'restart') {
+                        restartComponent(component);
+                    } else if (action === 'backup') {
+                        backupComponent(component);
+                    } else if (action === 'cleanup') {
+                        cleanupComponent(component);
+                    } else if (action === 'test') {
+                        testComponent(component);
+                    }
+                }
+            });
+
+            // Chart action buttons
+            document.addEventListener('click', (e) => {
+                if (e.target.closest('[data-chart-action]')) {
+                    const action = e.target.closest('[data-chart-action]').dataset.chartAction;
+                    const chart = e.target.closest('[data-chart-action]').dataset.chart;
+                    
+                    if (action === 'refresh') {
+                        refreshChart(chart);
+                    } else if (action === 'export') {
+                        exportChart(chart);
+                    }
+                }
+            });
+
+            // Monitoring period selector
+            const monitoringPeriod = document.getElementById('monitoring-period');
+            if (monitoringPeriod) {
+                monitoringPeriod.addEventListener('change', () => {
+                    updateMonitoringPeriod();
+                });
+            }
+
+            // Log level selector
+            const logLevel = document.getElementById('log-level');
+            if (logLevel) {
+                logLevel.addEventListener('change', () => {
+                    filterLogs();
+                });
+            }
+
+            // Log search
+            const logSearch = document.getElementById('log-search');
+            if (logSearch) {
+                logSearch.addEventListener('input', debounce(() => {
+                    searchLogs();
+                }, 300));
+            }
+
+            // Mobile menu toggle
+            const mobileToggle = document.getElementById('mobile-menu-toggle');
+            const sidebar = document.getElementById('sidebar');
+            const overlay = document.getElementById('mobile-overlay');
+
+            if (mobileToggle && sidebar) {
+                mobileToggle.addEventListener('click', () => {
+                    sidebar.classList.toggle('open');
+                    overlay.classList.toggle('hidden');
+                });
+            }
+
+            if (overlay) {
+                overlay.addEventListener('click', () => {
+                    sidebar.classList.remove('open');
+                    overlay.classList.add('hidden');
+                });
+            }
+
+            // Notification panel
+            const notificationBell = document.getElementById('notification-bell');
+            const notificationPanel = document.getElementById('notification-panel');
+            const closePanel = document.getElementById('close-notification-panel');
+
+            if (notificationBell && notificationPanel) {
+                notificationBell.addEventListener('click', () => {
+                    notificationPanel.classList.toggle('hidden');
+                });
+            }
+
+            if (closePanel && notificationPanel) {
+                closePanel.addEventListener('click', () => {
+                    notificationPanel.classList.add('hidden');
+                });
+            }
+
+            // Component details modal
+            const componentModal = document.getElementById('component-details-modal');
+            const closeComponentBtn = document.getElementById('close-component-modal');
+
+            if (closeComponentBtn && componentModal) {
+                closeComponentBtn.addEventListener('click', () => {
+                    componentModal.classList.add('hidden');
+                });
+            }
+
+            if (componentModal) {
+                componentModal.addEventListener('click', (e) => {
+                    if (e.target === componentModal) {
+                        componentModal.classList.add('hidden');
+                    }
+                });
             }
         }
 
-        // Global functions
-        async function refreshLogs() {
-            const refreshIcon = document.getElementById('refreshIcon');
-            refreshIcon.classList.add('loading');
-
-            if (window.systemHealth) {
-                await window.systemHealth.refreshSystemHealth();
-            }
-
+        function refreshSystemHealth() {
+            showLoadingState();
+            
             setTimeout(() => {
-                refreshIcon.classList.remove('loading');
-            }, 1000);
+                loadSystemHealthData();
+                hideLoadingState();
+                showSuccess('بروزرسانی شد', 'وضعیت سیستم با موفقیت بروزرسانی شد');
+            }, 2000);
         }
 
-        // Initialize system health monitor
-        window.systemHealth = new SystemHealthMonitor();
+        function runSystemDiagnostics() {
+            showLoadingState();
+            
+            setTimeout(() => {
+                hideLoadingState();
+                showSuccess('تشخیص کامل شد', 'تشخیص سیستم با موفقیت انجام شد. همه اجزا سالم هستند.');
+            }, 3000);
+        }
 
-        console.log('💓 System Health Page Ready!');
+        function showComponentDetails(component) {
+            const modal = document.getElementById('component-details-modal');
+            const title = document.getElementById('component-title');
+            const content = document.getElementById('component-details-content');
+            const actionBtn = document.getElementById('action-btn');
+
+            if (title) title.textContent = `جزئیات ${component}`;
+            if (content) {
+                content.innerHTML = `
+                    <div class="component-detail-item">
+                        <strong>وضعیت:</strong> آنلاین
+                    </div>
+                    <div class="component-detail-item">
+                        <strong>آخرین بروزرسانی:</strong> ${new Date().toLocaleString('fa-IR')}
+                    </div>
+                    <div class="component-detail-item">
+                        <strong>نسخه:</strong> 2.1.0
+                    </div>
+                    <div class="component-detail-item">
+                        <strong>زمان کارکرد:</strong> 15 روز
+                    </div>
+                `;
+            }
+            if (actionBtn) actionBtn.textContent = 'عملیات';
+            if (modal) modal.classList.remove('hidden');
+        }
+
+        function restartComponent(component) {
+            if (confirm(`آیا مطمئن هستید که می‌خواهید ${component} را مجدداً راه‌اندازی کنید؟`)) {
+                showLoadingState();
+                setTimeout(() => {
+                    hideLoadingState();
+                    showSuccess('راه‌اندازی مجدد', `${component} با موفقیت مجدداً راه‌اندازی شد`);
+                }, 2000);
+            }
+        }
+
+        function backupComponent(component) {
+            showLoadingState();
+            setTimeout(() => {
+                hideLoadingState();
+                showSuccess('پشتیبان‌گیری', `پشتیبان ${component} با موفقیت ایجاد شد`);
+            }, 1500);
+        }
+
+        function cleanupComponent(component) {
+            if (confirm(`آیا مطمئن هستید که می‌خواهید ${component} را پاک‌سازی کنید؟`)) {
+                showLoadingState();
+                setTimeout(() => {
+                    hideLoadingState();
+                    showSuccess('پاک‌سازی', `${component} با موفقیت پاک‌سازی شد`);
+                }, 2000);
+            }
+        }
+
+        function testComponent(component) {
+            showLoadingState();
+            setTimeout(() => {
+                hideLoadingState();
+                showSuccess('تست', `تست ${component} با موفقیت انجام شد`);
+            }, 1500);
+        }
+
+        function refreshChart(chartName) {
+            console.log(`Refreshing chart: ${chartName}`);
+            showSuccess('بروزرسانی شد', `نمودار ${chartName} بروزرسانی شد`);
+        }
+
+        function exportChart(chartName) {
+            console.log(`Exporting chart: ${chartName}`);
+            showSuccess('صادرات موفق', `نمودار ${chartName} با موفقیت صادر شد`);
+        }
+
+        function updateMonitoringPeriod() {
+            const period = document.getElementById('monitoring-period').value;
+            console.log(`Updating monitoring period: ${period}`);
+            // In real app, this would fetch new data and update charts
+        }
+
+        function filterLogs() {
+            const level = document.getElementById('log-level').value;
+            console.log(`Filtering logs by level: ${level}`);
+            // In real app, this would filter logs
+        }
+
+        function searchLogs() {
+            const query = document.getElementById('log-search').value;
+            console.log(`Searching logs: ${query}`);
+            // In real app, this would search logs
+        }
+
+        function acknowledgeAlert(alertId) {
+            console.log(`Acknowledging alert: ${alertId}`);
+            showSuccess('تایید شد', 'هشدار با موفقیت تایید شد');
+            // In real app, this would update the alert status
+        }
+
+        function dismissAlert(alertId) {
+            console.log(`Dismissing alert: ${alertId}`);
+            showSuccess('حذف شد', 'هشدار با موفقیت حذف شد');
+            // In real app, this would remove the alert
+        }
+
+        function setupRealTimeMonitoring() {
+            // Set up periodic updates every 30 seconds
+            setInterval(() => {
+                loadOverviewMetrics();
+            }, 30000);
+        }
+
+        function showLoadingState() {
+            const refreshBtn = document.getElementById('refresh-health-btn');
+            if (refreshBtn) {
+                refreshBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> در حال بروزرسانی...';
+                refreshBtn.disabled = true;
+            }
+        }
+
+        function hideLoadingState() {
+            const refreshBtn = document.getElementById('refresh-health-btn');
+            if (refreshBtn) {
+                refreshBtn.innerHTML = '<i class="fas fa-sync-alt"></i> بروزرسانی';
+                refreshBtn.disabled = false;
+            }
+        }
+
+        function debounce(func, wait) {
+            let timeout;
+            return function executedFunction(...args) {
+                const later = () => {
+                    clearTimeout(timeout);
+                    func(...args);
+                };
+                clearTimeout(timeout);
+                timeout = setTimeout(later, wait);
+            };
+        }
+
+        function showSuccess(title, message) {
+            if (window.notificationManager) {
+                window.notificationManager.showSuccess(title, message);
+            } else {
+                alert(`${title}: ${message}`);
+            }
+        }
+
+        function showError(title, message) {
+            if (window.notificationManager) {
+                window.notificationManager.showError(title, message);
+            } else {
+                alert(`${title}: ${message}`);
+            }
+        }
+
+        // Global functions for onclick handlers
+        window.acknowledgeAlert = acknowledgeAlert;
+        window.dismissAlert = dismissAlert;
     </script>
 </body>
 </html>

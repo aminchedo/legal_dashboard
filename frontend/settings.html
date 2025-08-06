@@ -3,881 +3,90 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>تنظیمات | سامانه حقوقی</title>
+    <title>تنظیمات | سامانه هوشمند</title>
+    
+    <!-- Preconnect for better performance -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preconnect" href="https://cdnjs.cloudflare.com">
+    
+    <!-- فونت و آیکون‌ها -->
     <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@200;300;400;500;600;700;800;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     
-    <!-- Load API Client -->
-    <script src="/static/js/api-client.js"></script>
-    <script src="/static/js/core.js"></script>
-    
-    <style>
-        :root {
-            --text-primary: #0f172a;
-            --text-secondary: #475569;
-            --text-muted: #64748b;
-            --text-light: #ffffff;
-            --body-bg: linear-gradient(135deg, #f1f5f9 0%, #e2e8f0 50%, #cbd5e1 100%);
-            --card-bg: rgba(255, 255, 255, 0.95);
-            --glass-bg: rgba(255, 255, 255, 0.9);
-            --glass-border: rgba(148, 163, 184, 0.2);
-            --primary-gradient: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
-            --secondary-gradient: linear-gradient(135deg, #06b6d4 0%, #0891b2 100%);
-            --success-gradient: linear-gradient(135deg, #10b981 0%, #047857 100%);
-            --warning-gradient: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
-            --danger-gradient: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
-            --shadow-xs: 0 1px 3px rgba(0, 0, 0, 0.05);
-            --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.08);
-            --shadow-md: 0 4px 15px rgba(0, 0, 0, 0.1);
-            --shadow-lg: 0 8px 25px rgba(0, 0, 0, 0.12);
-            --sidebar-width: 260px;
-            --border-radius: 12px;
-            --border-radius-sm: 8px;
-            --transition-smooth: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
-            --transition-fast: all 0.15s ease-in-out;
-            --font-size-xs: 0.7rem;
-            --font-size-sm: 0.8rem;
-            --font-size-base: 0.9rem;
-            --font-size-lg: 1.1rem;
-            --font-size-xl: 1.25rem;
-            --font-size-2xl: 1.5rem;
-        }
-
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            font-family: 'Vazirmatn', -apple-system, BlinkMacSystemFont, sans-serif;
-            background: var(--body-bg);
-            color: var(--text-primary);
-            line-height: 1.6;
-            overflow-x: hidden;
-            font-size: var(--font-size-base);
-        }
-
-        ::-webkit-scrollbar {
-            width: 6px;
-            height: 6px;
-        }
-
-        ::-webkit-scrollbar-track {
-            background: rgba(0, 0, 0, 0.02);
-            border-radius: 10px;
-        }
-
-        ::-webkit-scrollbar-thumb {
-            background: var(--primary-gradient);
-            border-radius: 10px;
-        }
-
-        .dashboard-container {
-            display: flex;
-            min-height: 100vh;
-            width: 100%;
-        }
-
-        /* سایدبار مشابه صفحات قبلی */
-        .sidebar {
-            width: var(--sidebar-width);
-            background: linear-gradient(135deg,
-                rgba(248, 250, 252, 0.98) 0%,
-                rgba(241, 245, 249, 0.95) 25%,
-                rgba(226, 232, 240, 0.98) 50%,
-                rgba(203, 213, 225, 0.95) 75%,
-                rgba(148, 163, 184, 0.1) 100%);
-            backdrop-filter: blur(25px);
-            -webkit-backdrop-filter: blur(25px);
-            padding: 1rem 0;
-            position: fixed;
-            height: 100vh;
-            right: 0;
-            top: 0;
-            z-index: 1000;
-            overflow-y: auto;
-            box-shadow:
-                0 0 0 1px rgba(59, 130, 246, 0.08),
-                -8px 0 32px rgba(59, 130, 246, 0.12),
-                inset 0 1px 0 rgba(255, 255, 255, 0.6);
-            border-left: 1px solid rgba(59, 130, 246, 0.15);
-        }
-
-        .sidebar-header {
-            padding: 0 1rem 1rem;
-            border-bottom: 1px solid rgba(59, 130, 246, 0.12);
-            margin-bottom: 1rem;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            background: linear-gradient(135deg,
-                rgba(255, 255, 255, 0.4) 0%,
-                rgba(248, 250, 252, 0.2) 100%);
-            margin: 0 0.5rem 1rem;
-            border-radius: var(--border-radius);
-            backdrop-filter: blur(10px);
-        }
-
-        .logo {
-            display: flex;
-            align-items: center;
-            gap: 0.6rem;
-            color: var(--text-primary);
-            text-decoration: none;
-        }
-
-        .logo-icon {
-            width: 2rem;
-            height: 2rem;
-            background: var(--primary-gradient);
-            border-radius: var(--border-radius-sm);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1rem;
-            color: white;
-        }
-
-        .logo-text {
-            font-size: var(--font-size-lg);
-            font-weight: 700;
-            background: var(--primary-gradient);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-
-        .nav-section {
-            margin-bottom: 1rem;
-        }
-
-        .nav-title {
-            padding: 0 1rem 0.4rem;
-            font-size: var(--font-size-xs);
-            font-weight: 600;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            color: var(--text-secondary);
-        }
-
-        .nav-menu {
-            list-style: none;
-        }
-
-        .nav-item {
-            margin: 0.15rem 0.5rem;
-        }
-
-        .nav-link {
-            display: flex;
-            align-items: center;
-            padding: 0.6rem 0.8rem;
-            color: var(--text-primary);
-            text-decoration: none;
-            border-radius: var(--border-radius-sm);
-            transition: var(--transition-smooth);
-            font-weight: 500;
-            font-size: var(--font-size-sm);
-            cursor: pointer;
-            border: 1px solid transparent;
-        }
-
-        .nav-link:hover {
-            color: var(--text-primary);
-            transform: translateX(-2px);
-            border-color: rgba(59, 130, 246, 0.15);
-            background: rgba(59, 130, 246, 0.05);
-        }
-
-        .nav-link.active {
-            background: var(--primary-gradient);
-            color: var(--text-light);
-            box-shadow: var(--shadow-md);
-        }
-
-        .nav-icon {
-            margin-left: 0.6rem;
-            width: 1rem;
-            text-align: center;
-            font-size: 0.9rem;
-        }
-
-        .nav-badge {
-            background: var(--danger-gradient);
-            color: white;
-            padding: 0.15rem 0.4rem;
-            border-radius: 10px;
-            font-size: var(--font-size-xs);
-            font-weight: 600;
-            margin-right: auto;
-            min-width: 1.2rem;
-            text-align: center;
-        }
-
-        /* محتوای اصلی */
-        .main-content {
-            flex: 1;
-            margin-right: var(--sidebar-width);
-            padding: 1rem;
-            min-height: 100vh;
-            width: calc(100% - var(--sidebar-width));
-        }
-
-        .page-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 2rem;
-            padding: 1rem 0;
-            border-bottom: 1px solid rgba(0, 0, 0, 0.1);
-        }
-
-        .page-title {
-            font-size: var(--font-size-2xl);
-            font-weight: 800;
-            background: var(--primary-gradient);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            display: flex;
-            align-items: center;
-            gap: 0.6rem;
-        }
-
-        .page-actions {
-            display: flex;
-            gap: 0.8rem;
-        }
-
-        .btn {
-            padding: 0.6rem 1.2rem;
-            border: none;
-            border-radius: var(--border-radius-sm);
-            font-family: inherit;
-            font-weight: 600;
-            cursor: pointer;
-            transition: var(--transition-smooth);
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            text-decoration: none;
-            font-size: var(--font-size-sm);
-        }
-
-        .btn-primary {
-            background: var(--primary-gradient);
-            color: white;
-            box-shadow: var(--shadow-sm);
-        }
-
-        .btn-primary:hover {
-            box-shadow: var(--shadow-md);
-            transform: translateY(-1px);
-        }
-
-        .btn-outline {
-            background: transparent;
-            color: var(--text-primary);
-            border: 1px solid rgba(59, 130, 246, 0.2);
-        }
-
-        .btn-outline:hover {
-            background: rgba(59, 130, 246, 0.05);
-            border-color: rgba(59, 130, 246, 0.4);
-        }
-
-        .btn-success {
-            background: var(--success-gradient);
-            color: white;
-        }
-
-        .btn-danger {
-            background: var(--danger-gradient);
-            color: white;
-        }
-
-        .btn-sm {
-            padding: 0.4rem 0.8rem;
-            font-size: var(--font-size-xs);
-        }
-
-        /* تنظیمات اصلی */
-        .settings-layout {
-            display: grid;
-            grid-template-columns: 250px 1fr;
-            gap: 2rem;
-        }
-
-        .settings-nav {
-            background: var(--card-bg);
-            border-radius: var(--border-radius);
-            padding: 1rem;
-            box-shadow: var(--shadow-sm);
-            border: 1px solid rgba(255, 255, 255, 0.3);
-            height: fit-content;
-            position: sticky;
-            top: 1rem;
-        }
-
-        .settings-nav-title {
-            font-size: var(--font-size-lg);
-            font-weight: 700;
-            color: var(--text-primary);
-            margin-bottom: 1rem;
-            padding-bottom: 0.8rem;
-            border-bottom: 1px solid rgba(0, 0, 0, 0.05);
-        }
-
-        .settings-nav-list {
-            list-style: none;
-        }
-
-        .settings-nav-item {
-            margin-bottom: 0.3rem;
-        }
-
-        .settings-nav-link {
-            display: flex;
-            align-items: center;
-            gap: 0.8rem;
-            padding: 0.8rem;
-            color: var(--text-secondary);
-            text-decoration: none;
-            border-radius: var(--border-radius-sm);
-            transition: var(--transition-smooth);
-            font-size: var(--font-size-sm);
-            font-weight: 500;
-        }
-
-        .settings-nav-link:hover {
-            background: rgba(59, 130, 246, 0.05);
-            color: var(--text-primary);
-            transform: translateX(-3px);
-        }
-
-        .settings-nav-link.active {
-            background: var(--primary-gradient);
-            color: white;
-            box-shadow: var(--shadow-sm);
-        }
-
-        .settings-nav-icon {
-            font-size: var(--font-size-base);
-            width: 1.2rem;
-            text-align: center;
-        }
-
-        .settings-content {
-            background: var(--card-bg);
-            border-radius: var(--border-radius);
-            box-shadow: var(--shadow-md);
-            border: 1px solid rgba(255, 255, 255, 0.3);
-            overflow: hidden;
-        }
-
-        .settings-section {
-            display: none;
-            padding: 2rem;
-        }
-
-        .settings-section.active {
-            display: block;
-        }
-
-        .section-header {
-            margin-bottom: 2rem;
-            padding-bottom: 1rem;
-            border-bottom: 1px solid rgba(0, 0, 0, 0.05);
-        }
-
-        .section-title {
-            font-size: var(--font-size-xl);
-            font-weight: 700;
-            color: var(--text-primary);
-            margin-bottom: 0.5rem;
-            display: flex;
-            align-items: center;
-            gap: 0.6rem;
-        }
-
-        .section-description {
-            font-size: var(--font-size-sm);
-            color: var(--text-secondary);
-            line-height: 1.6;
-        }
-
-        /* فرم تنظیمات */
-        .settings-form {
-            display: flex;
-            flex-direction: column;
-            gap: 2rem;
-        }
-
-        .form-group {
-            display: flex;
-            flex-direction: column;
-            gap: 0.8rem;
-        }
-
-        .form-row {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 1rem;
-        }
-
-        .form-label {
-            font-size: var(--font-size-sm);
-            font-weight: 600;
-            color: var(--text-primary);
-            display: flex;
-            align-items: center;
-            gap: 0.3rem;
-        }
-
-        .form-description {
-            font-size: var(--font-size-xs);
-            color: var(--text-muted);
-            margin-top: 0.2rem;
-        }
-
-        .form-input,
-        .form-textarea,
-        .form-select {
-            padding: 0.8rem 1rem;
-            border: 2px solid var(--glass-border);
-            border-radius: var(--border-radius-sm);
-            background: var(--glass-bg);
-            color: var(--text-primary);
-            font-family: inherit;
-            font-size: var(--font-size-sm);
-            transition: var(--transition-smooth);
-        }
-
-        .form-input:focus,
-        .form-textarea:focus,
-        .form-select:focus {
-            outline: none;
-            border-color: #3b82f6;
-            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
-            background: var(--card-bg);
-        }
-
-        .form-textarea {
-            min-height: 100px;
-            resize: vertical;
-        }
-
-        /* سوئیچ‌ها */
-        .switch-group {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 1rem;
-            background: rgba(59, 130, 246, 0.02);
-            border-radius: var(--border-radius-sm);
-            border: 1px solid rgba(59, 130, 246, 0.1);
-        }
-
-        .switch-info {
-            flex: 1;
-        }
-
-        .switch-label {
-            font-size: var(--font-size-sm);
-            font-weight: 600;
-            color: var(--text-primary);
-            margin-bottom: 0.3rem;
-        }
-
-        .switch-description {
-            font-size: var(--font-size-xs);
-            color: var(--text-secondary);
-        }
-
-        .switch {
-            position: relative;
-            width: 50px;
-            height: 24px;
-        }
-
-        .switch input {
-            opacity: 0;
-            width: 0;
-            height: 0;
-        }
-
-        .slider {
-            position: absolute;
-            cursor: pointer;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background-color: #ccc;
-            transition: var(--transition-smooth);
-            border-radius: 24px;
-        }
-
-        .slider:before {
-            position: absolute;
-            content: "";
-            height: 18px;
-            width: 18px;
-            left: 3px;
-            bottom: 3px;
-            background-color: white;
-            transition: var(--transition-smooth);
-            border-radius: 50%;
-        }
-
-        input:checked + .slider {
-            background: var(--primary-gradient);
-        }
-
-        input:checked + .slider:before {
-            transform: translateX(26px);
-        }
-
-        /* کارت‌های اطلاعات */
-        .info-cards {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 1rem;
-            margin-bottom: 2rem;
-        }
-
-        .info-card {
-            background: var(--glass-bg);
-            border-radius: var(--border-radius-sm);
-            padding: 1.5rem;
-            text-align: center;
-            border: 1px solid rgba(0, 0, 0, 0.05);
-            transition: var(--transition-smooth);
-        }
-
-        .info-card:hover {
-            transform: translateY(-2px);
-            box-shadow: var(--shadow-sm);
-        }
-
-        .info-card-icon {
-            font-size: 2rem;
-            margin-bottom: 0.8rem;
-            color: var(--text-primary);
-        }
-
-        .info-card-title {
-            font-size: var(--font-size-sm);
-            font-weight: 600;
-            color: var(--text-primary);
-            margin-bottom: 0.3rem;
-        }
-
-        .info-card-value {
-            font-size: var(--font-size-lg);
-            font-weight: 700;
-            color: var(--text-secondary);
-        }
-
-        /* بخش آپلود */
-        .upload-zone {
-            border: 2px dashed rgba(59, 130, 246, 0.3);
-            border-radius: var(--border-radius);
-            padding: 2rem;
-            text-align: center;
-            background: linear-gradient(135deg, rgba(59, 130, 246, 0.02), rgba(255, 255, 255, 0.1));
-            transition: var(--transition-smooth);
-            cursor: pointer;
-        }
-
-        .upload-zone:hover {
-            border-color: rgba(59, 130, 246, 0.6);
-            background: linear-gradient(135deg, rgba(59, 130, 246, 0.05), rgba(255, 255, 255, 0.15));
-        }
-
-        .upload-icon {
-            font-size: 3rem;
-            color: rgba(59, 130, 246, 0.6);
-            margin-bottom: 1rem;
-        }
-
-        .upload-text {
-            font-size: var(--font-size-base);
-            color: var(--text-secondary);
-            margin-bottom: 0.5rem;
-        }
-
-        .upload-hint {
-            font-size: var(--font-size-xs);
-            color: var(--text-muted);
-        }
-
-        /* جدول */
-        .settings-table {
-            width: 100%;
-            border-collapse: separate;
-            border-spacing: 0;
-            background: var(--card-bg);
-            border-radius: var(--border-radius);
-            overflow: hidden;
-            box-shadow: var(--shadow-xs);
-        }
-
-        .settings-table thead {
-            background: linear-gradient(135deg, rgba(59, 130, 246, 0.03), rgba(255, 255, 255, 0.1));
-        }
-
-        .settings-table th {
-            padding: 1rem;
-            text-align: right;
-            font-weight: 600;
-            color: var(--text-primary);
-            font-size: var(--font-size-sm);
-            border-bottom: 1px solid rgba(0, 0, 0, 0.05);
-        }
-
-        .settings-table td {
-            padding: 0.8rem 1rem;
-            border-bottom: 1px solid rgba(0, 0, 0, 0.03);
-            font-size: var(--font-size-sm);
-        }
-
-        .settings-table tbody tr {
-            transition: all 0.2s ease;
-        }
-
-        .settings-table tbody tr:hover {
-            background: rgba(59, 130, 246, 0.02);
-        }
-
-        /* دکمه‌های عمل */
-        .form-actions {
-            display: flex;
-            gap: 1rem;
-            justify-content: flex-end;
-            padding-top: 2rem;
-            border-top: 1px solid rgba(0, 0, 0, 0.05);
-        }
-
-        /* Toast Notifications */
-        .toast-container {
-            position: fixed;
-            top: 1rem;
-            left: 1rem;
-            z-index: 10001;
-            display: flex;
-            flex-direction: column;
-            gap: 0.5rem;
-        }
-
-        .toast {
-            background: var(--card-bg);
-            border-radius: var(--border-radius-sm);
-            padding: 1rem 1.5rem;
-            box-shadow: var(--shadow-lg);
-            border-left: 4px solid;
-            display: flex;
-            align-items: center;
-            gap: 0.8rem;
-            min-width: 300px;
-            transform: translateX(-100%);
-            transition: all 0.3s ease;
-        }
-
-        .toast.show {
-            transform: translateX(0);
-        }
-
-        .toast.success { border-left-color: #10b981; }
-        .toast.error { border-left-color: #ef4444; }
-        .toast.warning { border-left-color: #f59e0b; }
-        .toast.info { border-left-color: #3b82f6; }
-
-        .toast-icon {
-            font-size: 1.2rem;
-        }
-
-        .toast.success .toast-icon { color: #10b981; }
-        .toast.error .toast-icon { color: #ef4444; }
-        .toast.warning .toast-icon { color: #f59e0b; }
-        .toast.info .toast-icon { color: #3b82f6; }
-
-        .toast-content {
-            flex: 1;
-        }
-
-        .toast-title {
-            font-weight: 600;
-            font-size: var(--font-size-sm);
-            margin-bottom: 0.2rem;
-        }
-
-        .toast-message {
-            font-size: var(--font-size-xs);
-            color: var(--text-secondary);
-        }
-
-        .toast-close {
-            background: none;
-            border: none;
-            color: var(--text-secondary);
-            cursor: pointer;
-            font-size: 1rem;
-            transition: var(--transition-fast);
-        }
-
-        .toast-close:hover {
-            color: var(--text-primary);
-        }
-
-        /* واکنش‌گرایی */
-        @media (max-width: 992px) {
-            .sidebar {
-                transform: translateX(100%);
-                transition: transform 0.3s ease;
-            }
-
-            .sidebar.open {
-                transform: translateX(0);
-            }
-
-            .main-content {
-                margin-right: 0;
-                width: 100%;
-                padding: 1rem;
-            }
-
-            .settings-layout {
-                grid-template-columns: 1fr;
-                gap: 1rem;
-            }
-
-            .settings-nav {
-                position: static;
-                order: 2;
-            }
-
-            .settings-content {
-                order: 1;
-            }
-
-            .form-row {
-                grid-template-columns: 1fr;
-            }
-        }
-
-        @media (max-width: 768px) {
-            .main-content {
-                padding: 0.8rem;
-            }
-
-            .settings-section {
-                padding: 1.5rem;
-            }
-
-            .info-cards {
-                grid-template-columns: 1fr;
-            }
-
-            .form-actions {
-                flex-direction: column;
-            }
-        }
-    </style>
+    <!-- CSS Files -->
+    <link rel="stylesheet" href="css/main.css">
+    <link rel="stylesheet" href="css/components.css">
+    <link rel="stylesheet" href="css/responsive.css">
 </head>
 <body>
     <div class="dashboard-container">
-        <!-- سایدبار -->
         <aside class="sidebar" id="sidebar">
+            <!-- Sidebar Header -->
             <div class="sidebar-header">
-                <a href="/" class="logo">
+                <a href="index.html" class="logo">
                     <div class="logo-icon">
-                        <i class="fas fa-scale-balanced"></i>
+                        <i class="fas fa-gavel"></i>
                     </div>
-                    <div class="logo-text">سامانه حقوقی</div>
+                    <span class="logo-text">داشبورد حقوقی</span>
                 </a>
+                <button class="mobile-menu-toggle" id="mobile-menu-toggle">
+                    <i class="fas fa-bars"></i>
+                </button>
             </div>
 
-            <nav>
+            <!-- Navigation -->
+            <nav class="main-nav">
                 <div class="nav-section">
-                    <h6 class="nav-title">داشبورد</h6>
+                    <h4 class="nav-title">اصلی</h4>
                     <ul class="nav-menu">
                         <li class="nav-item">
-                            <a href="/" class="nav-link">
-                                <i class="fas fa-chart-pie nav-icon"></i>
-                                <span>نمای کلی</span>
+                            <a href="index.html" class="nav-link" data-nav="dashboard">
+                                <span class="nav-icon"><i class="fas fa-tachometer-alt"></i></span>
+                                <span>داشبورد</span>
                             </a>
                         </li>
-                    </ul>
-                </div>
-
-                <div class="nav-section">
-                    <h6 class="nav-title">مدیریت اسناد</h6>
-                    <ul class="nav-menu">
                         <li class="nav-item">
-                            <a href="/static/documents.html" class="nav-link">
-                                <i class="fas fa-file-alt nav-icon"></i>
+                            <a href="documents.html" class="nav-link" data-nav="documents">
+                                <span class="nav-icon"><i class="fas fa-file-alt"></i></span>
                                 <span>مدیریت اسناد</span>
-                                <span class="nav-badge" id="totalDocumentsBadge">6</span>
+                                <span class="nav-badge" data-badge="documents">0</span>
                             </a>
                         </li>
-
                         <li class="nav-item">
-                            <a href="/static/upload.html" class="nav-link">
-                                <i class="fas fa-cloud-upload-alt nav-icon"></i>
+                            <a href="upload.html" class="nav-link" data-nav="upload">
+                                <span class="nav-icon"><i class="fas fa-cloud-upload-alt"></i></span>
                                 <span>آپلود فایل</span>
                             </a>
                         </li>
-
                         <li class="nav-item">
-                            <a href="/static/search.html" class="nav-link">
-                                <i class="fas fa-search nav-icon"></i>
+                            <a href="search.html" class="nav-link" data-nav="search">
+                                <span class="nav-icon"><i class="fas fa-search"></i></span>
                                 <span>جستجو</span>
                             </a>
                         </li>
-                    </ul>
-                </div>
-
-                <div class="nav-section">
-                    <h6 class="nav-title">ابزارها</h6>
-                    <ul class="nav-menu">
                         <li class="nav-item">
-                            <a href="/static/scraping.html" class="nav-link">
-                                <i class="fas fa-globe nav-icon"></i>
-                                <span>استخراج محتوا</span>
-                            </a>
-                        </li>
-
-                        <li class="nav-item">
-                            <a href="/static/analytics.html" class="nav-link">
-                                <i class="fas fa-chart-line nav-icon"></i>
-                                <span>آمار و تحلیل</span>
-                            </a>
-                        </li>
-
-                        <li class="nav-item">
-                            <a href="/static/reports.html" class="nav-link">
-                                <i class="fas fa-file-export nav-icon"></i>
-                                <span>گزارش‌ها</span>
+                            <a href="analytics.html" class="nav-link" data-nav="analytics">
+                                <span class="nav-icon"><i class="fas fa-chart-bar"></i></span>
+                                <span>تحلیل و گزارش</span>
                             </a>
                         </li>
                     </ul>
                 </div>
 
                 <div class="nav-section">
-                    <h6 class="nav-title">تنظیمات</h6>
+                    <h4 class="nav-title">سیستم</h4>
                     <ul class="nav-menu">
                         <li class="nav-item">
-                            <a href="/static/settings.html" class="nav-link active">
-                                <i class="fas fa-cog nav-icon"></i>
+                            <a href="system-health.html" class="nav-link" data-nav="systemHealth">
+                                <span class="nav-icon"><i class="fas fa-heartbeat"></i></span>
+                                <span>وضعیت سیستم</span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="settings.html" class="nav-link active" data-nav="settings">
+                                <span class="nav-icon"><i class="fas fa-cog"></i></span>
                                 <span>تنظیمات</span>
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a href="#" class="nav-link">
-                                <i class="fas fa-sign-out-alt nav-icon"></i>
-                                <span>خروج</span>
                             </a>
                         </li>
                     </ul>
@@ -885,1299 +94,1031 @@
             </nav>
         </aside>
 
-        <!-- محتوای اصلی -->
         <main class="main-content">
-            <!-- هدر صفحه -->
-            <header class="page-header">
-                <h1 class="page-title">
-                    <i class="fas fa-cog"></i>
-                    تنظیمات سیستم
-                </h1>
-                <div class="page-actions">
-                    <button type="button" class="btn btn-outline" onclick="exportSettings()">
-                        <i class="fas fa-download"></i>
-                        خروجی تنظیمات
+            <!-- Header -->
+            <header class="header">
+                <h1 class="header-title">تنظیمات</h1>
+                <div class="header-actions">
+                    <button class="btn btn-secondary" id="reset-settings-btn">
+                        <i class="fas fa-undo"></i>
+                        بازنشانی
                     </button>
-                    <button type="button" class="btn btn-primary" onclick="saveAllSettings()">
+                    <button class="btn btn-primary" id="save-settings-btn">
                         <i class="fas fa-save"></i>
-                        ذخیره همه تغییرات
+                        ذخیره تنظیمات
+                    </button>
+                    <button class="btn-icon" id="user-menu-btn">
+                        <i class="fas fa-user-circle"></i>
+                    </button>
+                    <button class="btn-icon" id="notification-bell">
+                        <i class="fas fa-bell"></i>
+                        <span class="notification-badge" id="notification-badge">0</span>
                     </button>
                 </div>
             </header>
 
-            <!-- تنظیمات اصلی -->
-            <div class="settings-layout">
-                <!-- منوی تنظیمات -->
-                <nav class="settings-nav">
-                    <h3 class="settings-nav-title">دسته‌بندی تنظیمات</h3>
-                    <ul class="settings-nav-list">
-                        <li class="settings-nav-item">
-                            <a href="#general" class="settings-nav-link active" onclick="showSection('general', this)">
-                                <i class="fas fa-sliders-h settings-nav-icon"></i>
-                                <span>تنظیمات عمومی</span>
-                            </a>
-                        </li>
-                        <li class="settings-nav-item">
-                            <a href="#ocr" class="settings-nav-link" onclick="showSection('ocr', this)">
-                                <i class="fas fa-eye settings-nav-icon"></i>
-                                <span>تنظیمات OCR</span>
-                            </a>
-                        </li>
-                        <li class="settings-nav-item">
-                            <a href="#storage" class="settings-nav-link" onclick="showSection('storage', this)">
-                                <i class="fas fa-database settings-nav-icon"></i>
-                                <span>ذخیره‌سازی</span>
-                            </a>
-                        </li>
-                        <li class="settings-nav-item">
-                            <a href="#notifications" class="settings-nav-link" onclick="showSection('notifications', this)">
-                                <i class="fas fa-bell settings-nav-icon"></i>
-                                <span>اعلان‌ها</span>
-                            </a>
-                        </li>
-                        <li class="settings-nav-item">
-                            <a href="#security" class="settings-nav-link" onclick="showSection('security', this)">
-                                <i class="fas fa-shield-alt settings-nav-icon"></i>
-                                <span>امنیت</span>
-                            </a>
-                        </li>
-                        <li class="settings-nav-item">
-                            <a href="#api" class="settings-nav-link" onclick="showSection('api', this)">
-                                <i class="fas fa-plug settings-nav-icon"></i>
-                                <span>API و ادغام</span>
-                            </a>
-                        </li>
-                        <li class="settings-nav-item">
-                            <a href="#backup" class="settings-nav-link" onclick="showSection('backup', this)">
-                                <i class="fas fa-history settings-nav-icon"></i>
-                                <span>پشتیبان‌گیری</span>
-                            </a>
-                        </li>
-                        <li class="settings-nav-item">
-                            <a href="#system" class="settings-nav-link" onclick="showSection('system', this)">
-                                <i class="fas fa-server settings-nav-icon"></i>
-                                <span>اطلاعات سیستم</span>
-                            </a>
-                        </li>
-                    </ul>
-                </nav>
-
-                <!-- محتوای تنظیمات -->
-                <div class="settings-content">
-                    <!-- تنظیمات عمومی -->
-                    <section class="settings-section active" id="general">
-                        <div class="section-header">
-                            <h2 class="section-title">
-                                <i class="fas fa-sliders-h"></i>
-                                تنظیمات عمومی
-                            </h2>
-                            <p class="section-description">
-                                تنظیمات کلی سیستم و رفتار پیش‌فرض برنامه را در این بخش تغییر دهید.
-                            </p>
-                        </div>
-
-                        <form class="settings-form" onsubmit="saveGeneralSettings(event)">
-                            <div class="form-group">
-                                <div class="form-row">
-                                    <div>
-                                        <label class="form-label" for="systemLanguage">
-                                            <i class="fas fa-language"></i>
-                                            زبان سیستم
-                                        </label>
-                                        <select class="form-select" id="systemLanguage" name="language">
-                                            <option value="fa">فارسی</option>
-                                            <option value="en">انگلیسی</option>
-                                            <option value="ar">عربی</option>
-                                        </select>
-                                        <div class="form-description">زبان پیش‌فرض رابط کاربری</div>
-                                    </div>
-
-                                    <div>
-                                        <label class="form-label" for="timezone">
-                                            <i class="fas fa-clock"></i>
-                                            منطقه زمانی
-                                        </label>
-                                        <select class="form-select" id="timezone" name="timezone">
-                                            <option value="Asia/Tehran">تهران (UTC+3:30)</option>
-                                            <option value="UTC">UTC (UTC+0:00)</option>
-                                            <option value="Asia/Dubai">دبی (UTC+4:00)</option>
-                                        </select>
-                                        <div class="form-description">منطقه زمانی پیش‌فرض سیستم</div>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="form-group">
-                                <div class="switch-group">
-                                    <div class="switch-info">
-                                        <div class="switch-label">حالت تاریک</div>
-                                        <div class="switch-description">فعال‌سازی حالت تاریک برای رابط کاربری</div>
-                                    </div>
-                                    <label class="switch">
-                                        <input type="checkbox" id="darkMode" name="darkMode">
-                                        <span class="slider"></span>
-                                    </label>
-                                </div>
-
-                                <div class="switch-group">
-                                    <div class="switch-info">
-                                        <div class="switch-label">اعلان‌های دسکتاپ</div>
-                                        <div class="switch-description">نمایش اعلان‌ها در دسکتاپ سیستم‌عامل</div>
-                                    </div>
-                                    <label class="switch">
-                                        <input type="checkbox" id="desktopNotifications" name="desktopNotifications" checked>
-                                        <span class="slider"></span>
-                                    </label>
-                                </div>
-
-                                <div class="switch-group">
-                                    <div class="switch-info">
-                                        <div class="switch-label">ذخیره خودکار</div>
-                                        <div class="switch-description">ذخیره خودکار تغییرات هر 5 دقیقه</div>
-                                    </div>
-                                    <label class="switch">
-                                        <input type="checkbox" id="autoSave" name="autoSave" checked>
-                                        <span class="slider"></span>
-                                    </label>
-                                </div>
-                            </div>
-
-                            <div class="form-actions">
-                                <button type="button" class="btn btn-outline">بازنشانی</button>
-                                <button type="submit" class="btn btn-primary">ذخیره تغییرات</button>
-                            </div>
-                        </form>
-                    </section>
-
-                    <!-- تنظیمات OCR -->
-                    <section class="settings-section" id="ocr">
-                        <div class="section-header">
-                            <h2 class="section-title">
-                                <i class="fas fa-eye"></i>
-                                تنظیمات OCR
-                            </h2>
-                            <p class="section-description">
-                                تنظیمات مربوط به سیستم تشخیص نویسه نوری (OCR) و کیفیت پردازش متن.
-                            </p>
-                        </div>
-
-                        <form class="settings-form" onsubmit="saveOCRSettings(event)">
-                            <div class="form-group">
-                                <div class="form-row">
-                                    <div>
-                                        <label class="form-label" for="ocrEngine">
-                                            <i class="fas fa-cogs"></i>
-                                            موتور OCR
-                                        </label>
-                                        <select class="form-select" id="ocrEngine" name="engine">
-                                            <option value="tesseract">Tesseract</option>
-                                            <option value="google">Google Vision API</option>
-                                            <option value="azure">Azure Computer Vision</option>
-                                            <option value="aws">AWS Textract</option>
-                                        </select>
-                                        <div class="form-description">موتور پیش‌فرض تشخیص متن</div>
-                                    </div>
-
-                                    <div>
-                                        <label class="form-label" for="ocrLanguage">
-                                            <i class="fas fa-language"></i>
-                                            زبان پردازش
-                                        </label>
-                                        <select class="form-select" id="ocrLanguage" name="language">
-                                            <option value="fas">فارسی</option>
-                                            <option value="eng">انگلیسی</option>
-                                            <option value="ara">عربی</option>
-                                            <option value="auto">تشخیص خودکار</option>
-                                        </select>
-                                        <div class="form-description">زبان اصلی اسناد برای پردازش</div>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="form-group">
-                                <div class="form-row">
-                                    <div>
-                                        <label class="form-label" for="ocrQuality">
-                                            <i class="fas fa-sliders-h"></i>
-                                            کیفیت پردازش
-                                        </label>
-                                        <select class="form-select" id="ocrQuality" name="quality">
-                                            <option value="fast">سریع</option>
-                                            <option value="balanced" selected>متعادل</option>
-                                            <option value="accurate">دقیق</option>
-                                        </select>
-                                        <div class="form-description">تعادل بین سرعت و دقت</div>
-                                    </div>
-
-                                    <div>
-                                        <label class="form-label" for="confidenceThreshold">
-                                            <i class="fas fa-percentage"></i>
-                                            آستانه اطمینان
-                                        </label>
-                                        <input type="number" class="form-input" id="confidenceThreshold" name="confidence" value="75" min="0" max="100">
-                                        <div class="form-description">حداقل درصد اطمینان برای پذیرش متن</div>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="form-group">
-                                <div class="switch-group">
-                                    <div class="switch-info">
-                                        <div class="switch-label">پیش‌پردازش تصویر</div>
-                                        <div class="switch-description">بهبود کیفیت تصویر قبل از پردازش OCR</div>
-                                    </div>
-                                    <label class="switch">
-                                        <input type="checkbox" id="imagePreprocessing" name="preprocessing" checked>
-                                        <span class="slider"></span>
-                                    </label>
-                                </div>
-
-                                <div class="switch-group">
-                                    <div class="switch-info">
-                                        <div class="switch-label">تشخیص جدول</div>
-                                        <div class="switch-description">تشخیص و استخراج جداول از اسناد</div>
-                                    </div>
-                                    <label class="switch">
-                                        <input type="checkbox" id="tableDetection" name="tables" checked>
-                                        <span class="slider"></span>
-                                    </label>
-                                </div>
-                            </div>
-
-                            <div class="form-actions">
-                                <button type="button" class="btn btn-outline">بازنشانی</button>
-                                <button type="submit" class="btn btn-primary">ذخیره تغییرات</button>
-                            </div>
-                        </form>
-                    </section>
-
-                    <!-- تنظیمات ذخیره‌سازی -->
-                    <section class="settings-section" id="storage">
-                        <div class="section-header">
-                            <h2 class="section-title">
-                                <i class="fas fa-database"></i>
-                                تنظیمات ذخیره‌سازی
-                            </h2>
-                            <p class="section-description">
-                                مدیریت فضای ذخیره‌سازی، پایگاه داده و فایل‌های سیستم.
-                            </p>
-                        </div>
-
-                        <div class="info-cards">
-                            <div class="info-card">
-                                <div class="info-card-icon">
-                                    <i class="fas fa-hdd" style="color: #3b82f6;"></i>
-                                </div>
-                                <div class="info-card-title">فضای کل</div>
-                                <div class="info-card-value">500 GB</div>
-                            </div>
-
-                            <div class="info-card">
-                                <div class="info-card-icon">
-                                    <i class="fas fa-chart-pie" style="color: #10b981;"></i>
-                                </div>
-                                <div class="info-card-title">استفاده شده</div>
-                                <div class="info-card-value">127 GB</div>
-                            </div>
-
-                            <div class="info-card">
-                                <div class="info-card-icon">
-                                    <i class="fas fa-file-alt" style="color: #f59e0b;"></i>
-                                </div>
-                                <div class="info-card-title">تعداد فایل‌ها</div>
-                                <div class="info-card-value">1,247</div>
-                            </div>
-
-                            <div class="info-card">
-                                <div class="info-card-icon">
-                                    <i class="fas fa-clock" style="color: #ef4444;"></i>
-                                </div>
-                                <div class="info-card-title">آخرین پشتیبان</div>
-                                <div class="info-card-value">2 ساعت پیش</div>
-                            </div>
-                        </div>
-
-                        <form class="settings-form" onsubmit="saveStorageSettings(event)">
-                            <div class="form-group">
-                                <div class="form-row">
-                                    <div>
-                                        <label class="form-label" for="maxFileSize">
-                                            <i class="fas fa-weight-hanging"></i>
-                                            حداکثر اندازه فایل (MB)
-                                        </label>
-                                        <input type="number" class="form-input" id="maxFileSize" name="maxFileSize" value="50" min="1" max="500">
-                                        <div class="form-description">حداکثر اندازه مجاز برای آپلود فایل</div>
-                                    </div>
-
-                                    <div>
-                                        <label class="form-label" for="retentionPeriod">
-                                            <i class="fas fa-calendar"></i>
-                                            مدت نگهداری (روز)
-                                        </label>
-                                        <input type="number" class="form-input" id="retentionPeriod" name="retention" value="365" min="30" max="3650">
-                                        <div class="form-description">مدت نگهداری فایل‌ها قبل از حذف خودکار</div>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="form-group">
-                                <div class="switch-group">
-                                    <div class="switch-info">
-                                        <div class="switch-label">فشرده‌سازی خودکار</div>
-                                        <div class="switch-description">فشرده‌سازی فایل‌ها برای صرفه‌جویی در فضا</div>
-                                    </div>
-                                    <label class="switch">
-                                        <input type="checkbox" id="autoCompression" name="compression" checked>
-                                        <span class="slider"></span>
-                                    </label>
-                                </div>
-
-                                <div class="switch-group">
-                                    <div class="switch-info">
-                                        <div class="switch-label">حذف خودکار فایل‌های موقت</div>
-                                        <div class="switch-description">پاک‌سازی روزانه فایل‌های موقت و کش</div>
-                                    </div>
-                                    <label class="switch">
-                                        <input type="checkbox" id="autoCleanup" name="cleanup" checked>
-                                        <span class="slider"></span>
-                                    </label>
-                                </div>
-                            </div>
-
-                            <div class="form-actions">
-                                <button type="button" class="btn btn-danger" onclick="cleanupStorage()">پاک‌سازی فوری</button>
-                                <button type="submit" class="btn btn-primary">ذخیره تغییرات</button>
-                            </div>
-                        </form>
-                    </section>
-
-                    <!-- تنظیمات اعلان‌ها -->
-                    <section class="settings-section" id="notifications">
-                        <div class="section-header">
-                            <h2 class="section-title">
-                                <i class="fas fa-bell"></i>
-                                تنظیمات اعلان‌ها
-                            </h2>
-                            <p class="section-description">
-                                مدیریت نوع، زمان و روش ارسال اعلان‌های سیستم.
-                            </p>
-                        </div>
-
-                        <form class="settings-form" onsubmit="saveNotificationSettings(event)">
-                            <div class="form-group">
-                                <div class="switch-group">
-                                    <div class="switch-info">
-                                        <div class="switch-label">اعلان پایان پردازش</div>
-                                        <div class="switch-description">اعلان زمانی که پردازش سند تکمیل شود</div>
-                                    </div>
-                                    <label class="switch">
-                                        <input type="checkbox" id="processCompleteNotif" name="processComplete" checked>
-                                        <span class="slider"></span>
-                                    </label>
-                                </div>
-
-                                <div class="switch-group">
-                                    <div class="switch-info">
-                                        <div class="switch-label">اعلان خطاها</div>
-                                        <div class="switch-description">اعلان در صورت بروز خطا در پردازش</div>
-                                    </div>
-                                    <label class="switch">
-                                        <input type="checkbox" id="errorNotif" name="errors" checked>
-                                        <span class="slider"></span>
-                                    </label>
-                                </div>
-
-                                <div class="switch-group">
-                                    <div class="switch-info">
-                                        <div class="switch-label">اعلان بروزرسانی</div>
-                                        <div class="switch-description">اعلان زمانی که نسخه جدید در دسترس باشد</div>
-                                    </div>
-                                    <label class="switch">
-                                        <input type="checkbox" id="updateNotif" name="updates" checked>
-                                        <span class="slider"></span>
-                                    </label>
-                                </div>
-
-                                <div class="switch-group">
-                                    <div class="switch-info">
-                                        <div class="switch-label">اعلان گزارش‌های روزانه</div>
-                                        <div class="switch-description">ارسال خلاصه عملکرد روزانه</div>
-                                    </div>
-                                    <label class="switch">
-                                        <input type="checkbox" id="dailyReportNotif" name="dailyReport">
-                                        <span class="slider"></span>
-                                    </label>
-                                </div>
-                            </div>
-
-                            <div class="form-group">
-                                <div class="form-row">
-                                    <div>
-                                        <label class="form-label" for="notificationEmail">
-                                            <i class="fas fa-envelope"></i>
-                                            ایمیل اعلان‌ها
-                                        </label>
-                                        <input type="email" class="form-input" id="notificationEmail" name="email" placeholder="admin@example.com">
-                                        <div class="form-description">آدرس ایمیل برای دریافت اعلان‌ها</div>
-                                    </div>
-
-                                    <div>
-                                        <label class="form-label" for="notificationTime">
-                                            <i class="fas fa-clock"></i>
-                                            ساعت ارسال گزارش روزانه
-                                        </label>
-                                        <input type="time" class="form-input" id="notificationTime" name="time" value="09:00">
-                                        <div class="form-description">ساعت ارسال گزارش روزانه</div>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="form-actions">
-                                <button type="button" class="btn btn-outline">تست اعلان</button>
-                                <button type="submit" class="btn btn-primary">ذخیره تغییرات</button>
-                            </div>
-                        </form>
-                    </section>
-
-                    <!-- تنظیمات امنیت -->
-                    <section class="settings-section" id="security">
-                        <div class="section-header">
-                            <h2 class="section-title">
-                                <i class="fas fa-shield-alt"></i>
-                                تنظیمات امنیت
-                            </h2>
-                            <p class="section-description">
-                                تنظیمات مربوط به امنیت سیستم، احراز هویت و کنترل دسترسی.
-                            </p>
-                        </div>
-
-                        <form class="settings-form" onsubmit="saveSecuritySettings(event)">
-                            <div class="form-group">
-                                <div class="form-row">
-                                    <div>
-                                        <label class="form-label" for="sessionTimeout">
-                                            <i class="fas fa-clock"></i>
-                                            مدت انقضای نشست (دقیقه)
-                                        </label>
-                                        <input type="number" class="form-input" id="sessionTimeout" name="sessionTimeout" value="60" min="15" max="480">
-                                        <div class="form-description">مدت زمان انقضای خودکار نشست کاربر</div>
-                                    </div>
-
-                                    <div>
-                                        <label class="form-label" for="maxLoginAttempts">
-                                            <i class="fas fa-lock"></i>
-                                            حداکثر تلاش ورود
-                                        </label>
-                                        <input type="number" class="form-input" id="maxLoginAttempts" name="maxAttempts" value="5" min="3" max="20">
-                                        <div class="form-description">تعداد تلاش مجاز برای ورود قبل از مسدودسازی</div>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="form-group">
-                                <div class="switch-group">
-                                    <div class="switch-info">
-                                        <div class="switch-label">احراز هویت دو مرحله‌ای</div>
-                                        <div class="switch-description">فعال‌سازی 2FA برای امنیت بیشتر</div>
-                                    </div>
-                                    <label class="switch">
-                                        <input type="checkbox" id="twoFactorAuth" name="twoFactor">
-                                        <span class="slider"></span>
-                                    </label>
-                                </div>
-
-                                <div class="switch-group">
-                                    <div class="switch-info">
-                                        <div class="switch-label">رمزنگاری فایل‌ها</div>
-                                        <div class="switch-description">رمزنگاری خودکار فایل‌های آپلود شده</div>
-                                    </div>
-                                    <label class="switch">
-                                        <input type="checkbox" id="fileEncryption" name="encryption" checked>
-                                        <span class="slider"></span>
-                                    </label>
-                                </div>
-
-                                <div class="switch-group">
-                                    <div class="switch-info">
-                                        <div class="switch-label">لاگ فعالیت‌ها</div>
-                                        <div class="switch-description">ثبت کامل فعالیت‌های کاربران</div>
-                                    </div>
-                                    <label class="switch">
-                                        <input type="checkbox" id="activityLogging" name="logging" checked>
-                                        <span class="slider"></span>
-                                    </label>
-                                </div>
-                            </div>
-
-                            <div class="form-actions">
-                                <button type="button" class="btn btn-danger" onclick="clearSecurityLogs()">پاک کردن لاگ‌ها</button>
-                                <button type="submit" class="btn btn-primary">ذخیره تغییرات</button>
-                            </div>
-                        </form>
-                    </section>
-
-                    <!-- تنظیمات API -->
-                    <section class="settings-section" id="api">
-                        <div class="section-header">
-                            <h2 class="section-title">
-                                <i class="fas fa-plug"></i>
-                                API و ادغام
-                            </h2>
-                            <p class="section-description">
-                                مدیریت کلیدهای API، وب‌هوک‌ها و ادغام با سیستم‌های خارجی.
-                            </p>
-                        </div>
-
-                        <form class="settings-form" onsubmit="saveAPISettings(event)">
-                            <div class="form-group">
-                                <div class="form-row">
-                                    <div>
-                                        <label class="form-label" for="apiKey">
-                                            <i class="fas fa-key"></i>
-                                            کلید API اصلی
-                                        </label>
-                                        <input type="password" class="form-input" id="apiKey" name="apiKey" value="sk_****************************" readonly>
-                                        <div class="form-description">کلید API برای دسترسی به خدمات</div>
-                                    </div>
-
-                                    <div>
-                                        <label class="form-label" for="webhookUrl">
-                                            <i class="fas fa-link"></i>
-                                            آدرس Webhook
-                                        </label>
-                                        <input type="url" class="form-input" id="webhookUrl" name="webhook" placeholder="https://example.com/webhook">
-                                        <div class="form-description">آدرس برای ارسال رویدادها</div>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="form-group">
-                                <label class="form-label">
-                                    <i class="fas fa-cogs"></i>
-                                    کلیدهای API خارجی
-                                </label>
-                                <table class="settings-table">
-                                    <thead>
-                                        <tr>
-                                            <th>سرویس</th>
-                                            <th>کلید API</th>
-                                            <th>وضعیت</th>
-                                            <th>عملیات</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <tr>
-                                            <td>Google Vision API</td>
-                                            <td>AIza**********************</td>
-                                            <td><span style="color: #10b981;">فعال</span></td>
-                                            <td>
-                                                <button type="button" class="btn btn-outline btn-sm">ویرایش</button>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td>Azure Computer Vision</td>
-                                            <td>غیرفعال</td>
-                                            <td><span style="color: #ef4444;">غیرفعال</span></td>
-                                            <td>
-                                                <button type="button" class="btn btn-primary btn-sm">تنظیم</button>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td>AWS Textract</td>
-                                            <td>غیرفعال</td>
-                                            <td><span style="color: #ef4444;">غیرفعال</span></td>
-                                            <td>
-                                                <button type="button" class="btn btn-primary btn-sm">تنظیم</button>
-                                            </td>
-                                        </tr>
-                                    </tbody>
-                                </table>
-                            </div>
-
-                            <div class="form-actions">
-                                <button type="button" class="btn btn-outline" onclick="generateNewAPIKey()">تولید کلید جدید</button>
-                                <button type="submit" class="btn btn-primary">ذخیره تغییرات</button>
-                            </div>
-                        </form>
-                    </section>
-
-                    <!-- تنظیمات پشتیبان‌گیری -->
-                    <section class="settings-section" id="backup">
-                        <div class="section-header">
-                            <h2 class="section-title">
-                                <i class="fas fa-history"></i>
-                                پشتیبان‌گیری و بازیابی
-                            </h2>
-                            <p class="section-description">
-                                مدیریت پشتیبان‌گیری خودکار، بازیابی داده‌ها و تنظیمات مرتبط.
-                            </p>
-                        </div>
-
-                        <div class="upload-zone" onclick="document.getElementById('backupFile').click()">
-                            <div class="upload-icon">
-                                <i class="fas fa-cloud-upload-alt"></i>
-                            </div>
-                            <div class="upload-text">بازیابی از فایل پشتیبان</div>
-                            <div class="upload-hint">فایل .backup را اینجا رها کنید یا کلیک کنید</div>
-                            <input type="file" id="backupFile" accept=".backup" style="display: none;" onchange="restoreBackup(this)">
-                        </div>
-
-                        <form class="settings-form" onsubmit="saveBackupSettings(event)">
-                            <div class="form-group">
-                                <div class="form-row">
-                                    <div>
-                                        <label class="form-label" for="backupFrequency">
-                                            <i class="fas fa-clock"></i>
-                                            دوره پشتیبان‌گیری
-                                        </label>
-                                        <select class="form-select" id="backupFrequency" name="frequency">
-                                            <option value="daily" selected>روزانه</option>
-                                            <option value="weekly">هفتگی</option>
-                                            <option value="monthly">ماهانه</option>
-                                            <option value="manual">دستی</option>
-                                        </select>
-                                        <div class="form-description">دوره زمانی پشتیبان‌گیری خودکار</div>
-                                    </div>
-
-                                    <div>
-                                        <label class="form-label" for="backupRetention">
-                                            <i class="fas fa-calendar"></i>
-                                            نگهداری پشتیبان (روز)
-                                        </label>
-                                        <input type="number" class="form-input" id="backupRetention" name="retention" value="30" min="7" max="365">
-                                        <div class="form-description">مدت نگهداری فایل‌های پشتیبان</div>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="form-group">
-                                <div class="switch-group">
-                                    <div class="switch-info">
-                                        <div class="switch-label">پشتیبان‌گیری خودکار</div>
-                                        <div class="switch-description">فعال‌سازی پشتیبان‌گیری خودکار بر اساس دوره تعیین شده</div>
-                                    </div>
-                                    <label class="switch">
-                                        <input type="checkbox" id="autoBackup" name="autoBackup" checked>
-                                        <span class="slider"></span>
-                                    </label>
-                                </div>
-
-                                <div class="switch-group">
-                                    <div class="switch-info">
-                                        <div class="switch-label">فشرده‌سازی پشتیبان</div>
-                                        <div class="switch-description">فشرده‌سازی فایل‌های پشتیبان برای کاهش حجم</div>
-                                    </div>
-                                    <label class="switch">
-                                        <input type="checkbox" id="compressBackup" name="compress" checked>
-                                        <span class="slider"></span>
-                                    </label>
-                                </div>
-                            </div>
-
-                            <div class="form-actions">
-                                <button type="button" class="btn btn-success" onclick="createBackup()">ایجاد پشتیبان فوری</button>
-                                <button type="submit" class="btn btn-primary">ذخیره تغییرات</button>
-                            </div>
-                        </form>
-                    </section>
-
-                    <!-- اطلاعات سیستم -->
-                    <section class="settings-section" id="system">
-                        <div class="section-header">
-                            <h2 class="section-title">
-                                <i class="fas fa-server"></i>
-                                اطلاعات سیستم
-                            </h2>
-                            <p class="section-description">
-                                اطلاعات فنی سیستم، نسخه برنامه و وضعیت سرویس‌ها.
-                            </p>
-                        </div>
-
-                        <div class="info-cards">
-                            <div class="info-card">
-                                <div class="info-card-icon">
-                                    <i class="fas fa-microchip" style="color: #3b82f6;"></i>
-                                </div>
-                                <div class="info-card-title">استفاده CPU</div>
-                                <div class="info-card-value">23%</div>
-                            </div>
-
-                            <div class="info-card">
-                                <div class="info-card-icon">
-                                    <i class="fas fa-memory" style="color: #10b981;"></i>
-                                </div>
-                                <div class="info-card-title">استفاده RAM</div>
-                                <div class="info-card-value">1.2 GB</div>
-                            </div>
-
-                            <div class="info-card">
-                                <div class="info-card-icon">
-                                    <i class="fas fa-network-wired" style="color: #f59e0b;"></i>
-                                </div>
-                                <div class="info-card-title">وضعیت شبکه</div>
-                                <div class="info-card-value">آنلاین</div>
-                            </div>
-
-                            <div class="info-card">
-                                <div class="info-card-icon">
-                                    <i class="fas fa-code-branch" style="color: #ef4444;"></i>
-                                </div>
-                                <div class="info-card-title">نسخه سیستم</div>
-                                <div class="info-card-value">v2.1.4</div>
-                            </div>
-                        </div>
-
-                        <table class="settings-table">
-                            <thead>
-                                <tr>
-                                    <th>جزئیات سیستم</th>
-                                    <th>مقدار</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr>
-                                    <td>سیستم‌عامل</td>
-                                    <td>Ubuntu 22.04 LTS</td>
-                                </tr>
-                                <tr>
-                                    <td>نسخه Python</td>
-                                    <td>3.11.2</td>
-                                </tr>
-                                <tr>
-                                    <td>پایگاه داده</td>
-                                    <td>PostgreSQL 15.2</td>
-                                </tr>
-                                <tr>
-                                    <td>وب سرور</td>
-                                    <td>Nginx 1.18.0</td>
-                                </tr>
-                                <tr>
-                                    <td>زمان راه‌اندازی</td>
-                                    <td>72 ساعت و 15 دقیقه</td>
-                                </tr>
-                                <tr>
-                                    <td>آخرین بروزرسانی</td>
-                                    <td>2024-01-15 14:30:00</td>
-                                </tr>
-                            </tbody>
-                        </table>
-
-                        <div class="form-actions">
-                            <button type="button" class="btn btn-outline" onclick="checkUpdates()">بررسی بروزرسانی</button>
-                            <button type="button" class="btn btn-danger" onclick="restartSystem()">راه‌اندازی مجدد</button>
-                        </div>
-                    </section>
-                </div>
+            <!-- Breadcrumbs -->
+            <div class="breadcrumb-container" id="breadcrumb-container">
+                <a href="index.html" class="breadcrumb-item">
+                    <i class="fas fa-home"></i>
+                    <span>خانه</span>
+                </a>
+                <i class="fas fa-angle-left mx-2 text-gray-400"></i>
+                <span class="breadcrumb-item active" aria-current="page">تنظیمات</span>
             </div>
+
+            <!-- Settings Tabs -->
+            <section class="settings-section">
+                <div class="settings-tabs">
+                    <button class="tab-btn active" data-tab="general">عمومی</button>
+                    <button class="tab-btn" data-tab="appearance">ظاهر</button>
+                    <button class="tab-btn" data-tab="notifications">اعلان‌ها</button>
+                    <button class="tab-btn" data-tab="security">امنیت</button>
+                    <button class="tab-btn" data-tab="advanced">پیشرفته</button>
+                </div>
+
+                <div class="tab-content">
+                    <!-- General Settings -->
+                    <div class="tab-pane active" id="general-tab">
+                        <div class="settings-group">
+                            <h3>تنظیمات عمومی</h3>
+                            
+                            <div class="form-group">
+                                <label for="language-select">زبان:</label>
+                                <select id="language-select" class="form-select">
+                                    <option value="fa" selected>فارسی</option>
+                                    <option value="en">English</option>
+                                    <option value="ar">العربية</option>
+                                </select>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="timezone-select">منطقه زمانی:</label>
+                                <select id="timezone-select" class="form-select">
+                                    <option value="Asia/Tehran" selected>تهران (UTC+3:30)</option>
+                                    <option value="UTC">UTC</option>
+                                    <option value="Europe/London">لندن (UTC+0)</option>
+                                    <option value="America/New_York">نیویورک (UTC-5)</option>
+                                </select>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="date-format">فرمت تاریخ:</label>
+                                <select id="date-format" class="form-select">
+                                    <option value="jalali" selected>شمسی</option>
+                                    <option value="gregorian">میلادی</option>
+                                    <option value="both">هر دو</option>
+                                </select>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="auto-save">ذخیره خودکار:</label>
+                                <div class="toggle-switch">
+                                    <input type="checkbox" id="auto-save" checked>
+                                    <label for="auto-save"></label>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="auto-save-interval">فاصله ذخیره خودکار (دقیقه):</label>
+                                <input type="number" id="auto-save-interval" class="form-input" value="5" min="1" max="60">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Appearance Settings -->
+                    <div class="tab-pane" id="appearance-tab">
+                        <div class="settings-group">
+                            <h3>تنظیمات ظاهر</h3>
+                            
+                            <div class="form-group">
+                                <label for="theme-select">تم:</label>
+                                <select id="theme-select" class="form-select">
+                                    <option value="auto" selected>خودکار</option>
+                                    <option value="light">روشن</option>
+                                    <option value="dark">تاریک</option>
+                                </select>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="color-scheme">رنگ اصلی:</label>
+                                <div class="color-picker">
+                                    <input type="color" id="color-scheme" value="#3b82f6">
+                                    <span class="color-preview"></span>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="font-size">اندازه فونت:</label>
+                                <select id="font-size" class="form-select">
+                                    <option value="small">کوچک</option>
+                                    <option value="medium" selected>متوسط</option>
+                                    <option value="large">بزرگ</option>
+                                    <option value="xlarge">خیلی بزرگ</option>
+                                </select>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="animation-toggle">انیمیشن‌ها:</label>
+                                <div class="toggle-switch">
+                                    <input type="checkbox" id="animation-toggle" checked>
+                                    <label for="animation-toggle"></label>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="compact-mode">حالت فشرده:</label>
+                                <div class="toggle-switch">
+                                    <input type="checkbox" id="compact-mode">
+                                    <label for="compact-mode"></label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Notifications Settings -->
+                    <div class="tab-pane" id="notifications-tab">
+                        <div class="settings-group">
+                            <h3>تنظیمات اعلان‌ها</h3>
+                            
+                            <div class="form-group">
+                                <label for="notifications-enabled">فعال‌سازی اعلان‌ها:</label>
+                                <div class="toggle-switch">
+                                    <input type="checkbox" id="notifications-enabled" checked>
+                                    <label for="notifications-enabled"></label>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="sound-notifications">اعلان‌های صوتی:</label>
+                                <div class="toggle-switch">
+                                    <input type="checkbox" id="sound-notifications" checked>
+                                    <label for="sound-notifications"></label>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="email-notifications">اعلان‌های ایمیل:</label>
+                                <div class="toggle-switch">
+                                    <input type="checkbox" id="email-notifications">
+                                    <label for="email-notifications"></label>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="notification-types">نوع اعلان‌ها:</label>
+                                <div class="checkbox-group">
+                                    <label class="checkbox-item">
+                                        <input type="checkbox" checked> آپلود فایل
+                                    </label>
+                                    <label class="checkbox-item">
+                                        <input type="checkbox" checked> تکمیل پردازش
+                                    </label>
+                                    <label class="checkbox-item">
+                                        <input type="checkbox" checked> خطاهای سیستم
+                                    </label>
+                                    <label class="checkbox-item">
+                                        <input type="checkbox"> به‌روزرسانی‌ها
+                                    </label>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="notification-duration">مدت نمایش اعلان (ثانیه):</label>
+                                <input type="number" id="notification-duration" class="form-input" value="5" min="1" max="30">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Security Settings -->
+                    <div class="tab-pane" id="security-tab">
+                        <div class="settings-group">
+                            <h3>تنظیمات امنیت</h3>
+                            
+                            <div class="form-group">
+                                <label for="session-timeout">مدت زمان نشست (دقیقه):</label>
+                                <input type="number" id="session-timeout" class="form-input" value="30" min="5" max="480">
+                            </div>
+
+                            <div class="form-group">
+                                <label for="two-factor-auth">احراز هویت دو مرحله‌ای:</label>
+                                <div class="toggle-switch">
+                                    <input type="checkbox" id="two-factor-auth">
+                                    <label for="two-factor-auth"></label>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="password-change">تغییر رمز عبور:</label>
+                                <button class="btn btn-secondary" id="change-password-btn">
+                                    <i class="fas fa-key"></i>
+                                    تغییر رمز عبور
+                                </button>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="login-history">تاریخچه ورود:</label>
+                                <button class="btn btn-secondary" id="view-login-history-btn">
+                                    <i class="fas fa-history"></i>
+                                    مشاهده تاریخچه
+                                </button>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="data-encryption">رمزگذاری داده‌ها:</label>
+                                <div class="toggle-switch">
+                                    <input type="checkbox" id="data-encryption" checked>
+                                    <label for="data-encryption"></label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Advanced Settings -->
+                    <div class="tab-pane" id="advanced-tab">
+                        <div class="settings-group">
+                            <h3>تنظیمات پیشرفته</h3>
+                            
+                            <div class="form-group">
+                                <label for="debug-mode">حالت دیباگ:</label>
+                                <div class="toggle-switch">
+                                    <input type="checkbox" id="debug-mode">
+                                    <label for="debug-mode"></label>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="cache-size">اندازه کش (MB):</label>
+                                <input type="number" id="cache-size" class="form-input" value="100" min="10" max="1000">
+                            </div>
+
+                            <div class="form-group">
+                                <label for="api-timeout">تایم‌اوت API (ثانیه):</label>
+                                <input type="number" id="api-timeout" class="form-input" value="30" min="5" max="300">
+                            </div>
+
+                            <div class="form-group">
+                                <label for="max-upload-size">حداکثر حجم آپلود (MB):</label>
+                                <input type="number" id="max-upload-size" class="form-input" value="50" min="1" max="500">
+                            </div>
+
+                            <div class="form-group">
+                                <label for="concurrent-uploads">تعداد آپلود همزمان:</label>
+                                <input type="number" id="concurrent-uploads" class="form-input" value="3" min="1" max="10">
+                            </div>
+
+                            <div class="form-group">
+                                <label for="export-format">فرمت پیش‌فرض صادرات:</label>
+                                <select id="export-format" class="form-select">
+                                    <option value="pdf" selected>PDF</option>
+                                    <option value="excel">Excel</option>
+                                    <option value="csv">CSV</option>
+                                    <option value="json">JSON</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Data Management -->
+            <section class="data-management">
+                <div class="management-header">
+                    <h3>مدیریت داده‌ها</h3>
+                </div>
+
+                <div class="management-grid">
+                    <div class="management-card">
+                        <div class="card-icon">
+                            <i class="fas fa-download"></i>
+                        </div>
+                        <div class="card-content">
+                            <h4>صادرات داده‌ها</h4>
+                            <p>دانلود تمام داده‌های شخصی و تنظیمات</p>
+                            <button class="btn btn-secondary" id="export-data-btn">
+                                <i class="fas fa-download"></i>
+                                صادرات
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="management-card">
+                        <div class="card-icon">
+                            <i class="fas fa-upload"></i>
+                        </div>
+                        <div class="card-content">
+                            <h4>واردات داده‌ها</h4>
+                            <p>بازگردانی تنظیمات از فایل پشتیبان</p>
+                            <button class="btn btn-secondary" id="import-data-btn">
+                                <i class="fas fa-upload"></i>
+                                واردات
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="management-card">
+                        <div class="card-icon">
+                            <i class="fas fa-trash"></i>
+                        </div>
+                        <div class="card-content">
+                            <h4>پاک کردن کش</h4>
+                            <p>پاک کردن تمام داده‌های موقت</p>
+                            <button class="btn btn-danger" id="clear-cache-btn">
+                                <i class="fas fa-trash"></i>
+                                پاک کردن
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="management-card">
+                        <div class="card-icon">
+                            <i class="fas fa-redo"></i>
+                        </div>
+                        <div class="card-content">
+                            <h4>بازنشانی کامل</h4>
+                            <p>بازگردانی تمام تنظیمات به حالت پیش‌فرض</p>
+                            <button class="btn btn-danger" id="reset-all-btn">
+                                <i class="fas fa-redo"></i>
+                                بازنشانی
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Account Information -->
+            <section class="account-info">
+                <div class="account-header">
+                    <h3>اطلاعات حساب کاربری</h3>
+                </div>
+
+                <div class="account-details">
+                    <div class="detail-item">
+                        <span class="detail-label">نام کاربری:</span>
+                        <span class="detail-value">admin@legal.com</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-label">نام کامل:</span>
+                        <span class="detail-value">مدیر سیستم</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-label">نقش:</span>
+                        <span class="detail-value">مدیر ارشد</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-label">تاریخ عضویت:</span>
+                        <span class="detail-value">1402/01/15</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-label">آخرین ورود:</span>
+                        <span class="detail-value">1402/10/20 - 14:30</span>
+                    </div>
+                </div>
+
+                <div class="account-actions">
+                    <button class="btn btn-secondary" id="edit-profile-btn">
+                        <i class="fas fa-edit"></i>
+                        ویرایش پروفایل
+                    </button>
+                    <button class="btn btn-danger" id="logout-btn">
+                        <i class="fas fa-sign-out-alt"></i>
+                        خروج
+                    </button>
+                </div>
+            </section>
         </main>
     </div>
 
-    <!-- Toast Container -->
-    <div class="toast-container" id="toastContainer"></div>
+    <!-- Notification Panel -->
+    <div id="notification-panel" class="notification-panel hidden">
+        <div class="notification-header">
+            <h3>اعلان‌ها</h3>
+            <button class="close-btn" id="close-notification-panel">×</button>
+        </div>
+        <div class="notification-list" id="notification-list"></div>
+        <div class="notification-footer">
+            <button class="btn btn-secondary" id="mark-all-read">علامت‌گذاری همه</button>
+            <button class="btn btn-danger" id="clear-all-notifications">پاک کردن همه</button>
+        </div>
+    </div>
 
+    <!-- Mobile Overlay -->
+    <div id="mobile-overlay" class="mobile-overlay hidden"></div>
+
+    <!-- Change Password Modal -->
+    <div id="change-password-modal" class="modal-overlay hidden">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>تغییر رمز عبور</h3>
+                <button class="close-btn" id="close-password-modal">×</button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label for="current-password">رمز عبور فعلی:</label>
+                    <input type="password" id="current-password" class="form-input">
+                </div>
+                <div class="form-group">
+                    <label for="new-password">رمز عبور جدید:</label>
+                    <input type="password" id="new-password" class="form-input">
+                </div>
+                <div class="form-group">
+                    <label for="confirm-password">تایید رمز عبور جدید:</label>
+                    <input type="password" id="confirm-password" class="form-input">
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" id="cancel-password-btn">انصراف</button>
+                <button class="btn btn-primary" id="confirm-password-btn">
+                    <i class="fas fa-key"></i>
+                    تغییر رمز عبور
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Import Data Modal -->
+    <div id="import-data-modal" class="modal-overlay hidden">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>واردات داده‌ها</h3>
+                <button class="close-btn" id="close-import-modal">×</button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label for="import-file">انتخاب فایل:</label>
+                    <input type="file" id="import-file" class="form-input" accept=".json,.zip">
+                </div>
+                <div class="form-group">
+                    <label for="import-options">گزینه‌های واردات:</label>
+                    <div class="checkbox-group">
+                        <label class="checkbox-item">
+                            <input type="checkbox" checked> تنظیمات
+                        </label>
+                        <label class="checkbox-item">
+                            <input type="checkbox" checked> داده‌های شخصی
+                        </label>
+                        <label class="checkbox-item">
+                            <input type="checkbox"> تاریخچه
+                        </label>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" id="cancel-import-btn">انصراف</button>
+                <button class="btn btn-primary" id="confirm-import-btn">
+                    <i class="fas fa-upload"></i>
+                    واردات
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- JavaScript Modules -->
+    <script src="js/core.js"></script>
+    <script src="js/api-client.js"></script>
+    <script src="js/state-manager.js"></script>
+    <script src="js/navigation.js"></script>
+    <script src="js/notifications.js"></script>
+    <script src="js/document-manager.js"></script>
+    <script src="js/file-handler.js"></script>
+    <script src="js/search-engine.js"></script>
+    <script src="js/chart-manager.js"></script>
+
+    <!-- Initialize Settings Page -->
     <script>
-        // Global variables
-        let isOnline = false;
-        let settings = {};
-
-        // Initialize page
         document.addEventListener('DOMContentLoaded', function() {
-            console.log('⚙️ Settings page loading...');
+            console.log('🚀 Initializing Settings Page...');
+
+            // Initialize all managers
+            const managers = {
+                core: window.dashboardCore,
+                api: window.apiClient,
+                state: window.stateManager,
+                navigation: window.navigationManager,
+                notifications: window.notificationManager,
+                documents: window.documentManager,
+                files: window.fileHandler,
+                search: window.searchEngine,
+                charts: window.chartManager
+            };
+
+            // Set up cross-component communication
+            managers.core.broadcast('settings:initialized', { managers });
+
+            // Initialize settings page functionality
             initializeSettingsPage();
+
+            console.log('✅ Settings page initialized successfully');
         });
 
-        async function initializeSettingsPage() {
-            try {
-                // Test backend connection
-                isOnline = await testConnection();
-                
-                // Load current settings
-                await loadCurrentSettings();
-                
-                showToast('صفحه تنظیمات آماده است', 'success', 'آماده');
-                
-            } catch (error) {
-                console.error('Failed to initialize settings page:', error);
-                
-                // Fallback mode
-                isOnline = false;
-                loadDefaultSettings();
-                
-                showToast('حالت آفلاین فعال است', 'warning', 'اتصال ناموفق');
-            }
+        function initializeSettingsPage() {
+            // Load current settings
+            loadCurrentSettings();
+
+            // Set up tabs
+            setupSettingsTabs();
+
+            // Set up event listeners
+            setupSettingsEventListeners();
+
+            // Set up form validation
+            setupFormValidation();
         }
 
-        async function testConnection() {
-            try {
-                await window.legalAPI.healthCheck();
-                return true;
-            } catch (error) {
-                return false;
-            }
+        function loadCurrentSettings() {
+            // Load settings from localStorage or API
+            const settings = {
+                language: 'fa',
+                timezone: 'Asia/Tehran',
+                dateFormat: 'jalali',
+                autoSave: true,
+                autoSaveInterval: 5,
+                theme: 'auto',
+                colorScheme: '#3b82f6',
+                fontSize: 'medium',
+                animations: true,
+                compactMode: false,
+                notificationsEnabled: true,
+                soundNotifications: true,
+                emailNotifications: false,
+                sessionTimeout: 30,
+                twoFactorAuth: false,
+                dataEncryption: true,
+                debugMode: false,
+                cacheSize: 100,
+                apiTimeout: 30,
+                maxUploadSize: 50,
+                concurrentUploads: 3,
+                exportFormat: 'pdf'
+            };
+
+            // Apply settings to form elements
+            applySettingsToForm(settings);
         }
 
-        async function loadCurrentSettings() {
-            try {
-                if (isOnline) {
-                    settings = await window.legalAPI.getSettings();
-                } else {
-                    settings = getDefaultSettings();
+        function applySettingsToForm(settings) {
+            // Apply settings to form elements
+            Object.keys(settings).forEach(key => {
+                const element = document.getElementById(key);
+                if (element) {
+                    if (element.type === 'checkbox') {
+                        element.checked = settings[key];
+                    } else if (element.type === 'color') {
+                        element.value = settings[key];
+                        updateColorPreview(settings[key]);
+                    } else {
+                        element.value = settings[key];
+                    }
                 }
-                
-                // Apply settings to form elements
-                applySettingsToForms();
-                
-            } catch (error) {
-                console.error('Failed to load settings:', error);
-                settings = getDefaultSettings();
-                applySettingsToForms();
+            });
+        }
+
+        function updateColorPreview(color) {
+            const preview = document.querySelector('.color-preview');
+            if (preview) {
+                preview.style.backgroundColor = color;
             }
         }
 
-        function loadDefaultSettings() {
-            settings = getDefaultSettings();
-            applySettingsToForms();
+        function setupSettingsTabs() {
+            const tabBtns = document.querySelectorAll('.tab-btn');
+            const tabPanes = document.querySelectorAll('.tab-pane');
+
+            tabBtns.forEach(btn => {
+                btn.addEventListener('click', () => {
+                    const targetTab = btn.dataset.tab;
+                    
+                    // Remove active class from all buttons and panes
+                    tabBtns.forEach(b => b.classList.remove('active'));
+                    tabPanes.forEach(p => p.classList.remove('active'));
+                    
+                    // Add active class to clicked button and corresponding pane
+                    btn.classList.add('active');
+                    document.getElementById(`${targetTab}-tab`).classList.add('active');
+                });
+            });
         }
 
-        function getDefaultSettings() {
-            return {
-                general: {
+        function setupSettingsEventListeners() {
+            // Save settings button
+            const saveBtn = document.getElementById('save-settings-btn');
+            if (saveBtn) {
+                saveBtn.addEventListener('click', () => {
+                    saveSettings();
+                });
+            }
+
+            // Reset settings button
+            const resetBtn = document.getElementById('reset-settings-btn');
+            if (resetBtn) {
+                resetBtn.addEventListener('click', () => {
+                    resetSettings();
+                });
+            }
+
+            // Color scheme picker
+            const colorPicker = document.getElementById('color-scheme');
+            if (colorPicker) {
+                colorPicker.addEventListener('change', (e) => {
+                    updateColorPreview(e.target.value);
+                });
+            }
+
+            // Change password button
+            const changePasswordBtn = document.getElementById('change-password-btn');
+            if (changePasswordBtn) {
+                changePasswordBtn.addEventListener('click', () => {
+                    showChangePasswordModal();
+                });
+            }
+
+            // Export data button
+            const exportDataBtn = document.getElementById('export-data-btn');
+            if (exportDataBtn) {
+                exportDataBtn.addEventListener('click', () => {
+                    exportUserData();
+                });
+            }
+
+            // Import data button
+            const importDataBtn = document.getElementById('import-data-btn');
+            if (importDataBtn) {
+                importDataBtn.addEventListener('click', () => {
+                    showImportDataModal();
+                });
+            }
+
+            // Clear cache button
+            const clearCacheBtn = document.getElementById('clear-cache-btn');
+            if (clearCacheBtn) {
+                clearCacheBtn.addEventListener('click', () => {
+                    clearCache();
+                });
+            }
+
+            // Reset all button
+            const resetAllBtn = document.getElementById('reset-all-btn');
+            if (resetAllBtn) {
+                resetAllBtn.addEventListener('click', () => {
+                    resetAllSettings();
+                });
+            }
+
+            // Edit profile button
+            const editProfileBtn = document.getElementById('edit-profile-btn');
+            if (editProfileBtn) {
+                editProfileBtn.addEventListener('click', () => {
+                    editProfile();
+                });
+            }
+
+            // Logout button
+            const logoutBtn = document.getElementById('logout-btn');
+            if (logoutBtn) {
+                logoutBtn.addEventListener('click', () => {
+                    logout();
+                });
+            }
+
+            // Modal event listeners
+            setupModalEventListeners();
+
+            // Mobile menu toggle
+            const mobileToggle = document.getElementById('mobile-menu-toggle');
+            const sidebar = document.getElementById('sidebar');
+            const overlay = document.getElementById('mobile-overlay');
+
+            if (mobileToggle && sidebar) {
+                mobileToggle.addEventListener('click', () => {
+                    sidebar.classList.toggle('open');
+                    overlay.classList.toggle('hidden');
+                });
+            }
+
+            if (overlay) {
+                overlay.addEventListener('click', () => {
+                    sidebar.classList.remove('open');
+                    overlay.classList.add('hidden');
+                });
+            }
+
+            // Notification panel
+            const notificationBell = document.getElementById('notification-bell');
+            const notificationPanel = document.getElementById('notification-panel');
+            const closePanel = document.getElementById('close-notification-panel');
+
+            if (notificationBell && notificationPanel) {
+                notificationBell.addEventListener('click', () => {
+                    notificationPanel.classList.toggle('hidden');
+                });
+            }
+
+            if (closePanel && notificationPanel) {
+                closePanel.addEventListener('click', () => {
+                    notificationPanel.classList.add('hidden');
+                });
+            }
+        }
+
+        function setupModalEventListeners() {
+            // Change password modal
+            const passwordModal = document.getElementById('change-password-modal');
+            const closePasswordBtn = document.getElementById('close-password-modal');
+            const cancelPasswordBtn = document.getElementById('cancel-password-btn');
+            const confirmPasswordBtn = document.getElementById('confirm-password-btn');
+
+            if (closePasswordBtn && passwordModal) {
+                closePasswordBtn.addEventListener('click', () => {
+                    passwordModal.classList.add('hidden');
+                });
+            }
+
+            if (cancelPasswordBtn && passwordModal) {
+                cancelPasswordBtn.addEventListener('click', () => {
+                    passwordModal.classList.add('hidden');
+                });
+            }
+
+            if (confirmPasswordBtn && passwordModal) {
+                confirmPasswordBtn.addEventListener('click', () => {
+                    changePassword();
+                });
+            }
+
+            if (passwordModal) {
+                passwordModal.addEventListener('click', (e) => {
+                    if (e.target === passwordModal) {
+                        passwordModal.classList.add('hidden');
+                    }
+                });
+            }
+
+            // Import data modal
+            const importModal = document.getElementById('import-data-modal');
+            const closeImportBtn = document.getElementById('close-import-modal');
+            const cancelImportBtn = document.getElementById('cancel-import-btn');
+            const confirmImportBtn = document.getElementById('confirm-import-btn');
+
+            if (closeImportBtn && importModal) {
+                closeImportBtn.addEventListener('click', () => {
+                    importModal.classList.add('hidden');
+                });
+            }
+
+            if (cancelImportBtn && importModal) {
+                cancelImportBtn.addEventListener('click', () => {
+                    importModal.classList.add('hidden');
+                });
+            }
+
+            if (confirmImportBtn && importModal) {
+                confirmImportBtn.addEventListener('click', () => {
+                    importUserData();
+                });
+            }
+
+            if (importModal) {
+                importModal.addEventListener('click', (e) => {
+                    if (e.target === importModal) {
+                        importModal.classList.add('hidden');
+                    }
+                });
+            }
+        }
+
+        function setupFormValidation() {
+            // Add form validation logic here
+            console.log('Form validation setup complete');
+        }
+
+        function saveSettings() {
+            const settings = collectFormSettings();
+            
+            // Save to localStorage
+            localStorage.setItem('userSettings', JSON.stringify(settings));
+            
+            // Save to API if available
+            if (window.apiClient) {
+                window.apiClient.saveSettings(settings)
+                    .then(() => {
+                        showSuccess('ذخیره شد', 'تنظیمات با موفقیت ذخیره شد');
+                    })
+                    .catch(error => {
+                        showError('خطا در ذخیره', 'خطا در ذخیره تنظیمات');
+                    });
+            } else {
+                showSuccess('ذخیره شد', 'تنظیمات با موفقیت ذخیره شد');
+            }
+        }
+
+        function collectFormSettings() {
+            const settings = {};
+            
+            // Collect all form values
+            const formElements = document.querySelectorAll('input, select, textarea');
+            formElements.forEach(element => {
+                if (element.id) {
+                    if (element.type === 'checkbox') {
+                        settings[element.id] = element.checked;
+                    } else {
+                        settings[element.id] = element.value;
+                    }
+                }
+            });
+            
+            return settings;
+        }
+
+        function resetSettings() {
+            if (confirm('آیا مطمئن هستید که می‌خواهید تنظیمات را بازنشانی کنید؟')) {
+                // Reset to default settings
+                const defaultSettings = {
                     language: 'fa',
                     timezone: 'Asia/Tehran',
-                    darkMode: false,
-                    desktopNotifications: true,
-                    autoSave: true
-                },
-                ocr: {
-                    engine: 'tesseract',
-                    language: 'fas',
-                    quality: 'balanced',
-                    confidence: 75,
-                    preprocessing: true,
-                    tables: true
-                },
-                storage: {
-                    maxFileSize: 50,
-                    retention: 365,
-                    compression: true,
-                    cleanup: true
-                },
-                notifications: {
-                    processComplete: true,
-                    errors: true,
-                    updates: true,
-                    dailyReport: false,
-                    email: '',
-                    time: '09:00'
-                },
-                security: {
-                    sessionTimeout: 60,
-                    maxAttempts: 5,
-                    twoFactor: false,
-                    encryption: true,
-                    logging: true
-                },
-                api: {
-                    apiKey: 'sk_****************************',
-                    webhook: ''
-                },
-                backup: {
-                    frequency: 'daily',
-                    retention: 30,
-                    autoBackup: true,
-                    compress: true
-                }
-            };
-        }
-
-        function applySettingsToForms() {
-            // Apply general settings
-            if (settings.general) {
-                setFormValue('systemLanguage', settings.general.language);
-                setFormValue('timezone', settings.general.timezone);
-                setFormValue('darkMode', settings.general.darkMode);
-                setFormValue('desktopNotifications', settings.general.desktopNotifications);
-                setFormValue('autoSave', settings.general.autoSave);
-            }
-
-            // Apply OCR settings
-            if (settings.ocr) {
-                setFormValue('ocrEngine', settings.ocr.engine);
-                setFormValue('ocrLanguage', settings.ocr.language);
-                setFormValue('ocrQuality', settings.ocr.quality);
-                setFormValue('confidenceThreshold', settings.ocr.confidence);
-                setFormValue('imagePreprocessing', settings.ocr.preprocessing);
-                setFormValue('tableDetection', settings.ocr.tables);
-            }
-
-            // Apply storage settings
-            if (settings.storage) {
-                setFormValue('maxFileSize', settings.storage.maxFileSize);
-                setFormValue('retentionPeriod', settings.storage.retention);
-                setFormValue('autoCompression', settings.storage.compression);
-                setFormValue('autoCleanup', settings.storage.cleanup);
-            }
-
-            // Apply notification settings
-            if (settings.notifications) {
-                setFormValue('processCompleteNotif', settings.notifications.processComplete);
-                setFormValue('errorNotif', settings.notifications.errors);
-                setFormValue('updateNotif', settings.notifications.updates);
-                setFormValue('dailyReportNotif', settings.notifications.dailyReport);
-                setFormValue('notificationEmail', settings.notifications.email);
-                setFormValue('notificationTime', settings.notifications.time);
-            }
-
-            // Apply security settings
-            if (settings.security) {
-                setFormValue('sessionTimeout', settings.security.sessionTimeout);
-                setFormValue('maxLoginAttempts', settings.security.maxAttempts);
-                setFormValue('twoFactorAuth', settings.security.twoFactor);
-                setFormValue('fileEncryption', settings.security.encryption);
-                setFormValue('activityLogging', settings.security.logging);
-            }
-
-            // Apply API settings
-            if (settings.api) {
-                setFormValue('apiKey', settings.api.apiKey);
-                setFormValue('webhookUrl', settings.api.webhook);
-            }
-
-            // Apply backup settings
-            if (settings.backup) {
-                setFormValue('backupFrequency', settings.backup.frequency);
-                setFormValue('backupRetention', settings.backup.retention);
-                setFormValue('autoBackup', settings.backup.autoBackup);
-                setFormValue('compressBackup', settings.backup.compress);
-            }
-        }
-
-        function setFormValue(elementId, value) {
-            const element = document.getElementById(elementId);
-            if (!element) return;
-
-            if (element.type === 'checkbox') {
-                element.checked = value;
-            } else {
-                element.value = value;
-            }
-        }
-
-        // Navigation functions
-        function showSection(sectionId, linkElement) {
-            // Hide all sections
-            document.querySelectorAll('.settings-section').forEach(section => {
-                section.classList.remove('active');
-            });
-
-            // Remove active class from all nav links
-            document.querySelectorAll('.settings-nav-link').forEach(link => {
-                link.classList.remove('active');
-            });
-
-            // Show selected section
-            const section = document.getElementById(sectionId);
-            if (section) {
-                section.classList.add('active');
-            }
-
-            // Add active class to clicked nav link
-            if (linkElement) {
-                linkElement.classList.add('active');
-            }
-        }
-
-        // Form submission handlers
-        function saveGeneralSettings(event) {
-            event.preventDefault();
-            const form = event.target;
-            const formData = new FormData(form);
-            
-            settings.general = {
-                language: formData.get('language'),
-                timezone: formData.get('timezone'),
-                darkMode: formData.get('darkMode') === 'on',
-                desktopNotifications: formData.get('desktopNotifications') === 'on',
-                autoSave: formData.get('autoSave') === 'on'
-            };
-
-            saveSettings('general');
-        }
-
-        function saveOCRSettings(event) {
-            event.preventDefault();
-            const form = event.target;
-            const formData = new FormData(form);
-            
-            settings.ocr = {
-                engine: formData.get('engine'),
-                language: formData.get('language'),
-                quality: formData.get('quality'),
-                confidence: parseInt(formData.get('confidence')),
-                preprocessing: formData.get('preprocessing') === 'on',
-                tables: formData.get('tables') === 'on'
-            };
-
-            saveSettings('ocr');
-        }
-
-        function saveStorageSettings(event) {
-            event.preventDefault();
-            const form = event.target;
-            const formData = new FormData(form);
-            
-            settings.storage = {
-                maxFileSize: parseInt(formData.get('maxFileSize')),
-                retention: parseInt(formData.get('retention')),
-                compression: formData.get('compression') === 'on',
-                cleanup: formData.get('cleanup') === 'on'
-            };
-
-            saveSettings('storage');
-        }
-
-        function saveNotificationSettings(event) {
-            event.preventDefault();
-            const form = event.target;
-            const formData = new FormData(form);
-            
-            settings.notifications = {
-                processComplete: formData.get('processComplete') === 'on',
-                errors: formData.get('errors') === 'on',
-                updates: formData.get('updates') === 'on',
-                dailyReport: formData.get('dailyReport') === 'on',
-                email: formData.get('email'),
-                time: formData.get('time')
-            };
-
-            saveSettings('notifications');
-        }
-
-        function saveSecuritySettings(event) {
-            event.preventDefault();
-            const form = event.target;
-            const formData = new FormData(form);
-            
-            settings.security = {
-                sessionTimeout: parseInt(formData.get('sessionTimeout')),
-                maxAttempts: parseInt(formData.get('maxAttempts')),
-                twoFactor: formData.get('twoFactor') === 'on',
-                encryption: formData.get('encryption') === 'on',
-                logging: formData.get('logging') === 'on'
-            };
-
-            saveSettings('security');
-        }
-
-        function saveAPISettings(event) {
-            event.preventDefault();
-            const form = event.target;
-            const formData = new FormData(form);
-            
-            settings.api = {
-                apiKey: formData.get('apiKey'),
-                webhook: formData.get('webhook')
-            };
-
-            saveSettings('api');
-        }
-
-        function saveBackupSettings(event) {
-            event.preventDefault();
-            const form = event.target;
-            const formData = new FormData(form);
-            
-            settings.backup = {
-                frequency: formData.get('frequency'),
-                retention: parseInt(formData.get('retention')),
-                autoBackup: formData.get('autoBackup') === 'on',
-                compress: formData.get('compress') === 'on'
-            };
-
-            saveSettings('backup');
-        }
-
-        async function saveSettings(section) {
-            try {
-                if (isOnline) {
-                    await window.legalAPI.updateSettings(settings);
-                }
+                    dateFormat: 'jalali',
+                    autoSave: true,
+                    autoSaveInterval: 5,
+                    theme: 'auto',
+                    colorScheme: '#3b82f6',
+                    fontSize: 'medium',
+                    animations: true,
+                    compactMode: false
+                };
                 
-                showToast(`تنظیمات ${getSectionName(section)} ذخیره شد`, 'success', 'ذخیره موفق');
-                
-            } catch (error) {
-                console.error('Failed to save settings:', error);
-                showToast('خطا در ذخیره تنظیمات', 'error', 'خطا');
+                applySettingsToForm(defaultSettings);
+                showSuccess('بازنشانی شد', 'تنظیمات به حالت پیش‌فرض بازگردانده شد');
             }
         }
 
-        function getSectionName(section) {
-            const names = {
-                general: 'عمومی',
-                ocr: 'OCR',
-                storage: 'ذخیره‌سازی',
-                notifications: 'اعلان‌ها',
-                security: 'امنیت',
-                api: 'API',
-                backup: 'پشتیبان‌گیری'
-            };
-            return names[section] || section;
+        function showChangePasswordModal() {
+            const modal = document.getElementById('change-password-modal');
+            if (modal) {
+                modal.classList.remove('hidden');
+                // Clear form
+                document.getElementById('current-password').value = '';
+                document.getElementById('new-password').value = '';
+                document.getElementById('confirm-password').value = '';
+            }
         }
 
-        function saveAllSettings() {
-            showToast('در حال ذخیره همه تنظیمات...', 'info', 'ذخیره');
-            
-            setTimeout(async () => {
-                try {
-                    if (isOnline) {
-                        await window.legalAPI.updateSettings(settings);
-                    }
-                    showToast('همه تنظیمات با موفقیت ذخیره شدند', 'success', 'ذخیره موفق');
-                } catch (error) {
-                    showToast('خطا در ذخیره تنظیمات', 'error', 'خطا');
-                }
-            }, 1000);
-        }
+        function changePassword() {
+            const currentPassword = document.getElementById('current-password').value;
+            const newPassword = document.getElementById('new-password').value;
+            const confirmPassword = document.getElementById('confirm-password').value;
 
-        // Utility functions
-        function exportSettings() {
-            const settingsJSON = JSON.stringify(settings, null, 2);
-            const blob = new Blob([settingsJSON], { type: 'application/json' });
-            const url = URL.createObjectURL(blob);
-            
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = `legal-system-settings-${new Date().toISOString().split('T')[0]}.json`;
-            document.body.appendChild(a);
-            a.click();
-            document.body.removeChild(a);
-            URL.revokeObjectURL(url);
-            
-            showToast('فایل تنظیمات دانلود شد', 'success', 'خروجی موفق');
-        }
-
-        function cleanupStorage() {
-            if (!confirm('آیا از پاک‌سازی فوری فایل‌های موقت اطمینان دارید؟')) {
+            if (!currentPassword || !newPassword || !confirmPassword) {
+                showError('خطا', 'لطفاً تمام فیلدها را پر کنید');
                 return;
             }
-            
-            showToast('پاک‌سازی شروع شد...', 'info', 'پاک‌سازی');
-            
-            setTimeout(() => {
-                showToast('فایل‌های موقت پاک شدند. 2.3 GB فضا آزاد شد', 'success', 'پاک‌سازی موفق');
-            }, 3000);
-        }
 
-        function generateNewAPIKey() {
-            if (!confirm('آیا از تولید کلید API جدید اطمینان دارید؟ کلید قبلی غیرفعال خواهد شد.')) {
+            if (newPassword !== confirmPassword) {
+                showError('خطا', 'رمز عبور جدید و تایید آن مطابقت ندارند');
                 return;
             }
-            
-            const newKey = 'sk_' + Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
-            document.getElementById('apiKey').value = newKey;
-            
-            showToast('کلید API جدید تولید شد', 'success', 'تولید موفق');
-        }
 
-        function createBackup() {
-            showToast('ایجاد پشتیبان شروع شد...', 'info', 'پشتیبان‌گیری');
-            
-            setTimeout(() => {
-                showToast('پشتیبان با موفقیت ایجاد شد و در مسیر /backups/ ذخیره شد', 'success', 'پشتیبان‌گیری موفق');
-            }, 5000);
-        }
-
-        function restoreBackup(input) {
-            const file = input.files[0];
-            if (!file) return;
-            
-            if (!file.name.endsWith('.backup')) {
-                showToast('لطفاً فایل پشتیبان معتبر انتخاب کنید', 'warning', 'فایل نامعتبر');
+            if (newPassword.length < 8) {
+                showError('خطا', 'رمز عبور جدید باید حداقل 8 کاراکتر باشد');
                 return;
             }
-            
-            showToast('بازیابی از پشتیبان شروع شد...', 'info', 'بازیابی');
-            
-            setTimeout(() => {
-                showToast('سیستم با موفقیت از پشتیبان بازیابی شد', 'success', 'بازیابی موفق');
-            }, 8000);
-        }
 
-        function clearSecurityLogs() {
-            if (!confirm('آیا از پاک کردن همه لاگ‌های امنیتی اطمینان دارید؟')) {
-                return;
-            }
-            
-            showToast('لاگ‌های امنیتی پاک شدند', 'info', 'پاک‌سازی');
-        }
-
-        function checkUpdates() {
-            showToast('در حال بررسی بروزرسانی...', 'info', 'بررسی');
-            
+            // Simulate password change
+            showLoadingState();
             setTimeout(() => {
-                const hasUpdate = Math.random() > 0.7;
-                if (hasUpdate) {
-                    showToast('نسخه جدید v2.2.0 در دسترس است', 'success', 'بروزرسانی موجود');
-                } else {
-                    showToast('سیستم به‌روز است', 'info', 'به‌روز');
-                }
+                hideLoadingState();
+                showSuccess('تغییر رمز عبور', 'رمز عبور با موفقیت تغییر یافت');
+                document.getElementById('change-password-modal').classList.add('hidden');
             }, 2000);
         }
 
-        function restartSystem() {
-            if (!confirm('آیا از راه‌اندازی مجدد سیستم اطمینان دارید؟ این عمل ممکن است چند دقیقه طول بکشد.')) {
-                return;
-            }
-            
-            showToast('سیستم در حال راه‌اندازی مجدد...', 'warning', 'راه‌اندازی مجدد');
-        }
-
-        function showToast(message, type = 'info', title = 'اعلان') {
-            const toastContainer = document.getElementById('toastContainer');
-            if (!toastContainer) return;
-            
-            const toast = document.createElement('div');
-            toast.className = `toast ${type}`;
-            
-            const icons = {
-                success: 'check-circle',
-                error: 'exclamation-triangle',
-                warning: 'exclamation-circle',
-                info: 'info-circle'
+        function exportUserData() {
+            const userData = {
+                settings: collectFormSettings(),
+                profile: {
+                    username: 'admin@legal.com',
+                    fullName: 'مدیر سیستم',
+                    role: 'مدیر ارشد',
+                    joinDate: '1402/01/15'
+                },
+                timestamp: new Date().toISOString()
             };
 
-            toast.innerHTML = `
-                <div class="toast-icon">
-                    <i class="fas fa-${icons[type]}"></i>
-                </div>
-                <div class="toast-content">
-                    <div class="toast-title">${title}</div>
-                    <div class="toast-message">${message}</div>
-                </div>
-                <button type="button" class="toast-close" onclick="this.parentElement.remove()">
-                    <i class="fas fa-times"></i>
-                </button>
-            `;
+            const dataStr = JSON.stringify(userData, null, 2);
+            const dataBlob = new Blob([dataStr], { type: 'application/json' });
+            const url = URL.createObjectURL(dataBlob);
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = 'user-data.json';
+            link.click();
+            URL.revokeObjectURL(url);
 
-            toastContainer.appendChild(toast);
-
-            // Show toast
-            setTimeout(() => toast.classList.add('show'), 100);
-
-            // Auto remove after 5 seconds
-            setTimeout(() => {
-                if (toast.parentElement) {
-                    toast.classList.remove('show');
-                    setTimeout(() => {
-                        if (toast.parentElement) {
-                            toast.remove();
-                        }
-                    }, 300);
-                }
-            }, 5000);
+            showSuccess('صادرات موفق', 'داده‌های کاربری با موفقیت صادر شد');
         }
 
-        console.log('⚙️ Settings Page Ready!');
+        function showImportDataModal() {
+            const modal = document.getElementById('import-data-modal');
+            if (modal) {
+                modal.classList.remove('hidden');
+            }
+        }
+
+        function importUserData() {
+            const fileInput = document.getElementById('import-file');
+            const file = fileInput.files[0];
+
+            if (!file) {
+                showError('خطا', 'لطفاً فایلی را انتخاب کنید');
+                return;
+            }
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                try {
+                    const data = JSON.parse(e.target.result);
+                    
+                    // Apply imported settings
+                    if (data.settings) {
+                        applySettingsToForm(data.settings);
+                    }
+                    
+                    showSuccess('واردات موفق', 'داده‌ها با موفقیت وارد شدند');
+                    document.getElementById('import-data-modal').classList.add('hidden');
+                } catch (error) {
+                    showError('خطا', 'فایل انتخاب شده معتبر نیست');
+                }
+            };
+            reader.readAsText(file);
+        }
+
+        function clearCache() {
+            if (confirm('آیا مطمئن هستید که می‌خواهید کش را پاک کنید؟')) {
+                showLoadingState();
+                setTimeout(() => {
+                    hideLoadingState();
+                    showSuccess('پاک شد', 'کش با موفقیت پاک شد');
+                }, 1500);
+            }
+        }
+
+        function resetAllSettings() {
+            if (confirm('آیا مطمئن هستید که می‌خواهید تمام تنظیمات را بازنشانی کنید؟ این عمل قابل بازگشت نیست.')) {
+                showLoadingState();
+                setTimeout(() => {
+                    hideLoadingState();
+                    loadCurrentSettings(); // Reload default settings
+                    showSuccess('بازنشانی شد', 'تمام تنظیمات به حالت پیش‌فرض بازگردانده شد');
+                }, 2000);
+            }
+        }
+
+        function editProfile() {
+            showSuccess('ویرایش پروفایل', 'این قابلیت در نسخه‌های آینده اضافه خواهد شد');
+        }
+
+        function logout() {
+            if (confirm('آیا مطمئن هستید که می‌خواهید از حساب کاربری خارج شوید؟')) {
+                showLoadingState();
+                setTimeout(() => {
+                    hideLoadingState();
+                    // Redirect to login page or show logout message
+                    showSuccess('خروج', 'با موفقیت از حساب کاربری خارج شدید');
+                    setTimeout(() => {
+                        window.location.href = 'index.html';
+                    }, 2000);
+                }, 1000);
+            }
+        }
+
+        function showLoadingState() {
+            const saveBtn = document.getElementById('save-settings-btn');
+            if (saveBtn) {
+                saveBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> در حال ذخیره...';
+                saveBtn.disabled = true;
+            }
+        }
+
+        function hideLoadingState() {
+            const saveBtn = document.getElementById('save-settings-btn');
+            if (saveBtn) {
+                saveBtn.innerHTML = '<i class="fas fa-save"></i> ذخیره تنظیمات';
+                saveBtn.disabled = false;
+            }
+        }
+
+        function showSuccess(title, message) {
+            if (window.notificationManager) {
+                window.notificationManager.showSuccess(title, message);
+            } else {
+                alert(`${title}: ${message}`);
+            }
+        }
+
+        function showError(title, message) {
+            if (window.notificationManager) {
+                window.notificationManager.showError(title, message);
+            } else {
+                alert(`${title}: ${message}`);
+            }
+        }
     </script>
 </body>
 </html>

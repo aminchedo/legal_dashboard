@@ -3,990 +3,90 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>مدیریت اسناد | سامانه حقوقی</title>
+    <title>مدیریت اسناد | سامانه هوشمند</title>
+    
+    <!-- Preconnect for better performance -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preconnect" href="https://cdnjs.cloudflare.com">
+    
+    <!-- فونت و آیکون‌ها -->
     <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@200;300;400;500;600;700;800;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     
-    <!-- Load API Client -->
-    <script src="/static/js/api-client.js"></script>
-    <script src="/static/js/core.js"></script>
-    
-    <style>
-        :root {
-            --text-primary: #0f172a;
-            --text-secondary: #475569;
-            --text-muted: #64748b;
-            --text-light: #ffffff;
-            --body-bg: linear-gradient(135deg, #f1f5f9 0%, #e2e8f0 50%, #cbd5e1 100%);
-            --card-bg: rgba(255, 255, 255, 0.95);
-            --glass-bg: rgba(255, 255, 255, 0.9);
-            --glass-border: rgba(148, 163, 184, 0.2);
-            --primary-gradient: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
-            --secondary-gradient: linear-gradient(135deg, #06b6d4 0%, #0891b2 100%);
-            --success-gradient: linear-gradient(135deg, #10b981 0%, #047857 100%);
-            --warning-gradient: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
-            --danger-gradient: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
-            --shadow-xs: 0 1px 3px rgba(0, 0, 0, 0.05);
-            --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.08);
-            --shadow-md: 0 4px 15px rgba(0, 0, 0, 0.1);
-            --shadow-lg: 0 8px 25px rgba(0, 0, 0, 0.12);
-            --sidebar-width: 260px;
-            --border-radius: 12px;
-            --border-radius-sm: 8px;
-            --transition-smooth: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
-            --transition-fast: all 0.15s ease-in-out;
-            --font-size-xs: 0.7rem;
-            --font-size-sm: 0.8rem;
-            --font-size-base: 0.9rem;
-            --font-size-lg: 1.1rem;
-            --font-size-xl: 1.25rem;
-            --font-size-2xl: 1.5rem;
-        }
-
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            font-family: 'Vazirmatn', -apple-system, BlinkMacSystemFont, sans-serif;
-            background: var(--body-bg);
-            color: var(--text-primary);
-            line-height: 1.6;
-            overflow-x: hidden;
-            font-size: var(--font-size-base);
-        }
-
-        ::-webkit-scrollbar {
-            width: 6px;
-            height: 6px;
-        }
-
-        ::-webkit-scrollbar-track {
-            background: rgba(0, 0, 0, 0.02);
-            border-radius: 10px;
-        }
-
-        ::-webkit-scrollbar-thumb {
-            background: var(--primary-gradient);
-            border-radius: 10px;
-        }
-
-        .dashboard-container {
-            display: flex;
-            min-height: 100vh;
-            width: 100%;
-        }
-
-        /* سایدبار مشابه صفحه اصلی */
-        .sidebar {
-            width: var(--sidebar-width);
-            background: linear-gradient(135deg,
-                rgba(248, 250, 252, 0.98) 0%,
-                rgba(241, 245, 249, 0.95) 25%,
-                rgba(226, 232, 240, 0.98) 50%,
-                rgba(203, 213, 225, 0.95) 75%,
-                rgba(148, 163, 184, 0.1) 100%);
-            backdrop-filter: blur(25px);
-            -webkit-backdrop-filter: blur(25px);
-            padding: 1rem 0;
-            position: fixed;
-            height: 100vh;
-            right: 0;
-            top: 0;
-            z-index: 1000;
-            overflow-y: auto;
-            box-shadow:
-                0 0 0 1px rgba(59, 130, 246, 0.08),
-                -8px 0 32px rgba(59, 130, 246, 0.12),
-                inset 0 1px 0 rgba(255, 255, 255, 0.6);
-            border-left: 1px solid rgba(59, 130, 246, 0.15);
-        }
-
-        .sidebar-header {
-            padding: 0 1rem 1rem;
-            border-bottom: 1px solid rgba(59, 130, 246, 0.12);
-            margin-bottom: 1rem;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            background: linear-gradient(135deg,
-                rgba(255, 255, 255, 0.4) 0%,
-                rgba(248, 250, 252, 0.2) 100%);
-            margin: 0 0.5rem 1rem;
-            border-radius: var(--border-radius);
-            backdrop-filter: blur(10px);
-        }
-
-        .logo {
-            display: flex;
-            align-items: center;
-            gap: 0.6rem;
-            color: var(--text-primary);
-            text-decoration: none;
-        }
-
-        .logo-icon {
-            width: 2rem;
-            height: 2rem;
-            background: var(--primary-gradient);
-            border-radius: var(--border-radius-sm);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1rem;
-            color: white;
-        }
-
-        .logo-text {
-            font-size: var(--font-size-lg);
-            font-weight: 700;
-            background: var(--primary-gradient);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-
-        .nav-section {
-            margin-bottom: 1rem;
-        }
-
-        .nav-title {
-            padding: 0 1rem 0.4rem;
-            font-size: var(--font-size-xs);
-            font-weight: 600;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            color: var(--text-secondary);
-        }
-
-        .nav-menu {
-            list-style: none;
-        }
-
-        .nav-item {
-            margin: 0.15rem 0.5rem;
-        }
-
-        .nav-link {
-            display: flex;
-            align-items: center;
-            padding: 0.6rem 0.8rem;
-            color: var(--text-primary);
-            text-decoration: none;
-            border-radius: var(--border-radius-sm);
-            transition: var(--transition-smooth);
-            font-weight: 500;
-            font-size: var(--font-size-sm);
-            cursor: pointer;
-            border: 1px solid transparent;
-        }
-
-        .nav-link:hover {
-            color: var(--text-primary);
-            transform: translateX(-2px);
-            border-color: rgba(59, 130, 246, 0.15);
-            background: rgba(59, 130, 246, 0.05);
-        }
-
-        .nav-link.active {
-            background: var(--primary-gradient);
-            color: var(--text-light);
-            box-shadow: var(--shadow-md);
-        }
-
-        .nav-icon {
-            margin-left: 0.6rem;
-            width: 1rem;
-            text-align: center;
-            font-size: 0.9rem;
-        }
-
-        .nav-badge {
-            background: var(--danger-gradient);
-            color: white;
-            padding: 0.15rem 0.4rem;
-            border-radius: 10px;
-            font-size: var(--font-size-xs);
-            font-weight: 600;
-            margin-right: auto;
-            min-width: 1.2rem;
-            text-align: center;
-        }
-
-        /* محتوای اصلی */
-        .main-content {
-            flex: 1;
-            margin-right: var(--sidebar-width);
-            padding: 1rem;
-            min-height: 100vh;
-            width: calc(100% - var(--sidebar-width));
-        }
-
-        .page-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 2rem;
-            padding: 1rem 0;
-            border-bottom: 1px solid rgba(0, 0, 0, 0.1);
-        }
-
-        .page-title {
-            font-size: var(--font-size-2xl);
-            font-weight: 800;
-            background: var(--primary-gradient);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            display: flex;
-            align-items: center;
-            gap: 0.6rem;
-        }
-
-        .page-actions {
-            display: flex;
-            gap: 0.8rem;
-        }
-
-        .btn {
-            padding: 0.6rem 1.2rem;
-            border: none;
-            border-radius: var(--border-radius-sm);
-            font-family: inherit;
-            font-weight: 600;
-            cursor: pointer;
-            transition: var(--transition-smooth);
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            text-decoration: none;
-            font-size: var(--font-size-sm);
-        }
-
-        .btn-primary {
-            background: var(--primary-gradient);
-            color: white;
-            box-shadow: var(--shadow-sm);
-        }
-
-        .btn-primary:hover {
-            box-shadow: var(--shadow-md);
-            transform: translateY(-1px);
-        }
-
-        .btn-outline {
-            background: transparent;
-            color: var(--text-primary);
-            border: 1px solid rgba(59, 130, 246, 0.2);
-        }
-
-        .btn-outline:hover {
-            background: rgba(59, 130, 246, 0.05);
-            border-color: rgba(59, 130, 246, 0.4);
-        }
-
-        /* فیلترها */
-        .filters-section {
-            background: var(--card-bg);
-            border-radius: var(--border-radius);
-            padding: 1.5rem;
-            margin-bottom: 1.5rem;
-            box-shadow: var(--shadow-sm);
-            border: 1px solid rgba(255, 255, 255, 0.3);
-        }
-
-        .filters-title {
-            font-size: var(--font-size-lg);
-            font-weight: 700;
-            margin-bottom: 1rem;
-            color: var(--text-primary);
-        }
-
-        .filters-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 1rem;
-        }
-
-        .filter-group {
-            display: flex;
-            flex-direction: column;
-            gap: 0.5rem;
-        }
-
-        .filter-label {
-            font-size: var(--font-size-sm);
-            font-weight: 600;
-            color: var(--text-secondary);
-        }
-
-        .filter-input,
-        .filter-select {
-            padding: 0.6rem 0.8rem;
-            border: 1px solid var(--glass-border);
-            border-radius: var(--border-radius-sm);
-            background: var(--glass-bg);
-            color: var(--text-primary);
-            font-family: inherit;
-            font-size: var(--font-size-sm);
-            transition: var(--transition-smooth);
-        }
-
-        .filter-input:focus,
-        .filter-select:focus {
-            outline: none;
-            border-color: #3b82f6;
-            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
-        }
-
-        .filters-actions {
-            margin-top: 1rem;
-            display: flex;
-            gap: 0.8rem;
-        }
-
-        .btn-sm {
-            padding: 0.4rem 0.8rem;
-            font-size: var(--font-size-xs);
-        }
-
-        /* جدول اسناد */
-        .documents-section {
-            background: var(--card-bg);
-            border-radius: var(--border-radius);
-            box-shadow: var(--shadow-md);
-            border: 1px solid rgba(255, 255, 255, 0.3);
-            overflow: hidden;
-        }
-
-        .documents-header {
-            padding: 1rem;
-            border-bottom: 1px solid rgba(0, 0, 0, 0.05);
-            background: linear-gradient(135deg, rgba(59, 130, 246, 0.02), rgba(255, 255, 255, 0.1));
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .documents-title {
-            font-size: var(--font-size-lg);
-            font-weight: 700;
-            color: var(--text-primary);
-        }
-
-        .documents-stats {
-            display: flex;
-            gap: 1rem;
-            font-size: var(--font-size-sm);
-            color: var(--text-muted);
-        }
-
-        .documents-table {
-            width: 100%;
-            border-collapse: separate;
-            border-spacing: 0;
-        }
-
-        .documents-table thead {
-            background: linear-gradient(135deg, rgba(59, 130, 246, 0.03), rgba(255, 255, 255, 0.1));
-        }
-
-        .documents-table th {
-            padding: 1rem;
-            text-align: right;
-            font-weight: 700;
-            color: var(--text-primary);
-            font-size: var(--font-size-sm);
-            border-bottom: 2px solid rgba(59, 130, 246, 0.08);
-        }
-
-        .documents-table td {
-            padding: 1rem;
-            border-bottom: 1px solid rgba(0, 0, 0, 0.03);
-            font-size: var(--font-size-sm);
-            vertical-align: middle;
-        }
-
-        .documents-table tbody tr {
-            transition: all 0.2s ease;
-            cursor: pointer;
-        }
-
-        .documents-table tbody tr:hover {
-            background: rgba(59, 130, 246, 0.02);
-            transform: translateX(-3px);
-            box-shadow: 0 2px 8px rgba(59, 130, 246, 0.06);
-        }
-
-        .document-title {
-            font-weight: 600;
-            color: var(--text-primary);
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            font-size: var(--font-size-sm);
-        }
-
-        .doc-icon {
-            width: 1.8rem;
-            height: 1.8rem;
-            border-radius: var(--border-radius-sm);
-            background: var(--primary-gradient);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            font-size: var(--font-size-xs);
-        }
-
-        .quality-display {
-            display: flex;
-            flex-direction: column;
-            gap: 0.3rem;
-        }
-
-        .quality-score {
-            font-weight: 700;
-            font-size: var(--font-size-sm);
-            color: var(--text-primary);
-        }
-
-        .quality-bar {
-            width: 80px;
-            height: 4px;
-            background: rgba(0, 0, 0, 0.08);
-            border-radius: 2px;
-            overflow: hidden;
-        }
-
-        .quality-fill {
-            height: 100%;
-            border-radius: 2px;
-        }
-
-        .quality-excellent { background: var(--success-gradient); }
-        .quality-good { background: var(--primary-gradient); }
-        .quality-average { background: var(--warning-gradient); }
-        .quality-poor { background: var(--danger-gradient); }
-
-        .status-badge {
-            padding: 0.3rem 0.6rem;
-            border-radius: 15px;
-            font-size: var(--font-size-xs);
-            font-weight: 600;
-            display: inline-flex;
-            align-items: center;
-            gap: 0.3rem;
-        }
-
-        .status-processed {
-            background: linear-gradient(135deg, rgba(16, 185, 129, 0.15), rgba(5, 150, 105, 0.08));
-            color: #047857;
-            border: 1px solid rgba(16, 185, 129, 0.2);
-        }
-
-        .status-pending {
-            background: linear-gradient(135deg, rgba(245, 158, 11, 0.15), rgba(217, 119, 6, 0.08));
-            color: #b45309;
-            border: 1px solid rgba(245, 158, 11, 0.2);
-        }
-
-        .status-error {
-            background: linear-gradient(135deg, rgba(239, 68, 68, 0.15), rgba(220, 38, 38, 0.08));
-            color: #b91c1c;
-            border: 1px solid rgba(239, 68, 68, 0.2);
-        }
-
-        .status-processing {
-            background: linear-gradient(135deg, rgba(59, 130, 246, 0.15), rgba(29, 78, 216, 0.08));
-            color: #1d4ed8;
-            border: 1px solid rgba(59, 130, 246, 0.2);
-        }
-
-        .category-tag {
-            padding: 0.25rem 0.6rem;
-            border-radius: 10px;
-            background: rgba(59, 130, 246, 0.08);
-            color: var(--text-primary);
-            font-size: var(--font-size-xs);
-            font-weight: 500;
-        }
-
-        .document-actions {
-            display: flex;
-            gap: 0.3rem;
-        }
-
-        .action-btn {
-            padding: 0.4rem;
-            border: none;
-            border-radius: var(--border-radius-sm);
-            cursor: pointer;
-            transition: var(--transition-fast);
-            font-size: var(--font-size-xs);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            width: 2rem;
-            height: 2rem;
-        }
-
-        .action-btn.view {
-            background: rgba(59, 130, 246, 0.1);
-            color: #3b82f6;
-        }
-
-        .action-btn.download {
-            background: rgba(16, 185, 129, 0.1);
-            color: #10b981;
-        }
-
-        .action-btn.delete {
-            background: rgba(239, 68, 68, 0.1);
-            color: #ef4444;
-        }
-
-        .action-btn:hover {
-            transform: scale(1.1);
-        }
-
-        /* Pagination */
-        .pagination {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            gap: 0.4rem;
-            padding: 1rem;
-            border-top: 1px solid rgba(0, 0, 0, 0.05);
-        }
-
-        .pagination-btn {
-            padding: 0.4rem 0.6rem;
-            border: 1px solid var(--glass-border);
-            background: var(--glass-bg);
-            color: var(--text-primary);
-            border-radius: var(--border-radius-sm);
-            cursor: pointer;
-            transition: var(--transition-fast);
-            font-size: var(--font-size-xs);
-            font-family: inherit;
-        }
-
-        .pagination-btn:hover:not(:disabled) {
-            background: var(--primary-gradient);
-            color: white;
-            border-color: transparent;
-        }
-
-        .pagination-btn.active {
-            background: var(--primary-gradient);
-            color: white;
-            border-color: transparent;
-        }
-
-        .pagination-btn:disabled {
-            opacity: 0.4;
-            cursor: not-allowed;
-        }
-
-        /* Loading States */
-        .loading-container {
-            padding: 3rem 1rem;
-            text-align: center;
-            color: var(--text-secondary);
-        }
-
-        .loading-spinner {
-            width: 2rem;
-            height: 2rem;
-            border: 2px solid rgba(59, 130, 246, 0.1);
-            border-radius: 50%;
-            border-top-color: #3b82f6;
-            animation: spin 1s linear infinite;
-            margin: 0 auto 1rem;
-        }
-
-        @keyframes spin {
-            to { transform: rotate(360deg); }
-        }
-
-        /* Empty State */
-        .empty-state {
-            padding: 3rem 1rem;
-            text-align: center;
-            color: var(--text-secondary);
-        }
-
-        .empty-icon {
-            font-size: 3rem;
-            margin-bottom: 1rem;
-            opacity: 0.4;
-            color: var(--text-muted);
-        }
-
-        .empty-title {
-            font-size: var(--font-size-lg);
-            font-weight: 600;
-            margin-bottom: 0.5rem;
-            color: var(--text-primary);
-        }
-
-        .empty-description {
-            font-size: var(--font-size-sm);
-            margin-bottom: 1.5rem;
-            max-width: 400px;
-            margin-left: auto;
-            margin-right: auto;
-        }
-
-        /* Modal */
-        .modal {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.7);
-            backdrop-filter: blur(5px);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            z-index: 10000;
-            opacity: 0;
-            visibility: hidden;
-            transition: all 0.3s ease;
-        }
-
-        .modal.show {
-            opacity: 1;
-            visibility: visible;
-        }
-
-        .modal-content {
-            background: var(--card-bg);
-            border-radius: var(--border-radius);
-            box-shadow: var(--shadow-lg);
-            max-width: 80vw;
-            max-height: 80vh;
-            width: 100%;
-            overflow: hidden;
-            transform: scale(0.9);
-            transition: all 0.3s ease;
-        }
-
-        .modal.show .modal-content {
-            transform: scale(1);
-        }
-
-        .modal-header {
-            padding: 1.5rem;
-            border-bottom: 1px solid rgba(0, 0, 0, 0.05);
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            background: linear-gradient(135deg, rgba(59, 130, 246, 0.02), rgba(255, 255, 255, 0.1));
-        }
-
-        .modal-title {
-            font-size: var(--font-size-lg);
-            font-weight: 700;
-            color: var(--text-primary);
-        }
-
-        .modal-close {
-            background: none;
-            border: none;
-            font-size: 1.5rem;
-            color: var(--text-secondary);
-            cursor: pointer;
-            transition: var(--transition-fast);
-        }
-
-        .modal-close:hover {
-            color: var(--text-primary);
-        }
-
-        .modal-body {
-            padding: 1.5rem;
-            max-height: 60vh;
-            overflow-y: auto;
-        }
-
-        .document-metadata {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 1rem;
-            margin-bottom: 1.5rem;
-        }
-
-        .metadata-item {
-            padding: 0.8rem;
-            background: rgba(0, 0, 0, 0.02);
-            border-radius: var(--border-radius-sm);
-        }
-
-        .metadata-label {
-            font-size: var(--font-size-xs);
-            color: var(--text-secondary);
-            font-weight: 600;
-            margin-bottom: 0.3rem;
-        }
-
-        .metadata-value {
-            font-size: var(--font-size-sm);
-            color: var(--text-primary);
-            font-weight: 500;
-        }
-
-        .ocr-text {
-            background: rgba(0, 0, 0, 0.02);
-            border-radius: var(--border-radius-sm);
-            padding: 1rem;
-            font-family: 'Vazirmatn', monospace;
-            font-size: var(--font-size-sm);
-            line-height: 1.8;
-            color: var(--text-primary);
-            border: 1px solid rgba(0, 0, 0, 0.05);
-            white-space: pre-wrap;
-            direction: rtl;
-            max-height: 300px;
-            overflow-y: auto;
-        }
-
-        /* Toast Notifications */
-        .toast-container {
-            position: fixed;
-            top: 1rem;
-            left: 1rem;
-            z-index: 10001;
-            display: flex;
-            flex-direction: column;
-            gap: 0.5rem;
-        }
-
-        .toast {
-            background: var(--card-bg);
-            border-radius: var(--border-radius-sm);
-            padding: 1rem 1.5rem;
-            box-shadow: var(--shadow-lg);
-            border-left: 4px solid;
-            display: flex;
-            align-items: center;
-            gap: 0.8rem;
-            min-width: 300px;
-            transform: translateX(-100%);
-            transition: all 0.3s ease;
-        }
-
-        .toast.show {
-            transform: translateX(0);
-        }
-
-        .toast.success { border-left-color: #10b981; }
-        .toast.error { border-left-color: #ef4444; }
-        .toast.warning { border-left-color: #f59e0b; }
-        .toast.info { border-left-color: #3b82f6; }
-
-        .toast-icon {
-            font-size: 1.2rem;
-        }
-
-        .toast.success .toast-icon { color: #10b981; }
-        .toast.error .toast-icon { color: #ef4444; }
-        .toast.warning .toast-icon { color: #f59e0b; }
-        .toast.info .toast-icon { color: #3b82f6; }
-
-        .toast-content {
-            flex: 1;
-        }
-
-        .toast-title {
-            font-weight: 600;
-            font-size: var(--font-size-sm);
-            margin-bottom: 0.2rem;
-        }
-
-        .toast-message {
-            font-size: var(--font-size-xs);
-            color: var(--text-secondary);
-        }
-
-        .toast-close {
-            background: none;
-            border: none;
-            color: var(--text-secondary);
-            cursor: pointer;
-            font-size: 1rem;
-            transition: var(--transition-fast);
-        }
-
-        .toast-close:hover {
-            color: var(--text-primary);
-        }
-
-        /* واکنش‌گرایی */
-        @media (max-width: 992px) {
-            .sidebar {
-                transform: translateX(100%);
-                transition: transform 0.3s ease;
-            }
-
-            .sidebar.open {
-                transform: translateX(0);
-            }
-
-            .main-content {
-                margin-right: 0;
-                width: 100%;
-                padding: 1rem;
-            }
-
-            .page-header {
-                flex-direction: column;
-                align-items: flex-start;
-                gap: 1rem;
-            }
-
-            .page-actions {
-                width: 100%;
-                justify-content: flex-start;
-                flex-wrap: wrap;
-            }
-
-            .filters-grid {
-                grid-template-columns: 1fr;
-            }
-
-            .documents-header {
-                flex-direction: column;
-                align-items: flex-start;
-                gap: 1rem;
-            }
-
-            .documents-stats {
-                width: 100%;
-            }
-        }
-
-        @media (max-width: 768px) {
-            .main-content {
-                padding: 0.8rem;
-            }
-
-            .documents-table {
-                font-size: var(--font-size-xs);
-            }
-
-            .documents-table th,
-            .documents-table td {
-                padding: 0.6rem;
-            }
-
-            .modal-content {
-                max-width: 95vw;
-                max-height: 90vh;
-            }
-
-            .document-metadata {
-                grid-template-columns: 1fr;
-            }
-        }
-    </style>
+    <!-- CSS Files -->
+    <link rel="stylesheet" href="css/main.css">
+    <link rel="stylesheet" href="css/components.css">
+    <link rel="stylesheet" href="css/responsive.css">
 </head>
 <body>
     <div class="dashboard-container">
-        <!-- سایدبار -->
         <aside class="sidebar" id="sidebar">
+            <!-- Sidebar Header -->
             <div class="sidebar-header">
-                <a href="/" class="logo">
+                <a href="index.html" class="logo">
                     <div class="logo-icon">
-                        <i class="fas fa-scale-balanced"></i>
+                        <i class="fas fa-gavel"></i>
                     </div>
-                    <div class="logo-text">سامانه حقوقی</div>
+                    <span class="logo-text">داشبورد حقوقی</span>
                 </a>
+                <button class="mobile-menu-toggle" id="mobile-menu-toggle">
+                    <i class="fas fa-bars"></i>
+                </button>
             </div>
 
-            <nav>
+            <!-- Navigation -->
+            <nav class="main-nav">
                 <div class="nav-section">
-                    <h6 class="nav-title">داشبورد</h6>
+                    <h4 class="nav-title">اصلی</h4>
                     <ul class="nav-menu">
                         <li class="nav-item">
-                            <a href="/" class="nav-link">
-                                <i class="fas fa-chart-pie nav-icon"></i>
-                                <span>نمای کلی</span>
+                            <a href="index.html" class="nav-link" data-nav="dashboard">
+                                <span class="nav-icon"><i class="fas fa-tachometer-alt"></i></span>
+                                <span>داشبورد</span>
                             </a>
                         </li>
-                    </ul>
-                </div>
-
-                <div class="nav-section">
-                    <h6 class="nav-title">مدیریت اسناد</h6>
-                    <ul class="nav-menu">
                         <li class="nav-item">
-                            <a href="/static/documents.html" class="nav-link active">
-                                <i class="fas fa-file-alt nav-icon"></i>
+                            <a href="documents.html" class="nav-link active" data-nav="documents">
+                                <span class="nav-icon"><i class="fas fa-file-alt"></i></span>
                                 <span>مدیریت اسناد</span>
-                                <span class="nav-badge" id="totalDocumentsBadge">...</span>
+                                <span class="nav-badge" data-badge="documents">0</span>
                             </a>
                         </li>
-
                         <li class="nav-item">
-                            <a href="/static/upload.html" class="nav-link">
-                                <i class="fas fa-cloud-upload-alt nav-icon"></i>
+                            <a href="upload.html" class="nav-link" data-nav="upload">
+                                <span class="nav-icon"><i class="fas fa-cloud-upload-alt"></i></span>
                                 <span>آپلود فایل</span>
                             </a>
                         </li>
-
                         <li class="nav-item">
-                            <a href="/static/search.html" class="nav-link">
-                                <i class="fas fa-search nav-icon"></i>
+                            <a href="search.html" class="nav-link" data-nav="search">
+                                <span class="nav-icon"><i class="fas fa-search"></i></span>
                                 <span>جستجو</span>
                             </a>
                         </li>
-                    </ul>
-                </div>
-
-                <div class="nav-section">
-                    <h6 class="nav-title">ابزارها</h6>
-                    <ul class="nav-menu">
                         <li class="nav-item">
-                            <a href="/static/scraping.html" class="nav-link">
-                                <i class="fas fa-globe nav-icon"></i>
-                                <span>استخراج محتوا</span>
-                            </a>
-                        </li>
-
-                        <li class="nav-item">
-                            <a href="/static/analytics.html" class="nav-link">
-                                <i class="fas fa-chart-line nav-icon"></i>
-                                <span>آمار و تحلیل</span>
-                            </a>
-                        </li>
-
-                        <li class="nav-item">
-                            <a href="/static/reports.html" class="nav-link">
-                                <i class="fas fa-file-export nav-icon"></i>
-                                <span>گزارش‌ها</span>
+                            <a href="analytics.html" class="nav-link" data-nav="analytics">
+                                <span class="nav-icon"><i class="fas fa-chart-bar"></i></span>
+                                <span>تحلیل و گزارش</span>
                             </a>
                         </li>
                     </ul>
                 </div>
 
                 <div class="nav-section">
-                    <h6 class="nav-title">تنظیمات</h6>
+                    <h4 class="nav-title">سیستم</h4>
                     <ul class="nav-menu">
                         <li class="nav-item">
-                            <a href="/static/settings.html" class="nav-link">
-                                <i class="fas fa-cog nav-icon"></i>
+                            <a href="system-health.html" class="nav-link" data-nav="systemHealth">
+                                <span class="nav-icon"><i class="fas fa-heartbeat"></i></span>
+                                <span>وضعیت سیستم</span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="settings.html" class="nav-link" data-nav="settings">
+                                <span class="nav-icon"><i class="fas fa-cog"></i></span>
                                 <span>تنظیمات</span>
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a href="#" class="nav-link">
-                                <i class="fas fa-sign-out-alt nav-icon"></i>
-                                <span>خروج</span>
                             </a>
                         </li>
                     </ul>
@@ -994,604 +94,468 @@
             </nav>
         </aside>
 
-        <!-- محتوای اصلی -->
         <main class="main-content">
-            <!-- هدر صفحه -->
-            <header class="page-header">
-                <h1 class="page-title">
-                    <i class="fas fa-file-alt"></i>
-                    مدیریت اسناد حقوقی
-                </h1>
-                <div class="page-actions">
-                    <a href="/static/upload.html" class="btn btn-primary">
+            <!-- Header -->
+            <header class="header">
+                <h1 class="header-title">مدیریت اسناد</h1>
+                <div class="header-actions">
+                    <div class="search-bar">
+                        <input type="text" placeholder="جستجو در اسناد..." class="form-input search-input" id="document-search">
+                        <i class="fas fa-search search-icon"></i>
+                    </div>
+                    <button class="btn btn-primary" id="upload-btn">
                         <i class="fas fa-plus"></i>
-                        آپلود سند جدید
-                    </a>
-                    <button type="button" class="btn btn-outline" onclick="refreshDocuments()">
-                        <i class="fas fa-refresh"></i>
-                        به‌روزرسانی
+                        آپلود سند
                     </button>
-                    <button type="button" class="btn btn-outline" onclick="exportDocuments()">
-                        <i class="fas fa-download"></i>
-                        خروجی Excel
+                    <button class="btn-icon" id="user-menu-btn">
+                        <i class="fas fa-user-circle"></i>
+                    </button>
+                    <button class="btn-icon" id="notification-bell">
+                        <i class="fas fa-bell"></i>
+                        <span class="notification-badge" id="notification-badge">0</span>
                     </button>
                 </div>
             </header>
 
-            <!-- فیلترها -->
+            <!-- Breadcrumbs -->
+            <div class="breadcrumb-container" id="breadcrumb-container">
+                <a href="index.html" class="breadcrumb-item">
+                    <i class="fas fa-home"></i>
+                    <span>خانه</span>
+                </a>
+                <i class="fas fa-angle-left mx-2 text-gray-400"></i>
+                <span class="breadcrumb-item active" aria-current="page">مدیریت اسناد</span>
+            </div>
+
+            <!-- Filters and Controls -->
             <section class="filters-section">
-                <h3 class="filters-title">فیلتر و جستجو</h3>
-                <div class="filters-grid">
+                <div class="filters-container">
                     <div class="filter-group">
-                        <label class="filter-label">جستجو در اسناد</label>
-                        <input type="text" class="filter-input" id="searchFilter" placeholder="نام فایل، محتوا، خلاصه...">
-                    </div>
-                    <div class="filter-group">
-                        <label class="filter-label">دسته‌بندی</label>
-                        <select class="filter-select" id="categoryFilter">
-                            <option value="">همه دسته‌ها</option>
-                            <option value="قراردادها">قراردادها</option>
-                            <option value="دادخواست‌ها">دادخواست‌ها</option>
-                            <option value="احکام قضایی">احکام قضایی</option>
-                            <option value="آرای دیوان">آرای دیوان</option>
-                            <option value="سایر">سایر</option>
+                        <label for="type-filter">نوع سند:</label>
+                        <select id="type-filter" class="form-select">
+                            <option value="">همه انواع</option>
+                            <option value="pdf">PDF</option>
+                            <option value="doc">Word</option>
+                            <option value="image">تصویر</option>
+                            <option value="other">سایر</option>
                         </select>
                     </div>
                     <div class="filter-group">
-                        <label class="filter-label">وضعیت</label>
-                        <select class="filter-select" id="statusFilter">
+                        <label for="status-filter">وضعیت:</label>
+                        <select id="status-filter" class="form-select">
                             <option value="">همه وضعیت‌ها</option>
-                            <option value="processed">پردازش شده</option>
+                            <option value="completed">تکمیل شده</option>
                             <option value="processing">در حال پردازش</option>
                             <option value="pending">در انتظار</option>
                             <option value="error">خطا</option>
                         </select>
                     </div>
                     <div class="filter-group">
-                        <label class="filter-label">حداقل کیفیت</label>
-                        <select class="filter-select" id="qualityFilter">
-                            <option value="">همه کیفیت‌ها</option>
-                            <option value="8.5">عالی (8.5+)</option>
-                            <option value="6.5">خوب (6.5+)</option>
-                            <option value="4.5">متوسط (4.5+)</option>
-                            <option value="0">ضعیف (کمتر از 4.5)</option>
+                        <label for="date-filter">تاریخ:</label>
+                        <select id="date-filter" class="form-select">
+                            <option value="">همه تاریخ‌ها</option>
+                            <option value="today">امروز</option>
+                            <option value="week">این هفته</option>
+                            <option value="month">این ماه</option>
+                            <option value="year">این سال</option>
+                        </select>
+                    </div>
+                    <div class="filter-group">
+                        <label for="sort-filter">مرتب‌سازی:</label>
+                        <select id="sort-filter" class="form-select">
+                            <option value="date-desc">تاریخ (جدیدترین)</option>
+                            <option value="date-asc">تاریخ (قدیمی‌ترین)</option>
+                            <option value="name-asc">نام (الف-ی)</option>
+                            <option value="name-desc">نام (ی-الف)</option>
+                            <option value="size-desc">حجم (بزرگترین)</option>
+                            <option value="size-asc">حجم (کوچکترین)</option>
                         </select>
                     </div>
                 </div>
-                <div class="filters-actions">
-                    <button type="button" class="btn btn-primary btn-sm" onclick="applyFilters()">
-                        <i class="fas fa-filter"></i>
-                        اعمال فیلتر
+                <div class="view-controls">
+                    <button class="btn-icon" id="grid-view-btn" data-view="grid">
+                        <i class="fas fa-th"></i>
                     </button>
-                    <button type="button" class="btn btn-outline btn-sm" onclick="resetFilters()">
-                        <i class="fas fa-undo"></i>
-                        پاک کردن فیلترها
+                    <button class="btn-icon" id="list-view-btn" data-view="list">
+                        <i class="fas fa-list"></i>
                     </button>
                 </div>
             </section>
 
-            <!-- جدول اسناد -->
+            <!-- Bulk Actions -->
+            <section class="bulk-actions" id="bulk-actions" style="display: none;">
+                <div class="bulk-info">
+                    <span id="selected-count">0</span> سند انتخاب شده
+                </div>
+                <div class="bulk-buttons">
+                    <button class="btn btn-secondary" id="bulk-download">
+                        <i class="fas fa-download"></i>
+                        دانلود
+                    </button>
+                    <button class="btn btn-warning" id="bulk-tag">
+                        <i class="fas fa-tags"></i>
+                        برچسب
+                    </button>
+                    <button class="btn btn-danger" id="bulk-delete">
+                        <i class="fas fa-trash"></i>
+                        حذف
+                    </button>
+                </div>
+            </section>
+
+            <!-- Documents Grid/List -->
             <section class="documents-section">
-                <div class="documents-header">
-                    <h3 class="documents-title">لیست اسناد</h3>
-                    <div class="documents-stats">
-                        <span>کل: <strong id="totalCount">...</strong></span>
-                        <span>پردازش شده: <strong id="processedCount">...</strong></span>
-                        <span>در انتظار: <strong id="pendingCount">...</strong></span>
-                        <span>خطا: <strong id="errorCount">...</strong></span>
-                    </div>
+                <div class="documents-container" id="documents-container">
+                    <!-- Documents will be loaded here dynamically -->
+                </div>
+                
+                <!-- Loading State -->
+                <div class="loading-state" id="loading-state">
+                    <div class="loading-spinner"></div>
+                    <p>در حال بارگذاری اسناد...</p>
                 </div>
 
-                <div id="tableContainer">
-                    <!-- Loading State -->
-                    <div class="loading-container" id="loadingContainer">
-                        <div class="loading-spinner"></div>
-                        <p>در حال بارگذاری اسناد...</p>
-                    </div>
+                <!-- Empty State -->
+                <div class="empty-state" id="empty-state" style="display: none;">
+                    <i class="fas fa-file-alt"></i>
+                    <h3>هیچ سندی یافت نشد</h3>
+                    <p>برای شروع، اولین سند خود را آپلود کنید</p>
+                    <button class="btn btn-primary" id="first-upload-btn">
+                        <i class="fas fa-plus"></i>
+                        آپلود اولین سند
+                    </button>
+                </div>
+            </section>
 
-                    <!-- Documents Table -->
-                    <table class="documents-table" id="documentsTable" style="display: none;">
-                        <thead>
-                            <tr>
-                                <th>عنوان سند</th>
-                                <th>دسته‌بندی</th>
-                                <th>امتیاز کیفیت</th>
-                                <th>تاریخ ایجاد</th>
-                                <th>وضعیت</th>
-                                <th>اندازه فایل</th>
-                                <th>عملیات</th>
-                            </tr>
-                        </thead>
-                        <tbody id="documentsTableBody">
-                            <!-- Data will be loaded here -->
-                        </tbody>
-                    </table>
-
-                    <!-- Empty State -->
-                    <div class="empty-state" id="emptyState" style="display: none;">
-                        <i class="fas fa-inbox empty-icon"></i>
-                        <div class="empty-title">هیچ سندی یافت نشد</div>
-                        <div class="empty-description">اسناد جدید آپلود کنید یا فیلترها را تغییر دهید</div>
-                        <a href="/static/upload.html" class="btn btn-primary">
-                            <i class="fas fa-plus"></i>
-                            آپلود سند جدید
-                        </a>
-                    </div>
-
-                    <div class="pagination" id="pagination">
-                        <!-- Pagination will be populated by JavaScript -->
-                    </div>
+            <!-- Pagination -->
+            <section class="pagination-section">
+                <div class="pagination" id="pagination">
+                    <!-- Pagination will be generated dynamically -->
                 </div>
             </section>
         </main>
     </div>
 
-    <!-- Modal برای نمایش جزئیات سند -->
-    <div class="modal" id="documentModal">
+    <!-- Notification Panel -->
+    <div id="notification-panel" class="notification-panel hidden">
+        <div class="notification-header">
+            <h3>اعلان‌ها</h3>
+            <button class="close-btn" id="close-notification-panel">×</button>
+        </div>
+        <div class="notification-list" id="notification-list"></div>
+        <div class="notification-footer">
+            <button class="btn btn-secondary" id="mark-all-read">علامت‌گذاری همه</button>
+            <button class="btn btn-danger" id="clear-all-notifications">پاک کردن همه</button>
+        </div>
+    </div>
+
+    <!-- Mobile Overlay -->
+    <div id="mobile-overlay" class="mobile-overlay hidden"></div>
+
+    <!-- Document Preview Modal -->
+    <div id="document-preview-modal" class="modal-overlay hidden">
         <div class="modal-content">
             <div class="modal-header">
-                <h3 class="modal-title" id="modalTitle">جزئیات سند</h3>
-                <button type="button" class="modal-close" onclick="closeModal()">
-                    <i class="fas fa-times"></i>
-                </button>
+                <h3 id="preview-title">پیش‌نمایش سند</h3>
+                <button class="close-btn" id="close-preview-modal">×</button>
             </div>
             <div class="modal-body">
-                <div class="document-metadata" id="documentMetadata">
-                    <!-- Document metadata will be loaded here -->
+                <div id="preview-content">
+                    <!-- Preview content will be loaded here -->
                 </div>
-                <div class="ocr-text" id="ocrText">
-                    <!-- OCR text will be loaded here -->
-                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" id="download-preview-btn">
+                    <i class="fas fa-download"></i>
+                    دانلود
+                </button>
+                <button class="btn btn-primary" id="edit-preview-btn">
+                    <i class="fas fa-edit"></i>
+                    ویرایش
+                </button>
             </div>
         </div>
     </div>
 
-    <!-- Toast Container -->
-    <div class="toast-container" id="toastContainer"></div>
+    <!-- JavaScript Modules -->
+    <script src="js/core.js"></script>
+    <script src="js/api-client.js"></script>
+    <script src="js/state-manager.js"></script>
+    <script src="js/navigation.js"></script>
+    <script src="js/notifications.js"></script>
+    <script src="js/document-manager.js"></script>
+    <script src="js/file-handler.js"></script>
+    <script src="js/search-engine.js"></script>
+    <script src="js/chart-manager.js"></script>
 
+    <!-- Initialize Documents Page -->
     <script>
-        // Global variables
-        let currentPage = 1;
-        let itemsPerPage = 10;
-        let totalDocuments = 0;
-        let currentFilters = {};
-        let documents = [];
-        let isOnline = false;
-
-        // Initialize page
         document.addEventListener('DOMContentLoaded', function() {
-            console.log('📄 Documents page loading...');
-            initializeDocumentsPage();
-        });
+            console.log('🚀 Initializing Documents Management Page...');
 
-        async function initializeDocumentsPage() {
-            try {
-                // Test backend connection
-                isOnline = await testConnection();
-                
-                // Load documents from backend
-                await loadDocuments();
-                
-                // Setup event listeners
-                setupEventListeners();
-                
-                showToast('صفحه مدیریت اسناد بارگذاری شد', 'success', 'بارگذاری موفق');
-                
-            } catch (error) {
-                console.error('Failed to initialize documents page:', error);
-                
-                // Fallback to mock data
-                await loadFallbackDocuments();
-                setupEventListeners();
-                
-                showToast('حالت آفلاین فعال است', 'warning', 'اتصال ناموفق');
-            }
-        }
-
-        async function testConnection() {
-            try {
-                await window.legalAPI.healthCheck();
-                return true;
-            } catch (error) {
-                return false;
-            }
-        }
-
-        async function loadDocuments() {
-            try {
-                showLoading(true);
-                
-                // Get filter parameters from URL
-                const urlParams = new URLSearchParams(window.location.search);
-                const filters = {
-                    page: currentPage,
-                    limit: itemsPerPage,
-                    search: urlParams.get('search') || currentFilters.search || '',
-                    category: currentFilters.category || '',
-                    status: currentFilters.status || '',
-                    min_quality: currentFilters.min_quality || ''
-                };
-
-                // Apply URL search to filter
-                if (filters.search) {
-                    document.getElementById('searchFilter').value = filters.search;
-                }
-
-                const response = await window.legalAPI.getDocuments(filters);
-                
-                documents = response.documents.map(doc => new DocumentModel(doc));
-                totalDocuments = response.pagination.total;
-                
-                displayDocuments();
-                updateStats();
-                updatePagination(response.pagination);
-                
-                console.log('✅ Real documents loaded:', documents.length);
-                
-            } catch (error) {
-                console.error('Failed to load documents:', error);
-                throw error;
-            } finally {
-                showLoading(false);
-            }
-        }
-
-        async function loadFallbackDocuments() {
-            // Fallback mock data
-            const mockDocuments = [
-                {
-                    id: 1,
-                    filename: "contract_001.pdf",
-                    original_filename: "قرارداد خرید املاک.pdf",
-                    file_size: 1024000,
-                    category: "قراردادها",
-                    quality_score: 8.5,
-                    status: "processed",
-                    created_at: "2024-01-15T10:30:00Z",
-                    ocr_text: "قرارداد خرید و فروش ملک واقع در تهران...",
-                    summary: "قرارداد خرید املاک مسکونی در منطقه 3 تهران"
-                },
-                {
-                    id: 2,
-                    filename: "lawsuit_002.pdf",
-                    original_filename: "دادخواست طلاق.pdf",
-                    file_size: 512000,
-                    category: "دادخواست‌ها",
-                    quality_score: 7.8,
-                    status: "processed",
-                    created_at: "2024-01-14T14:20:00Z",
-                    ocr_text: "دادخواست طلاق به درخواست زوجه...",
-                    summary: "درخواست طلاق توافقی با تقسیم اموال"
-                }
-            ];
-
-            documents = mockDocuments.map(doc => new DocumentModel(doc));
-            totalDocuments = documents.length;
-            
-            showLoading(false);
-            displayDocuments();
-            updateStats();
-            updatePagination({page: 1, limit: itemsPerPage, total: totalDocuments, pages: 1});
-            
-            console.log('⚠️ Using fallback documents data');
-        }
-
-        function displayDocuments() {
-            const tbody = document.getElementById('documentsTableBody');
-            const table = document.getElementById('documentsTable');
-            const emptyState = document.getElementById('emptyState');
-            
-            if (documents.length === 0) {
-                table.style.display = 'none';
-                emptyState.style.display = 'block';
-                return;
-            }
-
-            table.style.display = 'table';
-            emptyState.style.display = 'none';
-
-            tbody.innerHTML = documents.map(doc => `
-                <tr onclick="viewDocument(${doc.id})" style="cursor: pointer;">
-                    <td>
-                        <div class="document-title">
-                            <div class="doc-icon">
-                                <i class="fas fa-file-pdf"></i>
-                            </div>
-                            <div>
-                                <div>${doc.original_filename}</div>
-                                <small style="color: var(--text-muted);">${doc.filename}</small>
-                            </div>
-                        </div>
-                    </td>
-                    <td>
-                        <span class="category-tag">${doc.category}</span>
-                    </td>
-                    <td>
-                        <div class="quality-display">
-                            <div class="quality-score">${doc.quality_score ? doc.quality_score.toFixed(1) : '0.0'}</div>
-                            <div class="quality-bar">
-                                <div class="quality-fill ${doc.getQualityClass()}" 
-                                     style="width: ${(doc.quality_score || 0) * 10}%"></div>
-                            </div>
-                        </div>
-                    </td>
-                    <td>${doc.getFormattedDate()}</td>
-                    <td>
-                        <span class="status-badge status-${doc.status}">
-                            <i class="fas fa-${doc.getStatusIcon()}"></i>
-                            ${doc.getStatusText()}
-                        </span>
-                    </td>
-                    <td>${doc.getFormattedFileSize()}</td>
-                    <td>
-                        <div class="document-actions">
-                            <button type="button" class="action-btn view" onclick="event.stopPropagation(); viewDocument(${doc.id})" title="مشاهده">
-                                <i class="fas fa-eye"></i>
-                            </button>
-                            <button type="button" class="action-btn download" onclick="event.stopPropagation(); downloadDocument(${doc.id})" title="دانلود">
-                                <i class="fas fa-download"></i>
-                            </button>
-                            <button type="button" class="action-btn delete" onclick="event.stopPropagation(); deleteDocument(${doc.id})" title="حذف">
-                                <i class="fas fa-trash"></i>
-                            </button>
-                        </div>
-                    </td>
-                </tr>
-            `).join('');
-        }
-
-        function setupEventListeners() {
-            // Filter inputs
-            document.getElementById('searchFilter').addEventListener('input', debounce(applyFilters, 300));
-            document.getElementById('categoryFilter').addEventListener('change', applyFilters);
-            document.getElementById('statusFilter').addEventListener('change', applyFilters);
-            document.getElementById('qualityFilter').addEventListener('change', applyFilters);
-
-            // Modal events
-            document.addEventListener('click', (e) => {
-                const modal = document.getElementById('documentModal');
-                if (e.target === modal) {
-                    closeModal();
-                }
-            });
-
-            document.addEventListener('keydown', (e) => {
-                if (e.key === 'Escape') {
-                    closeModal();
-                }
-            });
-        }
-
-        async function applyFilters() {
-            currentFilters = {
-                search: document.getElementById('searchFilter').value.trim(),
-                category: document.getElementById('categoryFilter').value,
-                status: document.getElementById('statusFilter').value,
-                min_quality: document.getElementById('qualityFilter').value
+            // Initialize all managers
+            const managers = {
+                core: window.dashboardCore,
+                api: window.apiClient,
+                state: window.stateManager,
+                navigation: window.navigationManager,
+                notifications: window.notificationManager,
+                documents: window.documentManager,
+                files: window.fileHandler,
+                search: window.searchEngine,
+                charts: window.chartManager
             };
 
-            currentPage = 1; // Reset to first page
-            await loadDocuments();
-        }
+            // Set up cross-component communication
+            managers.core.broadcast('documents:initialized', { managers });
 
-        function resetFilters() {
-            document.getElementById('searchFilter').value = '';
-            document.getElementById('categoryFilter').value = '';
-            document.getElementById('statusFilter').value = '';
-            document.getElementById('qualityFilter').value = '';
-            
-            currentFilters = {};
-            currentPage = 1;
-            
+            // Initialize documents page functionality
+            initializeDocumentsPage();
+
+            console.log('✅ Documents page initialized successfully');
+        });
+
+        function initializeDocumentsPage() {
+            // Load documents
             loadDocuments();
-            showToast('فیلترها پاک شدند', 'info', 'بازنشانی');
+
+            // Set up event listeners
+            setupDocumentEventListeners();
+
+            // Set up filters
+            setupFilters();
+
+            // Set up view controls
+            setupViewControls();
+
+            // Set up bulk actions
+            setupBulkActions();
         }
 
-        async function refreshDocuments() {
-            await loadDocuments();
-            showToast('لیست اسناد به‌روزرسانی شد', 'success', 'به‌روزرسانی');
-        }
-
-        async function viewDocument(documentId) {
-            try {
-                let document;
-                
-                if (isOnline) {
-                    document = await window.legalAPI.getDocument(documentId);
-                } else {
-                    // Find in local documents
-                    document = documents.find(d => d.id === documentId);
-                }
-
-                if (!document) {
-                    showToast('سند یافت نشد', 'error', 'خطا');
-                    return;
-                }
-
-                showDocumentModal(document);
-                
-            } catch (error) {
-                console.error('Failed to load document:', error);
-                showToast('خطا در بارگذاری جزئیات سند', 'error', 'خطا');
-            }
-        }
-
-        function showDocumentModal(document) {
-            const modal = document.getElementById('documentModal');
-            const modalTitle = document.getElementById('modalTitle');
-            const documentMetadata = document.getElementById('documentMetadata');
-            const ocrText = document.getElementById('ocrText');
-
-            modalTitle.textContent = document.original_filename || document.filename;
-
-            // Update metadata
-            documentMetadata.innerHTML = `
-                <div class="metadata-item">
-                    <div class="metadata-label">نام فایل اصلی</div>
-                    <div class="metadata-value">${document.original_filename || document.filename}</div>
-                </div>
-                <div class="metadata-item">
-                    <div class="metadata-label">نام فایل سیستم</div>
-                    <div class="metadata-value">${document.filename}</div>
-                </div>
-                <div class="metadata-item">
-                    <div class="metadata-label">اندازه فایل</div>
-                    <div class="metadata-value">${formatFileSize(document.file_size)}</div>
-                </div>
-                <div class="metadata-item">
-                    <div class="metadata-label">دسته‌بندی</div>
-                    <div class="metadata-value">${document.category}</div>
-                </div>
-                <div class="metadata-item">
-                    <div class="metadata-label">امتیاز کیفیت</div>
-                    <div class="metadata-value">${document.quality_score ? document.quality_score.toFixed(1) : '0.0'} / 10</div>
-                </div>
-                <div class="metadata-item">
-                    <div class="metadata-label">وضعیت</div>
-                    <div class="metadata-value">${document.getStatusText ? document.getStatusText() : document.status}</div>
-                </div>
-                <div class="metadata-item">
-                    <div class="metadata-label">تاریخ ایجاد</div>
-                    <div class="metadata-value">${formatDate(document.created_at)}</div>
-                </div>
-                <div class="metadata-item">
-                    <div class="metadata-label">خلاصه محتوا</div>
-                    <div class="metadata-value">${document.summary || 'در دسترس نیست'}</div>
-                </div>
-            `;
-
-            // Update OCR text
-            ocrText.textContent = document.ocr_text || 'متن استخراج شده در دسترس نیست.';
-
-            modal.classList.add('show');
-        }
-
-        function closeModal() {
-            const modal = document.getElementById('documentModal');
-            modal.classList.remove('show');
-        }
-
-        async function deleteDocument(documentId) {
-            if (!confirm('آیا از حذف این سند اطمینان دارید؟')) {
-                return;
-            }
-
-            try {
-                if (isOnline) {
-                    await window.legalAPI.deleteDocument(documentId);
-                }
-
-                // Remove from local array
-                documents = documents.filter(doc => doc.id !== documentId);
-                totalDocuments = Math.max(0, totalDocuments - 1);
-
-                displayDocuments();
-                updateStats();
-                showToast('سند با موفقیت حذف شد', 'success', 'حذف موفق');
-
-            } catch (error) {
-                console.error('Failed to delete document:', error);
-                showToast('خطا در حذف سند', 'error', 'خطا');
-            }
-        }
-
-        function downloadDocument(documentId) {
-            const doc = documents.find(d => d.id === documentId);
-            if (!doc) return;
-
-            showToast(`دانلود ${doc.original_filename} شروع شد`, 'info', 'دانلود');
-        }
-
-        function exportDocuments() {
-            showToast('فایل Excel در حال آماده‌سازی...', 'info', 'خروجی Excel');
-            
-            setTimeout(() => {
-                showToast('فایل Excel آماده شد و دانلود شروع شد', 'success', 'خروجی موفق');
-            }, 2000);
-        }
-
-        function updateStats() {
-            const processedCount = documents.filter(doc => doc.status === 'processed').length;
-            const pendingCount = documents.filter(doc => doc.status === 'processing' || doc.status === 'pending').length;
-            const errorCount = documents.filter(doc => doc.status === 'error').length;
-
-            document.getElementById('totalCount').textContent = totalDocuments;
-            document.getElementById('processedCount').textContent = processedCount;
-            document.getElementById('pendingCount').textContent = pendingCount;
-            document.getElementById('errorCount').textContent = errorCount;
-
-            // Update badge
-            const badge = document.getElementById('totalDocumentsBadge');
-            if (badge) {
-                badge.textContent = totalDocuments;
-            }
-        }
-
-        function updatePagination(pagination) {
-            const paginationContainer = document.getElementById('pagination');
-            const totalPages = pagination.pages;
-
-            if (totalPages <= 1) {
-                paginationContainer.style.display = 'none';
-                return;
-            }
-
-            paginationContainer.style.display = 'flex';
-
-            let paginationHTML = '';
-
-            // Previous button
-            paginationHTML += `
-                <button class="pagination-btn" ${currentPage <= 1 ? 'disabled' : ''} 
-                        onclick="changePage(${currentPage - 1})">
-                    <i class="fas fa-chevron-right"></i>
-                </button>
-            `;
-
-            // Page numbers
-            const startPage = Math.max(1, currentPage - 2);
-            const endPage = Math.min(totalPages, currentPage + 2);
-
-            for (let i = startPage; i <= endPage; i++) {
-                paginationHTML += `
-                    <button class="pagination-btn ${i === currentPage ? 'active' : ''}" 
-                            onclick="changePage(${i})">
-                        ${i}
-                    </button>
-                `;
-            }
-
-            // Next button
-            paginationHTML += `
-                <button class="pagination-btn" ${currentPage >= totalPages ? 'disabled' : ''} 
-                        onclick="changePage(${currentPage + 1})">
-                    <i class="fas fa-chevron-left"></i>
-                </button>
-            `;
-
-            paginationContainer.innerHTML = paginationHTML;
-        }
-
-        async function changePage(page) {
-            currentPage = page;
-            await loadDocuments();
-        }
-
-        function showLoading(show) {
-            const loading = document.getElementById('loadingContainer');
-            const table = document.getElementById('documentsTable');
-            const emptyState = document.getElementById('emptyState');
-            
-            if (show) {
-                loading.style.display = 'block';
-                table.style.display = 'none';
-                emptyState.style.display = 'none';
+        function loadDocuments() {
+            if (window.documentManager) {
+                window.documentManager.loadDocuments();
             } else {
-                loading.style.display = 'none';
+                // Fallback loading
+                showLoadingState();
+                setTimeout(() => {
+                    hideLoadingState();
+                    showEmptyState();
+                }, 2000);
             }
         }
 
-        console.log('📄 Documents Management Page Ready!');
+        function setupDocumentEventListeners() {
+            // Search functionality
+            const searchInput = document.getElementById('document-search');
+            if (searchInput) {
+                searchInput.addEventListener('input', debounce((e) => {
+                    const query = e.target.value.trim();
+                    if (query.length > 2) {
+                        window.searchEngine.performSearch(query);
+                    } else if (query.length === 0) {
+                        loadDocuments(); // Reset to show all documents
+                    }
+                }, 300));
+            }
+
+            // Upload button
+            const uploadBtn = document.getElementById('upload-btn');
+            if (uploadBtn) {
+                uploadBtn.addEventListener('click', () => {
+                    window.location.href = 'upload.html';
+                });
+            }
+
+            // First upload button
+            const firstUploadBtn = document.getElementById('first-upload-btn');
+            if (firstUploadBtn) {
+                firstUploadBtn.addEventListener('click', () => {
+                    window.location.href = 'upload.html';
+                });
+            }
+
+            // Mobile menu toggle
+            const mobileToggle = document.getElementById('mobile-menu-toggle');
+            const sidebar = document.getElementById('sidebar');
+            const overlay = document.getElementById('mobile-overlay');
+
+            if (mobileToggle && sidebar) {
+                mobileToggle.addEventListener('click', () => {
+                    sidebar.classList.toggle('open');
+                    overlay.classList.toggle('hidden');
+                });
+            }
+
+            if (overlay) {
+                overlay.addEventListener('click', () => {
+                    sidebar.classList.remove('open');
+                    overlay.classList.add('hidden');
+                });
+            }
+
+            // Notification panel
+            const notificationBell = document.getElementById('notification-bell');
+            const notificationPanel = document.getElementById('notification-panel');
+            const closePanel = document.getElementById('close-notification-panel');
+
+            if (notificationBell && notificationPanel) {
+                notificationBell.addEventListener('click', () => {
+                    notificationPanel.classList.toggle('hidden');
+                });
+            }
+
+            if (closePanel && notificationPanel) {
+                closePanel.addEventListener('click', () => {
+                    notificationPanel.classList.add('hidden');
+                });
+            }
+
+            // Document preview modal
+            const previewModal = document.getElementById('document-preview-modal');
+            const closePreviewBtn = document.getElementById('close-preview-modal');
+
+            if (closePreviewBtn && previewModal) {
+                closePreviewBtn.addEventListener('click', () => {
+                    previewModal.classList.add('hidden');
+                });
+            }
+
+            if (previewModal) {
+                previewModal.addEventListener('click', (e) => {
+                    if (e.target === previewModal) {
+                        previewModal.classList.add('hidden');
+                    }
+                });
+            }
+        }
+
+        function setupFilters() {
+            const filters = ['type-filter', 'status-filter', 'date-filter', 'sort-filter'];
+            
+            filters.forEach(filterId => {
+                const filter = document.getElementById(filterId);
+                if (filter) {
+                    filter.addEventListener('change', () => {
+                        applyFilters();
+                    });
+                }
+            });
+        }
+
+        function applyFilters() {
+            const filters = {
+                type: document.getElementById('type-filter')?.value || '',
+                status: document.getElementById('status-filter')?.value || '',
+                date: document.getElementById('date-filter')?.value || '',
+                sort: document.getElementById('sort-filter')?.value || 'date-desc'
+            };
+
+            if (window.documentManager) {
+                window.documentManager.applyFilters(filters);
+            }
+        }
+
+        function setupViewControls() {
+            const gridBtn = document.getElementById('grid-view-btn');
+            const listBtn = document.getElementById('list-view-btn');
+            const container = document.getElementById('documents-container');
+
+            if (gridBtn && listBtn && container) {
+                gridBtn.addEventListener('click', () => {
+                    setViewMode('grid');
+                    gridBtn.classList.add('active');
+                    listBtn.classList.remove('active');
+                });
+
+                listBtn.addEventListener('click', () => {
+                    setViewMode('list');
+                    listBtn.classList.add('active');
+                    gridBtn.classList.remove('active');
+                });
+
+                // Set default view
+                setViewMode('grid');
+                gridBtn.classList.add('active');
+            }
+        }
+
+        function setViewMode(mode) {
+            const container = document.getElementById('documents-container');
+            if (container) {
+                container.className = `documents-container ${mode}-view`;
+                localStorage.setItem('documents-view-mode', mode);
+            }
+        }
+
+        function setupBulkActions() {
+            const bulkActions = document.getElementById('bulk-actions');
+            const selectedCount = document.getElementById('selected-count');
+            const bulkDownload = document.getElementById('bulk-download');
+            const bulkTag = document.getElementById('bulk-tag');
+            const bulkDelete = document.getElementById('bulk-delete');
+
+            if (bulkDownload) {
+                bulkDownload.addEventListener('click', () => {
+                    if (window.documentManager) {
+                        window.documentManager.bulkDownload();
+                    }
+                });
+            }
+
+            if (bulkTag) {
+                bulkTag.addEventListener('click', () => {
+                    if (window.documentManager) {
+                        window.documentManager.bulkTag();
+                    }
+                });
+            }
+
+            if (bulkDelete) {
+                bulkDelete.addEventListener('click', () => {
+                    if (window.documentManager) {
+                        window.documentManager.bulkDelete();
+                    }
+                });
+            }
+        }
+
+        function showLoadingState() {
+            const loadingState = document.getElementById('loading-state');
+            const emptyState = document.getElementById('empty-state');
+            const container = document.getElementById('documents-container');
+
+            if (loadingState) loadingState.style.display = 'flex';
+            if (emptyState) emptyState.style.display = 'none';
+            if (container) container.style.display = 'none';
+        }
+
+        function hideLoadingState() {
+            const loadingState = document.getElementById('loading-state');
+            if (loadingState) loadingState.style.display = 'none';
+        }
+
+        function showEmptyState() {
+            const emptyState = document.getElementById('empty-state');
+            const container = document.getElementById('documents-container');
+            const loadingState = document.getElementById('loading-state');
+
+            if (emptyState) emptyState.style.display = 'flex';
+            if (container) container.style.display = 'none';
+            if (loadingState) loadingState.style.display = 'none';
+        }
+
+        function debounce(func, wait) {
+            let timeout;
+            return function executedFunction(...args) {
+                const later = () => {
+                    clearTimeout(timeout);
+                    func(...args);
+                };
+                clearTimeout(timeout);
+                timeout = setTimeout(later, wait);
+            };
+        }
     </script>
 </body>
 </html>

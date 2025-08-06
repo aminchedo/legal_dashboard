@@ -3,908 +3,90 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>آمار و تحلیل | سامانه حقوقی</title>
+    <title>تحلیل و گزارش | سامانه هوشمند</title>
+    
+    <!-- Preconnect for better performance -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preconnect" href="https://cdnjs.cloudflare.com">
+    
+    <!-- فونت و آیکون‌ها -->
     <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@200;300;400;500;600;700;800;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.min.js"></script>
     
-    <!-- Load API Client -->
-    <script src="/static/js/api-client.js"></script>
-    <script src="/static/js/core.js"></script>
-    
-    <style>
-        :root {
-            --text-primary: #0f172a;
-            --text-secondary: #475569;
-            --text-muted: #64748b;
-            --text-light: #ffffff;
-            --body-bg: linear-gradient(135deg, #f1f5f9 0%, #e2e8f0 50%, #cbd5e1 100%);
-            --card-bg: rgba(255, 255, 255, 0.95);
-            --glass-bg: rgba(255, 255, 255, 0.9);
-            --glass-border: rgba(148, 163, 184, 0.2);
-            --primary-gradient: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
-            --secondary-gradient: linear-gradient(135deg, #06b6d4 0%, #0891b2 100%);
-            --success-gradient: linear-gradient(135deg, #10b981 0%, #047857 100%);
-            --warning-gradient: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
-            --danger-gradient: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
-            --shadow-xs: 0 1px 3px rgba(0, 0, 0, 0.05);
-            --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.08);
-            --shadow-md: 0 4px 15px rgba(0, 0, 0, 0.1);
-            --shadow-lg: 0 8px 25px rgba(0, 0, 0, 0.12);
-            --sidebar-width: 260px;
-            --border-radius: 12px;
-            --border-radius-sm: 8px;
-            --transition-smooth: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
-            --transition-fast: all 0.15s ease-in-out;
-            --font-size-xs: 0.7rem;
-            --font-size-sm: 0.8rem;
-            --font-size-base: 0.9rem;
-            --font-size-lg: 1.1rem;
-            --font-size-xl: 1.25rem;
-            --font-size-2xl: 1.5rem;
-        }
-
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            font-family: 'Vazirmatn', -apple-system, BlinkMacSystemFont, sans-serif;
-            background: var(--body-bg);
-            color: var(--text-primary);
-            line-height: 1.6;
-            overflow-x: hidden;
-            font-size: var(--font-size-base);
-        }
-
-        ::-webkit-scrollbar {
-            width: 6px;
-            height: 6px;
-        }
-
-        ::-webkit-scrollbar-track {
-            background: rgba(0, 0, 0, 0.02);
-            border-radius: 10px;
-        }
-
-        ::-webkit-scrollbar-thumb {
-            background: var(--primary-gradient);
-            border-radius: 10px;
-        }
-
-        .dashboard-container {
-            display: flex;
-            min-height: 100vh;
-            width: 100%;
-        }
-
-        /* سایدبار مشابه صفحات قبلی */
-        .sidebar {
-            width: var(--sidebar-width);
-            background: linear-gradient(135deg,
-                rgba(248, 250, 252, 0.98) 0%,
-                rgba(241, 245, 249, 0.95) 25%,
-                rgba(226, 232, 240, 0.98) 50%,
-                rgba(203, 213, 225, 0.95) 75%,
-                rgba(148, 163, 184, 0.1) 100%);
-            backdrop-filter: blur(25px);
-            -webkit-backdrop-filter: blur(25px);
-            padding: 1rem 0;
-            position: fixed;
-            height: 100vh;
-            right: 0;
-            top: 0;
-            z-index: 1000;
-            overflow-y: auto;
-            box-shadow:
-                0 0 0 1px rgba(59, 130, 246, 0.08),
-                -8px 0 32px rgba(59, 130, 246, 0.12),
-                inset 0 1px 0 rgba(255, 255, 255, 0.6);
-            border-left: 1px solid rgba(59, 130, 246, 0.15);
-        }
-
-        .sidebar-header {
-            padding: 0 1rem 1rem;
-            border-bottom: 1px solid rgba(59, 130, 246, 0.12);
-            margin-bottom: 1rem;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            background: linear-gradient(135deg,
-                rgba(255, 255, 255, 0.4) 0%,
-                rgba(248, 250, 252, 0.2) 100%);
-            margin: 0 0.5rem 1rem;
-            border-radius: var(--border-radius);
-            backdrop-filter: blur(10px);
-        }
-
-        .logo {
-            display: flex;
-            align-items: center;
-            gap: 0.6rem;
-            color: var(--text-primary);
-            text-decoration: none;
-        }
-
-        .logo-icon {
-            width: 2rem;
-            height: 2rem;
-            background: var(--primary-gradient);
-            border-radius: var(--border-radius-sm);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1rem;
-            color: white;
-        }
-
-        .logo-text {
-            font-size: var(--font-size-lg);
-            font-weight: 700;
-            background: var(--primary-gradient);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-
-        .nav-section {
-            margin-bottom: 1rem;
-        }
-
-        .nav-title {
-            padding: 0 1rem 0.4rem;
-            font-size: var(--font-size-xs);
-            font-weight: 600;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            color: var(--text-secondary);
-        }
-
-        .nav-menu {
-            list-style: none;
-        }
-
-        .nav-item {
-            margin: 0.15rem 0.5rem;
-        }
-
-        .nav-link {
-            display: flex;
-            align-items: center;
-            padding: 0.6rem 0.8rem;
-            color: var(--text-primary);
-            text-decoration: none;
-            border-radius: var(--border-radius-sm);
-            transition: var(--transition-smooth);
-            font-weight: 500;
-            font-size: var(--font-size-sm);
-            cursor: pointer;
-            border: 1px solid transparent;
-        }
-
-        .nav-link:hover {
-            color: var(--text-primary);
-            transform: translateX(-2px);
-            border-color: rgba(59, 130, 246, 0.15);
-            background: rgba(59, 130, 246, 0.05);
-        }
-
-        .nav-link.active {
-            background: var(--primary-gradient);
-            color: var(--text-light);
-            box-shadow: var(--shadow-md);
-        }
-
-        .nav-icon {
-            margin-left: 0.6rem;
-            width: 1rem;
-            text-align: center;
-            font-size: 0.9rem;
-        }
-
-        .nav-badge {
-            background: var(--danger-gradient);
-            color: white;
-            padding: 0.15rem 0.4rem;
-            border-radius: 10px;
-            font-size: var(--font-size-xs);
-            font-weight: 600;
-            margin-right: auto;
-            min-width: 1.2rem;
-            text-align: center;
-        }
-
-        /* محتوای اصلی */
-        .main-content {
-            flex: 1;
-            margin-right: var(--sidebar-width);
-            padding: 1rem;
-            min-height: 100vh;
-            width: calc(100% - var(--sidebar-width));
-        }
-
-        .page-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 2rem;
-            padding: 1rem 0;
-            border-bottom: 1px solid rgba(0, 0, 0, 0.1);
-        }
-
-        .page-title {
-            font-size: var(--font-size-2xl);
-            font-weight: 800;
-            background: var(--primary-gradient);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            display: flex;
-            align-items: center;
-            gap: 0.6rem;
-        }
-
-        .page-actions {
-            display: flex;
-            gap: 0.8rem;
-        }
-
-        .btn {
-            padding: 0.6rem 1.2rem;
-            border: none;
-            border-radius: var(--border-radius-sm);
-            font-family: inherit;
-            font-weight: 600;
-            cursor: pointer;
-            transition: var(--transition-smooth);
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            text-decoration: none;
-            font-size: var(--font-size-sm);
-        }
-
-        .btn-primary {
-            background: var(--primary-gradient);
-            color: white;
-            box-shadow: var(--shadow-sm);
-        }
-
-        .btn-primary:hover {
-            box-shadow: var(--shadow-md);
-            transform: translateY(-1px);
-        }
-
-        .btn-outline {
-            background: transparent;
-            color: var(--text-primary);
-            border: 1px solid rgba(59, 130, 246, 0.2);
-        }
-
-        .btn-outline:hover {
-            background: rgba(59, 130, 246, 0.05);
-            border-color: rgba(59, 130, 246, 0.4);
-        }
-
-        .btn-sm {
-            padding: 0.4rem 0.8rem;
-            font-size: var(--font-size-xs);
-        }
-
-        /* گرید تحلیلی */
-        .analytics-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
-            gap: 1.5rem;
-            margin-bottom: 2rem;
-        }
-
-        .analytics-card {
-            background: var(--card-bg);
-            backdrop-filter: blur(10px);
-            -webkit-backdrop-filter: blur(10px);
-            border-radius: var(--border-radius);
-            padding: 1.5rem;
-            box-shadow: var(--shadow-md);
-            border: 1px solid rgba(255, 255, 255, 0.3);
-            transition: var(--transition-smooth);
-            position: relative;
-            overflow: hidden;
-        }
-
-        .analytics-card::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 4px;
-            background: var(--primary-gradient);
-        }
-
-        .analytics-card:hover {
-            transform: translateY(-2px);
-            box-shadow: var(--shadow-lg);
-        }
-
-        .analytics-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 1rem;
-        }
-
-        .analytics-title {
-            font-size: var(--font-size-lg);
-            font-weight: 700;
-            color: var(--text-primary);
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
-
-        .analytics-actions {
-            display: flex;
-            gap: 0.5rem;
-        }
-
-        .chart-container {
-            height: 300px;
-            position: relative;
-        }
-
-        .chart-filters {
-            display: flex;
-            gap: 0.3rem;
-            margin-bottom: 1rem;
-        }
-
-        .chart-filter {
-            padding: 0.3rem 0.8rem;
-            border: none;
-            border-radius: 12px;
-            background: rgba(59, 130, 246, 0.08);
-            color: var(--text-secondary);
-            font-family: inherit;
-            font-size: var(--font-size-xs);
-            font-weight: 500;
-            cursor: pointer;
-            transition: var(--transition-fast);
-        }
-
-        .chart-filter:hover {
-            background: rgba(59, 130, 246, 0.12);
-        }
-
-        .chart-filter.active {
-            background: var(--primary-gradient);
-            color: white;
-            box-shadow: var(--shadow-sm);
-        }
-
-        /* آمار کلی */
-        .overview-stats {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-            gap: 1rem;
-            margin-bottom: 2rem;
-        }
-
-        .stat-card {
-            background: var(--card-bg);
-            border-radius: var(--border-radius);
-            padding: 1.5rem;
-            text-align: center;
-            box-shadow: var(--shadow-sm);
-            border: 1px solid rgba(255, 255, 255, 0.3);
-            transition: var(--transition-smooth);
-            position: relative;
-            overflow: hidden;
-        }
-
-        .stat-card::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 3px;
-        }
-
-        .stat-card.primary::before { background: var(--primary-gradient); }
-        .stat-card.success::before { background: var(--success-gradient); }
-        .stat-card.warning::before { background: var(--warning-gradient); }
-        .stat-card.danger::before { background: var(--danger-gradient); }
-
-        .stat-card:hover {
-            transform: translateY(-3px);
-            box-shadow: var(--shadow-lg);
-        }
-
-        .stat-value {
-            font-size: var(--font-size-2xl);
-            font-weight: 800;
-            color: var(--text-primary);
-            margin-bottom: 0.5rem;
-        }
-
-        .stat-label {
-            font-size: var(--font-size-sm);
-            color: var(--text-secondary);
-            margin-bottom: 0.5rem;
-        }
-
-        .stat-change {
-            font-size: var(--font-size-xs);
-            font-weight: 600;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 0.3rem;
-        }
-
-        .stat-change.positive { color: #059669; }
-        .stat-change.negative { color: #dc2626; }
-
-        /* ویجت‌های پیشرفته */
-        .advanced-widgets {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 1.5rem;
-            margin-bottom: 2rem;
-        }
-
-        .widget {
-            background: var(--card-bg);
-            border-radius: var(--border-radius);
-            padding: 1.5rem;
-            box-shadow: var(--shadow-md);
-            border: 1px solid rgba(255, 255, 255, 0.3);
-        }
-
-        .widget-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 1rem;
-        }
-
-        .widget-title {
-            font-size: var(--font-size-lg);
-            font-weight: 600;
-            color: var(--text-primary);
-        }
-
-        /* جدول آمار */
-        .stats-table {
-            width: 100%;
-            border-collapse: separate;
-            border-spacing: 0;
-            background: var(--card-bg);
-            border-radius: var(--border-radius);
-            overflow: hidden;
-            box-shadow: var(--shadow-sm);
-        }
-
-        .stats-table thead {
-            background: linear-gradient(135deg, rgba(59, 130, 246, 0.03), rgba(255, 255, 255, 0.1));
-        }
-
-        .stats-table th {
-            padding: 1rem;
-            text-align: right;
-            font-weight: 600;
-            color: var(--text-primary);
-            font-size: var(--font-size-sm);
-            border-bottom: 1px solid rgba(0, 0, 0, 0.05);
-        }
-
-        .stats-table td {
-            padding: 0.8rem 1rem;
-            border-bottom: 1px solid rgba(0, 0, 0, 0.03);
-            font-size: var(--font-size-sm);
-        }
-
-        .stats-table tbody tr {
-            transition: all 0.2s ease;
-        }
-
-        .stats-table tbody tr:hover {
-            background: rgba(59, 130, 246, 0.02);
-        }
-
-        /* نمودار پیشرفت */
-        .progress-widget {
-            padding: 1rem;
-        }
-
-        .progress-item {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 1rem;
-        }
-
-        .progress-item:last-child {
-            margin-bottom: 0;
-        }
-
-        .progress-info {
-            flex: 1;
-            margin-left: 1rem;
-        }
-
-        .progress-label {
-            font-size: var(--font-size-sm);
-            font-weight: 500;
-            color: var(--text-primary);
-            margin-bottom: 0.3rem;
-        }
-
-        .progress-bar {
-            width: 100%;
-            height: 6px;
-            background: rgba(0, 0, 0, 0.08);
-            border-radius: 3px;
-            overflow: hidden;
-        }
-
-        .progress-fill {
-            height: 100%;
-            border-radius: 3px;
-            transition: width 0.6s ease;
-        }
-
-        .progress-fill.primary { background: var(--primary-gradient); }
-        .progress-fill.success { background: var(--success-gradient); }
-        .progress-fill.warning { background: var(--warning-gradient); }
-        .progress-fill.danger { background: var(--danger-gradient); }
-
-        .progress-value {
-            font-size: var(--font-size-sm);
-            font-weight: 600;
-            color: var(--text-primary);
-            min-width: 3rem;
-            text-align: left;
-        }
-
-        /* محصولات اصلی */
-        .main-analytics {
-            margin-bottom: 2rem;
-        }
-
-        .main-grid {
-            display: grid;
-            grid-template-columns: 2fr 1fr;
-            gap: 1.5rem;
-            margin-bottom: 1.5rem;
-        }
-
-        /* فیلترهای زمانی */
-        .time-filters {
-            background: var(--card-bg);
-            border-radius: var(--border-radius);
-            padding: 1rem;
-            margin-bottom: 1.5rem;
-            box-shadow: var(--shadow-sm);
-            border: 1px solid rgba(255, 255, 255, 0.3);
-        }
-
-        .filter-row {
-            display: flex;
-            gap: 1rem;
-            align-items: center;
-            flex-wrap: wrap;
-        }
-
-        .filter-group {
-            display: flex;
-            flex-direction: column;
-            gap: 0.3rem;
-        }
-
-        .filter-label {
-            font-size: var(--font-size-xs);
-            font-weight: 600;
-            color: var(--text-secondary);
-        }
-
-        .filter-input,
-        .filter-select {
-            padding: 0.5rem;
-            border: 1px solid var(--glass-border);
-            border-radius: var(--border-radius-sm);
-            background: var(--glass-bg);
-            color: var(--text-primary);
-            font-family: inherit;
-            font-size: var(--font-size-sm);
-            transition: var(--transition-smooth);
-        }
-
-        .filter-input:focus,
-        .filter-select:focus {
-            outline: none;
-            border-color: #3b82f6;
-            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
-        }
-
-        /* متریک‌های زنده */
-        .live-metrics {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 1rem;
-            margin-bottom: 1.5rem;
-        }
-
-        .live-metric {
-            background: var(--card-bg);
-            border-radius: var(--border-radius);
-            padding: 1rem;
-            text-align: center;
-            box-shadow: var(--shadow-sm);
-            border: 1px solid rgba(255, 255, 255, 0.3);
-            position: relative;
-        }
-
-        .live-metric::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 3px;
-            background: var(--success-gradient);
-        }
-
-        .live-value {
-            font-size: var(--font-size-xl);
-            font-weight: 700;
-            color: var(--text-primary);
-            margin-bottom: 0.3rem;
-        }
-
-        .live-label {
-            font-size: var(--font-size-xs);
-            color: var(--text-secondary);
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
-
-        .live-indicator {
-            position: absolute;
-            top: 0.5rem;
-            left: 0.5rem;
-            width: 8px;
-            height: 8px;
-            background: #10b981;
-            border-radius: 50%;
-            animation: pulse 2s infinite;
-        }
-
-        @keyframes pulse {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.5; }
-        }
-
-        /* Toast Notifications */
-        .toast-container {
-            position: fixed;
-            top: 1rem;
-            left: 1rem;
-            z-index: 10001;
-            display: flex;
-            flex-direction: column;
-            gap: 0.5rem;
-        }
-
-        .toast {
-            background: var(--card-bg);
-            border-radius: var(--border-radius-sm);
-            padding: 1rem 1.5rem;
-            box-shadow: var(--shadow-lg);
-            border-left: 4px solid;
-            display: flex;
-            align-items: center;
-            gap: 0.8rem;
-            min-width: 300px;
-            transform: translateX(-100%);
-            transition: all 0.3s ease;
-        }
-
-        .toast.show {
-            transform: translateX(0);
-        }
-
-        .toast.success { border-left-color: #10b981; }
-        .toast.error { border-left-color: #ef4444; }
-        .toast.warning { border-left-color: #f59e0b; }
-        .toast.info { border-left-color: #3b82f6; }
-
-        .toast-icon {
-            font-size: 1.2rem;
-        }
-
-        .toast.success .toast-icon { color: #10b981; }
-        .toast.error .toast-icon { color: #ef4444; }
-        .toast.warning .toast-icon { color: #f59e0b; }
-        .toast.info .toast-icon { color: #3b82f6; }
-
-        .toast-content {
-            flex: 1;
-        }
-
-        .toast-title {
-            font-weight: 600;
-            font-size: var(--font-size-sm);
-            margin-bottom: 0.2rem;
-        }
-
-        .toast-message {
-            font-size: var(--font-size-xs);
-            color: var(--text-secondary);
-        }
-
-        .toast-close {
-            background: none;
-            border: none;
-            color: var(--text-secondary);
-            cursor: pointer;
-            font-size: 1rem;
-            transition: var(--transition-fast);
-        }
-
-        .toast-close:hover {
-            color: var(--text-primary);
-        }
-
-        /* واکنش‌گرایی */
-        @media (max-width: 992px) {
-            .sidebar {
-                transform: translateX(100%);
-                transition: transform 0.3s ease;
-            }
-
-            .sidebar.open {
-                transform: translateX(0);
-            }
-
-            .main-content {
-                margin-right: 0;
-                width: 100%;
-                padding: 1rem;
-            }
-
-            .analytics-grid {
-                grid-template-columns: 1fr;
-            }
-
-            .main-grid {
-                grid-template-columns: 1fr;
-            }
-
-            .advanced-widgets {
-                grid-template-columns: 1fr;
-            }
-
-            .filter-row {
-                flex-direction: column;
-                align-items: stretch;
-            }
-        }
-
-        @media (max-width: 768px) {
-            .main-content {
-                padding: 0.8rem;
-            }
-
-            .overview-stats {
-                grid-template-columns: repeat(2, 1fr);
-            }
-
-            .live-metrics {
-                grid-template-columns: 1fr;
-            }
-
-            .chart-container {
-                height: 250px;
-            }
-        }
-    </style>
+    <!-- CSS Files -->
+    <link rel="stylesheet" href="css/main.css">
+    <link rel="stylesheet" href="css/components.css">
+    <link rel="stylesheet" href="css/responsive.css">
 </head>
 <body>
     <div class="dashboard-container">
-        <!-- سایدبار -->
         <aside class="sidebar" id="sidebar">
+            <!-- Sidebar Header -->
             <div class="sidebar-header">
-                <a href="/" class="logo">
+                <a href="index.html" class="logo">
                     <div class="logo-icon">
-                        <i class="fas fa-scale-balanced"></i>
+                        <i class="fas fa-gavel"></i>
                     </div>
-                    <div class="logo-text">سامانه حقوقی</div>
+                    <span class="logo-text">داشبورد حقوقی</span>
                 </a>
+                <button class="mobile-menu-toggle" id="mobile-menu-toggle">
+                    <i class="fas fa-bars"></i>
+                </button>
             </div>
 
-            <nav>
+            <!-- Navigation -->
+            <nav class="main-nav">
                 <div class="nav-section">
-                    <h6 class="nav-title">داشبورد</h6>
+                    <h4 class="nav-title">اصلی</h4>
                     <ul class="nav-menu">
                         <li class="nav-item">
-                            <a href="/" class="nav-link">
-                                <i class="fas fa-chart-pie nav-icon"></i>
-                                <span>نمای کلی</span>
+                            <a href="index.html" class="nav-link" data-nav="dashboard">
+                                <span class="nav-icon"><i class="fas fa-tachometer-alt"></i></span>
+                                <span>داشبورد</span>
                             </a>
                         </li>
-                    </ul>
-                </div>
-
-                <div class="nav-section">
-                    <h6 class="nav-title">مدیریت اسناد</h6>
-                    <ul class="nav-menu">
                         <li class="nav-item">
-                            <a href="/static/documents.html" class="nav-link">
-                                <i class="fas fa-file-alt nav-icon"></i>
+                            <a href="documents.html" class="nav-link" data-nav="documents">
+                                <span class="nav-icon"><i class="fas fa-file-alt"></i></span>
                                 <span>مدیریت اسناد</span>
-                                <span class="nav-badge" id="totalDocumentsBadge">6</span>
+                                <span class="nav-badge" data-badge="documents">0</span>
                             </a>
                         </li>
-
                         <li class="nav-item">
-                            <a href="/static/upload.html" class="nav-link">
-                                <i class="fas fa-cloud-upload-alt nav-icon"></i>
+                            <a href="upload.html" class="nav-link" data-nav="upload">
+                                <span class="nav-icon"><i class="fas fa-cloud-upload-alt"></i></span>
                                 <span>آپلود فایل</span>
                             </a>
                         </li>
-
                         <li class="nav-item">
-                            <a href="/static/search.html" class="nav-link">
-                                <i class="fas fa-search nav-icon"></i>
+                            <a href="search.html" class="nav-link" data-nav="search">
+                                <span class="nav-icon"><i class="fas fa-search"></i></span>
                                 <span>جستجو</span>
                             </a>
                         </li>
-                    </ul>
-                </div>
-
-                <div class="nav-section">
-                    <h6 class="nav-title">ابزارها</h6>
-                    <ul class="nav-menu">
                         <li class="nav-item">
-                            <a href="/static/scraping.html" class="nav-link">
-                                <i class="fas fa-globe nav-icon"></i>
-                                <span>استخراج محتوا</span>
-                            </a>
-                        </li>
-
-                        <li class="nav-item">
-                            <a href="/static/analytics.html" class="nav-link active">
-                                <i class="fas fa-chart-line nav-icon"></i>
-                                <span>آمار و تحلیل</span>
-                            </a>
-                        </li>
-
-                        <li class="nav-item">
-                            <a href="/static/reports.html" class="nav-link">
-                                <i class="fas fa-file-export nav-icon"></i>
-                                <span>گزارش‌ها</span>
+                            <a href="analytics.html" class="nav-link active" data-nav="analytics">
+                                <span class="nav-icon"><i class="fas fa-chart-bar"></i></span>
+                                <span>تحلیل و گزارش</span>
                             </a>
                         </li>
                     </ul>
                 </div>
 
                 <div class="nav-section">
-                    <h6 class="nav-title">تنظیمات</h6>
+                    <h4 class="nav-title">سیستم</h4>
                     <ul class="nav-menu">
                         <li class="nav-item">
-                            <a href="/static/settings.html" class="nav-link">
-                                <i class="fas fa-cog nav-icon"></i>
+                            <a href="system-health.html" class="nav-link" data-nav="systemHealth">
+                                <span class="nav-icon"><i class="fas fa-heartbeat"></i></span>
+                                <span>وضعیت سیستم</span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="settings.html" class="nav-link" data-nav="settings">
+                                <span class="nav-icon"><i class="fas fa-cog"></i></span>
                                 <span>تنظیمات</span>
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a href="#" class="nav-link">
-                                <i class="fas fa-sign-out-alt nav-icon"></i>
-                                <span>خروج</span>
                             </a>
                         </li>
                     </ul>
@@ -912,1001 +94,890 @@
             </nav>
         </aside>
 
-        <!-- محتوای اصلی -->
         <main class="main-content">
-            <!-- هدر صفحه -->
-            <header class="page-header">
-                <h1 class="page-title">
-                    <i class="fas fa-chart-line"></i>
-                    آمار و تحلیل پیشرفته
-                </h1>
-                <div class="page-actions">
-                    <button type="button" class="btn btn-outline" onclick="exportAnalytics()">
+            <!-- Header -->
+            <header class="header">
+                <h1 class="header-title">تحلیل و گزارش</h1>
+                <div class="header-actions">
+                    <button class="btn btn-secondary" id="export-report-btn">
                         <i class="fas fa-download"></i>
-                        خروجی گزارش
+                        صادرات گزارش
                     </button>
-                    <button type="button" class="btn btn-primary" onclick="refreshAllAnalytics()">
+                    <button class="btn btn-primary" id="refresh-analytics-btn">
                         <i class="fas fa-sync-alt"></i>
-                        بروزرسانی همه
+                        بروزرسانی
+                    </button>
+                    <button class="btn-icon" id="user-menu-btn">
+                        <i class="fas fa-user-circle"></i>
+                    </button>
+                    <button class="btn-icon" id="notification-bell">
+                        <i class="fas fa-bell"></i>
+                        <span class="notification-badge" id="notification-badge">0</span>
                     </button>
                 </div>
             </header>
 
-            <!-- فیلترهای زمانی -->
-            <section class="time-filters">
-                <div class="filter-row">
-                    <div class="filter-group">
-                        <label class="filter-label">بازه زمانی</label>
-                        <select class="filter-select" id="timeRange" onchange="updateTimeRange()">
-                            <option value="today">امروز</option>
-                            <option value="week" selected>هفته گذشته</option>
-                            <option value="month">ماه گذشته</option>
-                            <option value="quarter">سه ماه گذشته</option>
-                            <option value="year">سال گذشته</option>
-                            <option value="custom">بازه دلخواه</option>
-                        </select>
-                    </div>
+            <!-- Breadcrumbs -->
+            <div class="breadcrumb-container" id="breadcrumb-container">
+                <a href="index.html" class="breadcrumb-item">
+                    <i class="fas fa-home"></i>
+                    <span>خانه</span>
+                </a>
+                <i class="fas fa-angle-left mx-2 text-gray-400"></i>
+                <span class="breadcrumb-item active" aria-current="page">تحلیل و گزارش</span>
+            </div>
 
-                    <div class="filter-group">
-                        <label class="filter-label">از تاریخ</label>
-                        <input type="date" class="filter-input" id="startDate">
-                    </div>
-
-                    <div class="filter-group">
-                        <label class="filter-label">تا تاریخ</label>
-                        <input type="date" class="filter-input" id="endDate">
-                    </div>
-
-                    <div class="filter-group">
-                        <label class="filter-label">نوع داده</label>
-                        <select class="filter-select" id="dataType" onchange="updateDataType()">
-                            <option value="all">همه داده‌ها</option>
-                            <option value="documents">اسناد</option>
-                            <option value="users">کاربران</option>
-                            <option value="system">سیستم</option>
-                        </select>
-                    </div>
-
-                    <button type="button" class="btn btn-primary btn-sm" onclick="applyFilters()">
-                        <i class="fas fa-filter"></i>
-                        اعمال فیلتر
-                    </button>
-                </div>
-            </section>
-
-            <!-- متریک‌های زنده -->
-            <section class="live-metrics">
-                <div class="live-metric">
-                    <div class="live-indicator"></div>
-                    <div class="live-value" id="liveUsers">12</div>
-                    <div class="live-label">کاربران آنلاین</div>
-                </div>
-
-                <div class="live-metric">
-                    <div class="live-indicator"></div>
-                    <div class="live-value" id="liveProcessing">3</div>
-                    <div class="live-label">در حال پردازش</div>
-                </div>
-
-                <div class="live-metric">
-                    <div class="live-indicator"></div>
-                    <div class="live-value" id="liveRequests">847</div>
-                    <div class="live-label">درخواست‌های امروز</div>
-                </div>
-
-                <div class="live-metric">
-                    <div class="live-indicator"></div>
-                    <div class="live-value" id="liveSuccess">98.7%</div>
-                    <div class="live-label">نرخ موفقیت</div>
-                </div>
-            </section>
-
-            <!-- آمار کلی -->
-            <section class="overview-stats">
-                <div class="stat-card primary">
-                    <div class="stat-value" id="totalDocumentsAnalytics">156</div>
-                    <div class="stat-label">کل اسناد پردازش شده</div>
-                    <div class="stat-change positive">
-                        <i class="fas fa-arrow-up"></i>
-                        <span>+15.2%</span>
-                    </div>
-                </div>
-
-                <div class="stat-card success">
-                    <div class="stat-value" id="successfulProcessing">142</div>
-                    <div class="stat-label">پردازش موفق</div>
-                    <div class="stat-change positive">
-                        <i class="fas fa-arrow-up"></i>
-                        <span>+23.1%</span>
-                    </div>
-                </div>
-
-                <div class="stat-card warning">
-                    <div class="stat-value" id="averageTime">2.4s</div>
-                    <div class="stat-label">میانگین زمان پردازش</div>
-                    <div class="stat-change negative">
-                        <i class="fas fa-arrow-down"></i>
-                        <span>-8.3%</span>
-                    </div>
-                </div>
-
-                <div class="stat-card danger">
-                    <div class="stat-value" id="errorRate">1.3%</div>
-                    <div class="stat-label">نرخ خطا</div>
-                    <div class="stat-change positive">
-                        <i class="fas fa-arrow-down"></i>
-                        <span>-12.7%</span>
-                    </div>
-                </div>
-            </section>
-
-            <!-- تحلیل‌های اصلی -->
-            <section class="main-analytics">
-                <div class="main-grid">
-                    <div class="analytics-card">
-                        <div class="analytics-header">
-                            <h3 class="analytics-title">
-                                <i class="fas fa-chart-line"></i>
-                                روند پردازش اسناد
-                            </h3>
-                            <div class="chart-filters">
-                                <button type="button" class="chart-filter" onclick="updateTrendsChart('daily')">روزانه</button>
-                                <button type="button" class="chart-filter active" onclick="updateTrendsChart('weekly')">هفتگی</button>
-                                <button type="button" class="chart-filter" onclick="updateTrendsChart('monthly')">ماهانه</button>
+            <!-- Analytics Overview -->
+            <section class="analytics-overview">
+                <div class="overview-grid">
+                    <div class="overview-card">
+                        <div class="overview-icon">
+                            <i class="fas fa-file-alt"></i>
+                        </div>
+                        <div class="overview-content">
+                            <div class="overview-value" id="total-documents">1,234</div>
+                            <div class="overview-label">کل اسناد</div>
+                            <div class="overview-change positive">
+                                <i class="fas fa-arrow-up"></i>
+                                <span>+12% این ماه</span>
                             </div>
                         </div>
-                        <div class="chart-container">
-                            <canvas id="trendsChart"></canvas>
+                    </div>
+
+                    <div class="overview-card">
+                        <div class="overview-icon">
+                            <i class="fas fa-chart-line"></i>
+                        </div>
+                        <div class="overview-content">
+                            <div class="overview-value" id="processing-rate">98.5%</div>
+                            <div class="overview-label">نرخ موفقیت</div>
+                            <div class="overview-change positive">
+                                <i class="fas fa-arrow-up"></i>
+                                <span>+2.3% این هفته</span>
+                            </div>
                         </div>
                     </div>
 
-                    <div class="analytics-card">
-                        <div class="analytics-header">
-                            <h3 class="analytics-title">
-                                <i class="fas fa-chart-pie"></i>
-                                توزیع دسته‌بندی
-                            </h3>
-                            <div class="analytics-actions">
-                                <button type="button" class="btn btn-outline btn-sm" onclick="refreshCategoryChart()">
+                    <div class="overview-card">
+                        <div class="overview-icon">
+                            <i class="fas fa-clock"></i>
+                        </div>
+                        <div class="overview-content">
+                            <div class="overview-value" id="avg-processing-time">2.3</div>
+                            <div class="overview-label">میانگین زمان (دقیقه)</div>
+                            <div class="overview-change negative">
+                                <i class="fas fa-arrow-down"></i>
+                                <span>-0.5 دقیقه</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="overview-card">
+                        <div class="overview-icon">
+                            <i class="fas fa-users"></i>
+                        </div>
+                        <div class="overview-content">
+                            <div class="overview-value" id="active-users">45</div>
+                            <div class="overview-label">کاربران فعال</div>
+                            <div class="overview-change positive">
+                                <i class="fas fa-arrow-up"></i>
+                                <span>+8 این هفته</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Charts Section -->
+            <section class="charts-section">
+                <div class="charts-grid">
+                    <!-- Document Trends Chart -->
+                    <div class="chart-container">
+                        <div class="chart-header">
+                            <h3>روند اسناد</h3>
+                            <div class="chart-actions">
+                                <select class="form-select" id="trend-period">
+                                    <option value="7">7 روز گذشته</option>
+                                    <option value="30" selected>30 روز گذشته</option>
+                                    <option value="90">90 روز گذشته</option>
+                                    <option value="365">یک سال</option>
+                                </select>
+                                <button class="btn-icon" data-chart-action="refresh" data-chart="trends">
                                     <i class="fas fa-sync-alt"></i>
+                                </button>
+                                <button class="btn-icon" data-chart-action="export" data-chart="trends">
+                                    <i class="fas fa-download"></i>
                                 </button>
                             </div>
                         </div>
-                        <div class="chart-container">
-                            <canvas id="categoryChart"></canvas>
+                        <div class="chart-content">
+                            <canvas id="documentTrendsChart"></canvas>
                         </div>
                     </div>
-                </div>
-            </section>
 
-            <!-- ویجت‌های پیشرفته -->
-            <section class="advanced-widgets">
-                <div class="widget">
-                    <div class="widget-header">
-                        <h3 class="widget-title">عملکرد کیفیت</h3>
-                        <button type="button" class="btn btn-outline btn-sm" onclick="refreshQualityWidget()">
-                            <i class="fas fa-sync-alt"></i>
-                        </button>
-                    </div>
-                    <div class="progress-widget">
-                        <div class="progress-item">
-                            <div class="progress-info">
-                                <div class="progress-label">دقت OCR</div>
-                                <div class="progress-bar">
-                                    <div class="progress-fill success" style="width: 94%"></div>
-                                </div>
-                            </div>
-                            <div class="progress-value">94%</div>
-                        </div>
-
-                        <div class="progress-item">
-                            <div class="progress-info">
-                                <div class="progress-label">کیفیت تصویر</div>
-                                <div class="progress-bar">
-                                    <div class="progress-fill primary" style="width: 87%"></div>
-                                </div>
-                            </div>
-                            <div class="progress-value">87%</div>
-                        </div>
-
-                        <div class="progress-item">
-                            <div class="progress-info">
-                                <div class="progress-label">تطبیق فرمت</div>
-                                <div class="progress-bar">
-                                    <div class="progress-fill warning" style="width: 76%"></div>
-                                </div>
-                            </div>
-                            <div class="progress-value">76%</div>
-                        </div>
-
-                        <div class="progress-item">
-                            <div class="progress-info">
-                                <div class="progress-label">کامل بودن محتوا</div>
-                                <div class="progress-bar">
-                                    <div class="progress-fill danger" style="width: 68%"></div>
-                                </div>
-                            </div>
-                            <div class="progress-value">68%</div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="widget">
-                    <div class="widget-header">
-                        <h3 class="widget-title">آمار سیستم</h3>
-                        <button type="button" class="btn btn-outline btn-sm" onclick="refreshSystemStats()">
-                            <i class="fas fa-sync-alt"></i>
-                        </button>
-                    </div>
+                    <!-- Document Types Chart -->
                     <div class="chart-container">
-                        <canvas id="systemChart"></canvas>
+                        <div class="chart-header">
+                            <h3>توزیع نوع اسناد</h3>
+                            <div class="chart-actions">
+                                <button class="btn-icon" data-chart-action="refresh" data-chart="types">
+                                    <i class="fas fa-sync-alt"></i>
+                                </button>
+                                <button class="btn-icon" data-chart-action="export" data-chart="types">
+                                    <i class="fas fa-download"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="chart-content">
+                            <canvas id="documentTypesChart"></canvas>
+                        </div>
+                    </div>
+
+                    <!-- Processing Status Chart -->
+                    <div class="chart-container">
+                        <div class="chart-header">
+                            <h3>وضعیت پردازش</h3>
+                            <div class="chart-actions">
+                                <button class="btn-icon" data-chart-action="refresh" data-chart="status">
+                                    <i class="fas fa-sync-alt"></i>
+                                </button>
+                                <button class="btn-icon" data-chart-action="export" data-chart="status">
+                                    <i class="fas fa-download"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="chart-content">
+                            <canvas id="processingStatusChart"></canvas>
+                        </div>
+                    </div>
+
+                    <!-- System Performance Chart -->
+                    <div class="chart-container">
+                        <div class="chart-header">
+                            <h3>عملکرد سیستم</h3>
+                            <div class="chart-actions">
+                                <select class="form-select" id="performance-metric">
+                                    <option value="cpu">CPU</option>
+                                    <option value="memory" selected>حافظه</option>
+                                    <option value="disk">دیسک</option>
+                                    <option value="network">شبکه</option>
+                                </select>
+                                <button class="btn-icon" data-chart-action="refresh" data-chart="performance">
+                                    <i class="fas fa-sync-alt"></i>
+                                </button>
+                                <button class="btn-icon" data-chart-action="export" data-chart="performance">
+                                    <i class="fas fa-download"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="chart-content">
+                            <canvas id="systemPerformanceChart"></canvas>
+                        </div>
                     </div>
                 </div>
             </section>
 
-            <!-- گرید تحلیل‌های تفصیلی -->
-            <section class="analytics-grid">
-                <div class="analytics-card">
-                    <div class="analytics-header">
-                        <h3 class="analytics-title">
+            <!-- Detailed Analytics -->
+            <section class="detailed-analytics">
+                <div class="analytics-tabs">
+                    <button class="tab-btn active" data-tab="usage">استفاده</button>
+                    <button class="tab-btn" data-tab="performance">عملکرد</button>
+                    <button class="tab-btn" data-tab="errors">خطاها</button>
+                    <button class="tab-btn" data-tab="users">کاربران</button>
+                </div>
+
+                <div class="tab-content">
+                    <!-- Usage Tab -->
+                    <div class="tab-pane active" id="usage-tab">
+                        <div class="usage-metrics">
+                            <div class="metric-card">
+                                <h4>آپلود فایل</h4>
+                                <div class="metric-value">2,847 فایل</div>
+                                <div class="metric-change positive">+15% نسبت به ماه گذشته</div>
+                            </div>
+                            <div class="metric-card">
+                                <h4>جستجو</h4>
+                                <div class="metric-value">12,456 جستجو</div>
+                                <div class="metric-change positive">+23% نسبت به ماه گذشته</div>
+                            </div>
+                            <div class="metric-card">
+                                <h4>دانلود</h4>
+                                <div class="metric-value">8,923 دانلود</div>
+                                <div class="metric-change positive">+8% نسبت به ماه گذشته</div>
+                            </div>
+                            <div class="metric-card">
+                                <h4>زمان استفاده</h4>
+                                <div class="metric-value">156 ساعت</div>
+                                <div class="metric-change positive">+12% نسبت به ماه گذشته</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Performance Tab -->
+                    <div class="tab-pane" id="performance-tab">
+                        <div class="performance-metrics">
+                            <div class="metric-card">
+                                <h4>زمان پاسخ</h4>
+                                <div class="metric-value">245ms</div>
+                                <div class="metric-change negative">+15ms نسبت به هفته گذشته</div>
+                            </div>
+                            <div class="metric-card">
+                                <h4>دقت OCR</h4>
+                                <div class="metric-value">94.2%</div>
+                                <div class="metric-change positive">+1.8% نسبت به ماه گذشته</div>
+                            </div>
+                            <div class="metric-card">
+                                <h4>موفقیت آپلود</h4>
+                                <div class="metric-value">99.1%</div>
+                                <div class="metric-change positive">+0.3% نسبت به ماه گذشته</div>
+                            </div>
+                            <div class="metric-card">
+                                <h4>در دسترس بودن</h4>
+                                <div class="metric-value">99.9%</div>
+                                <div class="metric-change neutral">بدون تغییر</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Errors Tab -->
+                    <div class="tab-pane" id="errors-tab">
+                        <div class="errors-list">
+                            <div class="error-item">
+                                <div class="error-icon">
+                                    <i class="fas fa-exclamation-triangle"></i>
+                                </div>
+                                <div class="error-content">
+                                    <div class="error-title">خطا در پردازش فایل</div>
+                                    <div class="error-details">فایل PDF آسیب‌دیده - 15 مورد</div>
+                                    <div class="error-time">2 ساعت پیش</div>
+                                </div>
+                                <div class="error-actions">
+                                    <button class="btn btn-sm btn-secondary">مشاهده جزئیات</button>
+                                </div>
+                            </div>
+                            <div class="error-item">
+                                <div class="error-icon">
+                                    <i class="fas fa-times-circle"></i>
+                                </div>
+                                <div class="error-content">
+                                    <div class="error-title">خطا در اتصال به سرور</div>
+                                    <div class="error-details">اتصال شبکه قطع - 3 مورد</div>
+                                    <div class="error-time">1 روز پیش</div>
+                                </div>
+                                <div class="error-actions">
+                                    <button class="btn btn-sm btn-secondary">مشاهده جزئیات</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Users Tab -->
+                    <div class="tab-pane" id="users-tab">
+                        <div class="users-metrics">
+                            <div class="metric-card">
+                                <h4>کاربران جدید</h4>
+                                <div class="metric-value">23 کاربر</div>
+                                <div class="metric-change positive">+5 نسبت به ماه گذشته</div>
+                            </div>
+                            <div class="metric-card">
+                                <h4>کاربران فعال</h4>
+                                <div class="metric-value">156 کاربر</div>
+                                <div class="metric-change positive">+12 نسبت به ماه گذشته</div>
+                            </div>
+                            <div class="metric-card">
+                                <h4>میانگین جلسه</h4>
+                                <div class="metric-value">45 دقیقه</div>
+                                <div class="metric-change positive">+8 دقیقه نسبت به ماه گذشته</div>
+                            </div>
+                            <div class="metric-card">
+                                <h4>نرخ بازگشت</h4>
+                                <div class="metric-value">78%</div>
+                                <div class="metric-change positive">+5% نسبت به ماه گذشته</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Reports Section -->
+            <section class="reports-section">
+                <div class="reports-header">
+                    <h3>گزارش‌های آماده</h3>
+                    <button class="btn btn-primary" id="generate-report-btn">
+                        <i class="fas fa-plus"></i>
+                        ایجاد گزارش جدید
+                    </button>
+                </div>
+                <div class="reports-grid">
+                    <div class="report-card">
+                        <div class="report-icon">
+                            <i class="fas fa-file-alt"></i>
+                        </div>
+                        <div class="report-content">
+                            <h4>گزارش ماهانه اسناد</h4>
+                            <p>خلاصه‌ای از فعالیت‌های ماه گذشته</p>
+                            <div class="report-meta">
+                                <span>آخرین بروزرسانی: 2 ساعت پیش</span>
+                            </div>
+                        </div>
+                        <div class="report-actions">
+                            <button class="btn btn-sm btn-secondary">مشاهده</button>
+                            <button class="btn btn-sm btn-primary">دانلود</button>
+                        </div>
+                    </div>
+
+                    <div class="report-card">
+                        <div class="report-icon">
+                            <i class="fas fa-chart-line"></i>
+                        </div>
+                        <div class="report-content">
+                            <h4>گزارش عملکرد سیستم</h4>
+                            <p>تحلیل عملکرد و بهینه‌سازی</p>
+                            <div class="report-meta">
+                                <span>آخرین بروزرسانی: 1 روز پیش</span>
+                            </div>
+                        </div>
+                        <div class="report-actions">
+                            <button class="btn btn-sm btn-secondary">مشاهده</button>
+                            <button class="btn btn-sm btn-primary">دانلود</button>
+                        </div>
+                    </div>
+
+                    <div class="report-card">
+                        <div class="report-icon">
                             <i class="fas fa-users"></i>
-                            فعالیت کاربران
-                        </h3>
-                        <div class="analytics-actions">
-                            <button type="button" class="btn btn-outline btn-sm" onclick="refreshUserActivity()">
-                                <i class="fas fa-sync-alt"></i>
-                            </button>
+                        </div>
+                        <div class="report-content">
+                            <h4>گزارش کاربران</h4>
+                            <p>تحلیل رفتار و فعالیت کاربران</p>
+                            <div class="report-meta">
+                                <span>آخرین بروزرسانی: 3 روز پیش</span>
+                            </div>
+                        </div>
+                        <div class="report-actions">
+                            <button class="btn btn-sm btn-secondary">مشاهده</button>
+                            <button class="btn btn-sm btn-primary">دانلود</button>
                         </div>
                     </div>
-                    <div class="chart-container">
-                        <canvas id="userActivityChart"></canvas>
-                    </div>
-                </div>
-
-                <div class="analytics-card">
-                    <div class="analytics-header">
-                        <h3 class="analytics-title">
-                            <i class="fas fa-clock"></i>
-                            زمان پاسخ‌دهی
-                        </h3>
-                        <div class="analytics-actions">
-                            <button type="button" class="btn btn-outline btn-sm" onclick="refreshResponseTime()">
-                                <i class="fas fa-sync-alt"></i>
-                            </button>
-                        </div>
-                    </div>
-                    <div class="chart-container">
-                        <canvas id="responseTimeChart"></canvas>
-                    </div>
-                </div>
-
-                <div class="analytics-card">
-                    <div class="analytics-header">
-                        <h3 class="analytics-title">
-                            <i class="fas fa-chart-bar"></i>
-                            مقایسه کارایی
-                        </h3>
-                        <div class="chart-filters">
-                            <button type="button" class="chart-filter active" onclick="updatePerformanceChart('hourly')">ساعتی</button>
-                            <button type="button" class="chart-filter" onclick="updatePerformanceChart('daily')">روزانه</button>
-                        </div>
-                    </div>
-                    <div class="chart-container">
-                        <canvas id="performanceChart"></canvas>
-                    </div>
-                </div>
-
-                <div class="analytics-card">
-                    <div class="analytics-header">
-                        <h3 class="analytics-title">
-                            <i class="fas fa-exclamation-triangle"></i>
-                            تحلیل خطاها
-                        </h3>
-                        <div class="analytics-actions">
-                            <button type="button" class="btn btn-outline btn-sm" onclick="refreshErrorAnalysis()">
-                                <i class="fas fa-sync-alt"></i>
-                            </button>
-                        </div>
-                    </div>
-                    <table class="stats-table">
-                        <thead>
-                            <tr>
-                                <th>نوع خطا</th>
-                                <th>تعداد</th>
-                                <th>درصد</th>
-                            </tr>
-                        </thead>
-                        <tbody id="errorAnalysisTable">
-                            <tr>
-                                <td>خطای شبکه</td>
-                                <td>12</td>
-                                <td>45%</td>
-                            </tr>
-                            <tr>
-                                <td>خطای پردازش</td>
-                                <td>8</td>
-                                <td>30%</td>
-                            </tr>
-                            <tr>
-                                <td>خطای فرمت</td>
-                                <td>4</td>
-                                <td>15%</td>
-                            </tr>
-                            <tr>
-                                <td>خطای اعتبارسنجی</td>
-                                <td>3</td>
-                                <td>10%</td>
-                            </tr>
-                        </tbody>
-                    </table>
                 </div>
             </section>
         </main>
     </div>
 
-    <!-- Toast Container -->
-    <div class="toast-container" id="toastContainer"></div>
+    <!-- Notification Panel -->
+    <div id="notification-panel" class="notification-panel hidden">
+        <div class="notification-header">
+            <h3>اعلان‌ها</h3>
+            <button class="close-btn" id="close-notification-panel">×</button>
+        </div>
+        <div class="notification-list" id="notification-list"></div>
+        <div class="notification-footer">
+            <button class="btn btn-secondary" id="mark-all-read">علامت‌گذاری همه</button>
+            <button class="btn btn-danger" id="clear-all-notifications">پاک کردن همه</button>
+        </div>
+    </div>
 
+    <!-- Mobile Overlay -->
+    <div id="mobile-overlay" class="mobile-overlay hidden"></div>
+
+    <!-- Generate Report Modal -->
+    <div id="generate-report-modal" class="modal-overlay hidden">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>ایجاد گزارش جدید</h3>
+                <button class="close-btn" id="close-report-modal">×</button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label for="report-type">نوع گزارش:</label>
+                    <select id="report-type" class="form-select">
+                        <option value="monthly">گزارش ماهانه</option>
+                        <option value="quarterly">گزارش فصلی</option>
+                        <option value="yearly">گزارش سالانه</option>
+                        <option value="custom">گزارش سفارشی</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="report-period">بازه زمانی:</label>
+                    <select id="report-period" class="form-select">
+                        <option value="last-month">ماه گذشته</option>
+                        <option value="last-quarter">فصل گذشته</option>
+                        <option value="last-year">سال گذشته</option>
+                        <option value="custom">سفارشی</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="report-format">فرمت گزارش:</label>
+                    <select id="report-format" class="form-select">
+                        <option value="pdf">PDF</option>
+                        <option value="excel">Excel</option>
+                        <option value="csv">CSV</option>
+                    </select>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" id="cancel-report-btn">انصراف</button>
+                <button class="btn btn-primary" id="create-report-btn">
+                    <i class="fas fa-plus"></i>
+                    ایجاد گزارش
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- JavaScript Modules -->
+    <script src="js/core.js"></script>
+    <script src="js/api-client.js"></script>
+    <script src="js/state-manager.js"></script>
+    <script src="js/navigation.js"></script>
+    <script src="js/notifications.js"></script>
+    <script src="js/document-manager.js"></script>
+    <script src="js/file-handler.js"></script>
+    <script src="js/search-engine.js"></script>
+    <script src="js/chart-manager.js"></script>
+
+    <!-- Initialize Analytics Page -->
     <script>
-        // Global variables
-        let chartsInstances = {};
-        let liveMetricsInterval;
-        let isOnline = false;
-
-        // Initialize page
         document.addEventListener('DOMContentLoaded', function() {
-            console.log('📊 Analytics page loading...');
+            console.log('🚀 Initializing Analytics Page...');
+
+            // Initialize all managers
+            const managers = {
+                core: window.dashboardCore,
+                api: window.apiClient,
+                state: window.stateManager,
+                navigation: window.navigationManager,
+                notifications: window.notificationManager,
+                documents: window.documentManager,
+                files: window.fileHandler,
+                search: window.searchEngine,
+                charts: window.chartManager
+            };
+
+            // Set up cross-component communication
+            managers.core.broadcast('analytics:initialized', { managers });
+
+            // Initialize analytics page functionality
             initializeAnalyticsPage();
+
+            console.log('✅ Analytics page initialized successfully');
         });
 
-        async function initializeAnalyticsPage() {
-            try {
-                // Test backend connection
-                isOnline = await testConnection();
-                
-                // Initialize date filters
-                initializeDateFilters();
-                
-                // Initialize charts
-                initializeCharts();
-                
-                // Start live metrics updates
-                startLiveMetrics();
-                
-                showToast('داشبورد تحلیلی آماده است', 'success', 'آماده');
-                
-            } catch (error) {
-                console.error('Failed to initialize analytics page:', error);
-                
-                // Fallback mode
-                isOnline = false;
-                initializeDateFilters();
-                initializeCharts();
-                startLiveMetrics();
-                
-                showToast('حالت آفلاین فعال است', 'warning', 'اتصال ناموفق');
-            }
+        function initializeAnalyticsPage() {
+            // Load analytics data
+            loadAnalyticsData();
+
+            // Initialize charts
+            initializeCharts();
+
+            // Set up tabs
+            setupTabs();
+
+            // Set up event listeners
+            setupAnalyticsEventListeners();
+
+            // Set up real-time updates
+            setupRealTimeUpdates();
         }
 
-        async function testConnection() {
-            try {
-                await window.legalAPI.healthCheck();
-                return true;
-            } catch (error) {
-                return false;
-            }
+        function loadAnalyticsData() {
+            // Load overview metrics
+            loadOverviewMetrics();
+
+            // Load detailed analytics
+            loadDetailedAnalytics();
+
+            // Load reports
+            loadReports();
         }
 
-        function initializeDateFilters() {
-            const endDate = new Date();
-            const startDate = new Date();
-            startDate.setDate(startDate.getDate() - 7); // Last week
+        function loadOverviewMetrics() {
+            // Mock data - in real app, this would come from API
+            const metrics = {
+                totalDocuments: 1234,
+                processingRate: 98.5,
+                avgProcessingTime: 2.3,
+                activeUsers: 45
+            };
 
-            document.getElementById('endDate').value = endDate.toISOString().split('T')[0];
-            document.getElementById('startDate').value = startDate.toISOString().split('T')[0];
+            document.getElementById('total-documents').textContent = metrics.totalDocuments.toLocaleString('fa-IR');
+            document.getElementById('processing-rate').textContent = metrics.processingRate + '%';
+            document.getElementById('avg-processing-time').textContent = metrics.avgProcessingTime;
+            document.getElementById('active-users').textContent = metrics.activeUsers;
+        }
+
+        function loadDetailedAnalytics() {
+            // This would load detailed analytics data
+            console.log('Loading detailed analytics...');
+        }
+
+        function loadReports() {
+            // This would load available reports
+            console.log('Loading reports...');
         }
 
         function initializeCharts() {
-            try {
-                // Initialize all charts
-                createTrendsChart();
-                createCategoryChart();
-                createSystemChart();
-                createUserActivityChart();
-                createResponseTimeChart();
-                createPerformanceChart();
+            if (window.chartManager) {
+                // Initialize document trends chart
+                window.chartManager.createChart('documentTrends', 'documentTrendsChart');
                 
-                console.log('✅ All charts initialized');
+                // Initialize document types chart
+                window.chartManager.createChart('documentTypes', 'documentTypesChart');
                 
-            } catch (error) {
-                console.error('Failed to initialize charts:', error);
-                showToast('خطا در بارگذاری نمودارها', 'error', 'خطا');
+                // Initialize processing status chart
+                window.chartManager.createChart('processingStatus', 'processingStatusChart');
+                
+                // Initialize system performance chart
+                window.chartManager.createChart('systemPerformance', 'systemPerformanceChart');
+            } else {
+                // Fallback chart initialization
+                initializeFallbackCharts();
             }
         }
 
-        function createTrendsChart() {
-            const ctx = document.getElementById('trendsChart');
-            if (!ctx) return;
-
-            chartsInstances.trends = new Chart(ctx, {
-                type: 'line',
-                data: {
-                    labels: ['شنبه', 'یکشنبه', 'دوشنبه', 'سه‌شنبه', 'چهارشنبه', 'پنج‌شنبه', 'جمعه'],
-                    datasets: [
-                        {
-                            label: 'اسناد پردازش شده',
-                            data: [12, 19, 8, 15, 22, 18, 14],
-                            borderColor: '#3b82f6',
-                            backgroundColor: 'rgba(59, 130, 246, 0.1)',
-                            tension: 0.4,
-                            borderWidth: 3,
-                            pointRadius: 6,
-                            pointHoverRadius: 8
-                        },
-                        {
-                            label: 'اسناد آپلود شده',
-                            data: [15, 23, 12, 18, 25, 21, 16],
-                            borderColor: '#10b981',
-                            backgroundColor: 'rgba(16, 185, 129, 0.1)',
-                            tension: 0.4,
-                            borderWidth: 3,
-                            pointRadius: 6,
-                            pointHoverRadius: 8
-                        }
-                    ]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: {
-                        legend: {
-                            position: 'top',
-                            labels: {
-                                usePointStyle: true,
-                                font: { family: 'Vazirmatn', size: 12 }
-                            }
-                        }
-                    },
-                    scales: {
-                        y: {
-                            beginAtZero: true,
-                            grid: { color: 'rgba(0, 0, 0, 0.05)' },
-                            ticks: { font: { family: 'Vazirmatn' } }
-                        },
-                        x: {
-                            grid: { color: 'rgba(0, 0, 0, 0.05)' },
-                            ticks: { font: { family: 'Vazirmatn' } }
-                        }
-                    }
-                }
-            });
-        }
-
-        function createCategoryChart() {
-            const ctx = document.getElementById('categoryChart');
-            if (!ctx) return;
-
-            chartsInstances.category = new Chart(ctx, {
-                type: 'doughnut',
-                data: {
-                    labels: ['قراردادها', 'دادخواست‌ها', 'احکام قضایی', 'آرای دیوان', 'سایر'],
-                    datasets: [{
-                        data: [35, 25, 20, 15, 5],
-                        backgroundColor: [
-                            '#3b82f6',
-                            '#10b981',
-                            '#f59e0b',
-                            '#ef4444',
-                            '#8b5cf6'
-                        ],
-                        borderColor: '#ffffff',
-                        borderWidth: 3,
-                        hoverBorderWidth: 5
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: {
-                        legend: {
-                            position: 'bottom',
-                            labels: {
-                                usePointStyle: true,
-                                padding: 15,
-                                font: { family: 'Vazirmatn', size: 11 }
-                            }
-                        }
-                    },
-                    cutout: '60%'
-                }
-            });
-        }
-
-        function createSystemChart() {
-            const ctx = document.getElementById('systemChart');
-            if (!ctx) return;
-
-            chartsInstances.system = new Chart(ctx, {
-                type: 'bar',
-                data: {
-                    labels: ['CPU', 'RAM', 'دیسک', 'شبکه'],
-                    datasets: [{
-                        label: 'درصد استفاده',
-                        data: [45, 62, 38, 28],
-                        backgroundColor: [
-                            'rgba(59, 130, 246, 0.8)',
-                            'rgba(16, 185, 129, 0.8)',
-                            'rgba(245, 158, 11, 0.8)',
-                            'rgba(239, 68, 68, 0.8)'
-                        ],
-                        borderColor: [
-                            '#3b82f6',
-                            '#10b981',
-                            '#f59e0b',
-                            '#ef4444'
-                        ],
-                        borderWidth: 2
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    scales: {
-                        y: {
-                            beginAtZero: true,
-                            max: 100,
-                            ticks: { 
-                                callback: function(value) { return value + '%'; },
-                                font: { family: 'Vazirmatn' }
-                            }
-                        },
-                        x: {
-                            ticks: { font: { family: 'Vazirmatn' } }
-                        }
-                    },
-                    plugins: {
-                        legend: { display: false }
-                    }
-                }
-            });
-        }
-
-        function createUserActivityChart() {
-            const ctx = document.getElementById('userActivityChart');
-            if (!ctx) return;
-
-            chartsInstances.userActivity = new Chart(ctx, {
-                type: 'radar',
-                data: {
-                    labels: ['صبح', 'ظهر', 'بعدازظهر', 'عصر', 'شب'],
-                    datasets: [{
-                        label: 'فعالیت کاربران',
-                        data: [65, 89, 80, 81, 45],
-                        backgroundColor: 'rgba(59, 130, 246, 0.2)',
-                        borderColor: '#3b82f6',
-                        pointBackgroundColor: '#3b82f6',
-                        pointBorderColor: '#ffffff',
-                        pointHoverBackgroundColor: '#ffffff',
-                        pointHoverBorderColor: '#3b82f6'
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    scales: {
-                        r: {
-                            beginAtZero: true,
-                            max: 100,
-                            ticks: { font: { family: 'Vazirmatn' } }
-                        }
-                    },
-                    plugins: {
-                        legend: { display: false }
-                    }
-                }
-            });
-        }
-
-        function createResponseTimeChart() {
-            const ctx = document.getElementById('responseTimeChart');
-            if (!ctx) return;
-
-            chartsInstances.responseTime = new Chart(ctx, {
-                type: 'line',
-                data: {
-                    labels: ['00:00', '04:00', '08:00', '12:00', '16:00', '20:00'],
-                    datasets: [{
-                        label: 'زمان پاسخ (ms)',
-                        data: [250, 180, 320, 280, 380, 220],
-                        borderColor: '#f59e0b',
-                        backgroundColor: 'rgba(245, 158, 11, 0.1)',
-                        tension: 0.4,
-                        borderWidth: 2,
-                        pointRadius: 4
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    scales: {
-                        y: {
-                            beginAtZero: true,
-                            ticks: { 
-                                callback: function(value) { return value + 'ms'; },
-                                font: { family: 'Vazirmatn' }
-                            }
-                        },
-                        x: {
-                            ticks: { font: { family: 'Vazirmatn' } }
-                        }
-                    },
-                    plugins: {
-                        legend: { display: false }
-                    }
-                }
-            });
-        }
-
-        function createPerformanceChart() {
-            const ctx = document.getElementById('performanceChart');
-            if (!ctx) return;
-
-            chartsInstances.performance = new Chart(ctx, {
-                type: 'bar',
-                data: {
-                    labels: ['پردازش', 'آپلود', 'جستجو', 'تحلیل'],
-                    datasets: [
-                        {
-                            label: 'این هفته',
-                            data: [85, 92, 78, 88],
-                            backgroundColor: 'rgba(59, 130, 246, 0.8)',
-                            borderColor: '#3b82f6',
-                            borderWidth: 1
-                        },
-                        {
-                            label: 'هفته گذشته',
-                            data: [75, 85, 72, 82],
-                            backgroundColor: 'rgba(16, 185, 129, 0.8)',
-                            borderColor: '#10b981',
-                            borderWidth: 1
-                        }
-                    ]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    scales: {
-                        y: {
-                            beginAtZero: true,
-                            max: 100,
-                            ticks: { 
-                                callback: function(value) { return value + '%'; },
-                                font: { family: 'Vazirmatn' }
-                            }
-                        },
-                        x: {
-                            ticks: { font: { family: 'Vazirmatn' } }
-                        }
-                    },
-                    plugins: {
-                        legend: {
-                            position: 'top',
-                            labels: { font: { family: 'Vazirmatn' } }
-                        }
-                    }
-                }
-            });
-        }
-
-        // Live metrics updates
-        function startLiveMetrics() {
-            liveMetricsInterval = setInterval(updateLiveMetrics, 5000); // Update every 5 seconds
-            updateLiveMetrics(); // Initial update
-        }
-
-        function updateLiveMetrics() {
-            // Simulate live data updates
-            const liveUsers = Math.floor(Math.random() * 20) + 5;
-            const liveProcessing = Math.floor(Math.random() * 8) + 1;
-            const liveRequests = Math.floor(Math.random() * 100) + 800;
-            const liveSuccess = (Math.random() * 5 + 95).toFixed(1);
-
-            document.getElementById('liveUsers').textContent = liveUsers;
-            document.getElementById('liveProcessing').textContent = liveProcessing;
-            document.getElementById('liveRequests').textContent = liveRequests;
-            document.getElementById('liveSuccess').textContent = liveSuccess + '%';
-        }
-
-        // Chart update functions
-        function updateTrendsChart(period) {
-            // Update active filter
-            document.querySelectorAll('.chart-filter').forEach(btn => {
-                btn.classList.remove('active');
-            });
-            event.target.classList.add('active');
-
-            // Update chart data based on period
-            const data = {
-                daily: {
-                    labels: ['شنبه', 'یکشنبه', 'دوشنبه', 'سه‌شنبه', 'چهارشنبه', 'پنج‌شنبه', 'جمعه'],
-                    processed: [12, 19, 8, 15, 22, 18, 14],
-                    uploaded: [15, 23, 12, 18, 25, 21, 16]
-                },
-                weekly: {
-                    labels: ['هفته 1', 'هفته 2', 'هفته 3', 'هفته 4'],
-                    processed: [85, 92, 78, 95],
-                    uploaded: [95, 105, 88, 110]
-                },
-                monthly: {
-                    labels: ['فروردین', 'اردیبهشت', 'خرداد', 'تیر', 'مرداد', 'شهریور'],
-                    processed: [340, 380, 290, 420, 380, 450],
-                    uploaded: [380, 420, 320, 460, 410, 490]
-                }
+        function initializeFallbackCharts() {
+            // Mock chart data
+            const trendsData = {
+                labels: ['فروردین', 'اردیبهشت', 'خرداد', 'تیر', 'مرداد', 'شهریور'],
+                datasets: [{
+                    label: 'اسناد آپلود شده',
+                    data: [65, 78, 90, 85, 95, 110],
+                    borderColor: '#3b82f6',
+                    backgroundColor: 'rgba(59, 130, 246, 0.1)',
+                    tension: 0.4
+                }]
             };
 
-            const selectedData = data[period] || data.weekly;
-            
-            if (chartsInstances.trends) {
-                chartsInstances.trends.data.labels = selectedData.labels;
-                chartsInstances.trends.data.datasets[0].data = selectedData.processed;
-                chartsInstances.trends.data.datasets[1].data = selectedData.uploaded;
-                chartsInstances.trends.update('active');
-            }
-
-            showToast(`نمودار به حالت ${period} تغییر کرد`, 'info', 'بروزرسانی');
-        }
-
-        function updatePerformanceChart(type) {
-            // Update active filter
-            const parent = event.target.closest('.analytics-card');
-            parent.querySelectorAll('.chart-filter').forEach(btn => {
-                btn.classList.remove('active');
-            });
-            event.target.classList.add('active');
-
-            // Update chart based on type
-            const data = {
-                hourly: {
-                    labels: ['پردازش', 'آپلود', 'جستجو', 'تحلیل'],
-                    thisWeek: [85, 92, 78, 88],
-                    lastWeek: [75, 85, 72, 82]
-                },
-                daily: {
-                    labels: ['شنبه', 'یکشنبه', 'دوشنبه', 'سه‌شنبه'],
-                    thisWeek: [320, 450, 280, 380],
-                    lastWeek: [280, 420, 250, 350]
-                }
+            const typesData = {
+                labels: ['PDF', 'Word', 'تصویر', 'سایر'],
+                datasets: [{
+                    data: [45, 25, 20, 10],
+                    backgroundColor: ['#3b82f6', '#10b981', '#f59e0b', '#ef4444']
+                }]
             };
 
-            const selectedData = data[type] || data.hourly;
-            
-            if (chartsInstances.performance) {
-                chartsInstances.performance.data.labels = selectedData.labels;
-                chartsInstances.performance.data.datasets[0].data = selectedData.thisWeek;
-                chartsInstances.performance.data.datasets[1].data = selectedData.lastWeek;
-                chartsInstances.performance.update('active');
+            const statusData = {
+                labels: ['تکمیل شده', 'در حال پردازش', 'در انتظار', 'خطا'],
+                datasets: [{
+                    data: [75, 15, 8, 2],
+                    backgroundColor: ['#10b981', '#3b82f6', '#f59e0b', '#ef4444']
+                }]
+            };
+
+            const performanceData = {
+                labels: ['00:00', '04:00', '08:00', '12:00', '16:00', '20:00'],
+                datasets: [{
+                    label: 'استفاده از حافظه (%)',
+                    data: [45, 52, 48, 65, 58, 62],
+                    borderColor: '#06b6d4',
+                    backgroundColor: 'rgba(6, 182, 212, 0.1)',
+                    tension: 0.4
+                }]
+            };
+
+            // Create charts using Chart.js
+            if (typeof Chart !== 'undefined') {
+                new Chart(document.getElementById('documentTrendsChart'), {
+                    type: 'line',
+                    data: trendsData,
+                    options: {
+                        responsive: true,
+                        plugins: {
+                            legend: {
+                                position: 'top',
+                            }
+                        }
+                    }
+                });
+
+                new Chart(document.getElementById('documentTypesChart'), {
+                    type: 'doughnut',
+                    data: typesData,
+                    options: {
+                        responsive: true,
+                        plugins: {
+                            legend: {
+                                position: 'bottom',
+                            }
+                        }
+                    }
+                });
+
+                new Chart(document.getElementById('processingStatusChart'), {
+                    type: 'doughnut',
+                    data: statusData,
+                    options: {
+                        responsive: true,
+                        plugins: {
+                            legend: {
+                                position: 'bottom',
+                            }
+                        }
+                    }
+                });
+
+                new Chart(document.getElementById('systemPerformanceChart'), {
+                    type: 'line',
+                    data: performanceData,
+                    options: {
+                        responsive: true,
+                        plugins: {
+                            legend: {
+                                position: 'top',
+                            }
+                        }
+                    }
+                });
             }
         }
 
-        // Filter functions
-        function updateTimeRange() {
-            const timeRange = document.getElementById('timeRange').value;
-            const startDate = document.getElementById('startDate');
-            const endDate = document.getElementById('endDate');
-            
-            const end = new Date();
-            let start = new Date();
+        function setupTabs() {
+            const tabBtns = document.querySelectorAll('.tab-btn');
+            const tabPanes = document.querySelectorAll('.tab-pane');
 
-            switch (timeRange) {
-                case 'today':
-                    start = new Date();
-                    break;
-                case 'week':
-                    start.setDate(start.getDate() - 7);
-                    break;
-                case 'month':
-                    start.setMonth(start.getMonth() - 1);
-                    break;
-                case 'quarter':
-                    start.setMonth(start.getMonth() - 3);
-                    break;
-                case 'year':
-                    start.setFullYear(start.getFullYear() - 1);
-                    break;
-                case 'custom':
-                    return; // Don't update dates for custom range
+            tabBtns.forEach(btn => {
+                btn.addEventListener('click', () => {
+                    const targetTab = btn.dataset.tab;
+                    
+                    // Remove active class from all buttons and panes
+                    tabBtns.forEach(b => b.classList.remove('active'));
+                    tabPanes.forEach(p => p.classList.remove('active'));
+                    
+                    // Add active class to clicked button and corresponding pane
+                    btn.classList.add('active');
+                    document.getElementById(`${targetTab}-tab`).classList.add('active');
+                });
+            });
+        }
+
+        function setupAnalyticsEventListeners() {
+            // Refresh analytics button
+            const refreshBtn = document.getElementById('refresh-analytics-btn');
+            if (refreshBtn) {
+                refreshBtn.addEventListener('click', () => {
+                    refreshAnalytics();
+                });
             }
 
-            startDate.value = start.toISOString().split('T')[0];
-            endDate.value = end.toISOString().split('T')[0];
+            // Export report button
+            const exportBtn = document.getElementById('export-report-btn');
+            if (exportBtn) {
+                exportBtn.addEventListener('click', () => {
+                    exportAnalyticsReport();
+                });
+            }
 
-            applyFilters();
+            // Generate report button
+            const generateBtn = document.getElementById('generate-report-btn');
+            if (generateBtn) {
+                generateBtn.addEventListener('click', () => {
+                    showGenerateReportModal();
+                });
+            }
+
+            // Chart action buttons
+            document.addEventListener('click', (e) => {
+                if (e.target.closest('[data-chart-action]')) {
+                    const action = e.target.closest('[data-chart-action]').dataset.chartAction;
+                    const chart = e.target.closest('[data-chart-action]').dataset.chart;
+                    
+                    if (action === 'refresh') {
+                        refreshChart(chart);
+                    } else if (action === 'export') {
+                        exportChart(chart);
+                    }
+                }
+            });
+
+            // Period and metric selectors
+            const trendPeriod = document.getElementById('trend-period');
+            if (trendPeriod) {
+                trendPeriod.addEventListener('change', () => {
+                    updateTrendChart();
+                });
+            }
+
+            const performanceMetric = document.getElementById('performance-metric');
+            if (performanceMetric) {
+                performanceMetric.addEventListener('change', () => {
+                    updatePerformanceChart();
+                });
+            }
+
+            // Mobile menu toggle
+            const mobileToggle = document.getElementById('mobile-menu-toggle');
+            const sidebar = document.getElementById('sidebar');
+            const overlay = document.getElementById('mobile-overlay');
+
+            if (mobileToggle && sidebar) {
+                mobileToggle.addEventListener('click', () => {
+                    sidebar.classList.toggle('open');
+                    overlay.classList.toggle('hidden');
+                });
+            }
+
+            if (overlay) {
+                overlay.addEventListener('click', () => {
+                    sidebar.classList.remove('open');
+                    overlay.classList.add('hidden');
+                });
+            }
+
+            // Notification panel
+            const notificationBell = document.getElementById('notification-bell');
+            const notificationPanel = document.getElementById('notification-panel');
+            const closePanel = document.getElementById('close-notification-panel');
+
+            if (notificationBell && notificationPanel) {
+                notificationBell.addEventListener('click', () => {
+                    notificationPanel.classList.toggle('hidden');
+                });
+            }
+
+            if (closePanel && notificationPanel) {
+                closePanel.addEventListener('click', () => {
+                    notificationPanel.classList.add('hidden');
+                });
+            }
+
+            // Generate report modal
+            const reportModal = document.getElementById('generate-report-modal');
+            const closeReportBtn = document.getElementById('close-report-modal');
+            const cancelReportBtn = document.getElementById('cancel-report-btn');
+            const createReportBtn = document.getElementById('create-report-btn');
+
+            if (closeReportBtn && reportModal) {
+                closeReportBtn.addEventListener('click', () => {
+                    reportModal.classList.add('hidden');
+                });
+            }
+
+            if (cancelReportBtn && reportModal) {
+                cancelReportBtn.addEventListener('click', () => {
+                    reportModal.classList.add('hidden');
+                });
+            }
+
+            if (createReportBtn && reportModal) {
+                createReportBtn.addEventListener('click', () => {
+                    createReport();
+                });
+            }
+
+            if (reportModal) {
+                reportModal.addEventListener('click', (e) => {
+                    if (e.target === reportModal) {
+                        reportModal.classList.add('hidden');
+                    }
+                });
+            }
         }
 
-        function updateDataType() {
-            applyFilters();
-        }
-
-        function applyFilters() {
-            const timeRange = document.getElementById('timeRange').value;
-            const dataType = document.getElementById('dataType').value;
-            const startDate = document.getElementById('startDate').value;
-            const endDate = document.getElementById('endDate').value;
-
-            showToast('فیلترها اعمال شدند و داده‌ها بروزرسانی شدند', 'success', 'فیلترها');
+        function refreshAnalytics() {
+            showLoadingState();
             
-            // Here you would typically reload data based on filters
-            refreshAllAnalytics();
-        }
-
-        // Refresh functions
-        function refreshAllAnalytics() {
-            showToast('در حال بروزرسانی همه تحلیل‌ها...', 'info', 'بروزرسانی');
-            
-            // Simulate data refresh
             setTimeout(() => {
-                updateLiveMetrics();
-                
-                // Update some chart data randomly
-                if (chartsInstances.trends) {
-                    const newData = chartsInstances.trends.data.datasets[0].data.map(() => 
-                        Math.floor(Math.random() * 30) + 10
-                    );
-                    chartsInstances.trends.data.datasets[0].data = newData;
-                    chartsInstances.trends.update('active');
-                }
-
-                showToast('همه تحلیل‌ها بروزرسانی شدند', 'success', 'بروزرسانی موفق');
+                loadAnalyticsData();
+                hideLoadingState();
+                showSuccess('بروزرسانی شد', 'داده‌های تحلیل با موفقیت بروزرسانی شد');
             }, 2000);
         }
 
-        function refreshCategoryChart() {
-            if (chartsInstances.category) {
-                const newData = [
-                    Math.floor(Math.random() * 40) + 20,
-                    Math.floor(Math.random() * 30) + 15,
-                    Math.floor(Math.random() * 25) + 10,
-                    Math.floor(Math.random() * 20) + 5,
-                    Math.floor(Math.random() * 15) + 5
-                ];
-                chartsInstances.category.data.datasets[0].data = newData;
-                chartsInstances.category.update('active');
-            }
-            showToast('نمودار دسته‌بندی بروزرسانی شد', 'success', 'بروزرسانی');
-        }
-
-        function refreshQualityWidget() {
-            // Update progress bars with random values
-            const progressBars = document.querySelectorAll('.progress-fill');
-            const progressValues = document.querySelectorAll('.progress-value');
-            
-            progressBars.forEach((bar, index) => {
-                const newValue = Math.floor(Math.random() * 30) + 60;
-                bar.style.width = newValue + '%';
-                progressValues[index].textContent = newValue + '%';
-            });
-            
-            showToast('ویجت کیفیت بروزرسانی شد', 'success', 'بروزرسانی');
-        }
-
-        function refreshSystemStats() {
-            if (chartsInstances.system) {
-                const newData = [
-                    Math.floor(Math.random() * 40) + 30,
-                    Math.floor(Math.random() * 50) + 40,
-                    Math.floor(Math.random() * 30) + 20,
-                    Math.floor(Math.random() * 40) + 15
-                ];
-                chartsInstances.system.data.datasets[0].data = newData;
-                chartsInstances.system.update('active');
-            }
-            showToast('آمار سیستم بروزرسانی شد', 'success', 'بروزرسانی');
-        }
-
-        function refreshUserActivity() {
-            if (chartsInstances.userActivity) {
-                const newData = Array.from({length: 5}, () => Math.floor(Math.random() * 50) + 40);
-                chartsInstances.userActivity.data.datasets[0].data = newData;
-                chartsInstances.userActivity.update('active');
-            }
-            showToast('فعالیت کاربران بروزرسانی شد', 'success', 'بروزرسانی');
-        }
-
-        function refreshResponseTime() {
-            if (chartsInstances.responseTime) {
-                const newData = Array.from({length: 6}, () => Math.floor(Math.random() * 200) + 150);
-                chartsInstances.responseTime.data.datasets[0].data = newData;
-                chartsInstances.responseTime.update('active');
-            }
-            showToast('زمان پاسخ‌دهی بروزرسانی شد', 'success', 'بروزرسانی');
-        }
-
-        function refreshErrorAnalysis() {
-            // Update error analysis table with random data
-            const tbody = document.getElementById('errorAnalysisTable');
-            const rows = tbody.querySelectorAll('tr');
-            
-            rows.forEach(row => {
-                const cells = row.querySelectorAll('td');
-                if (cells.length >= 3) {
-                    const newCount = Math.floor(Math.random() * 15) + 3;
-                    const newPercent = Math.floor(Math.random() * 40) + 10;
-                    cells[1].textContent = newCount;
-                    cells[2].textContent = newPercent + '%';
-                }
-            });
-            
-            showToast('تحلیل خطاها بروزرسانی شد', 'success', 'بروزرسانی');
-        }
-
-        function exportAnalytics() {
-            showToast('گزارش آمار در حال آماده‌سازی...', 'info', 'خروجی');
+        function exportAnalyticsReport() {
+            showLoadingState();
             
             setTimeout(() => {
-                showToast('گزارش آمار آماده شد و دانلود شروع شد', 'success', 'خروجی موفق');
-            }, 3000);
+                hideLoadingState();
+                showSuccess('صادرات موفق', 'گزارش تحلیل با موفقیت صادر شد');
+            }, 1500);
         }
 
-        // Cleanup on page unload
-        window.addEventListener('beforeunload', function() {
-            if (liveMetricsInterval) {
-                clearInterval(liveMetricsInterval);
+        function refreshChart(chartName) {
+            console.log(`Refreshing chart: ${chartName}`);
+            showSuccess('بروزرسانی شد', `نمودار ${chartName} بروزرسانی شد`);
+        }
+
+        function exportChart(chartName) {
+            console.log(`Exporting chart: ${chartName}`);
+            showSuccess('صادرات موفق', `نمودار ${chartName} با موفقیت صادر شد`);
+        }
+
+        function updateTrendChart() {
+            const period = document.getElementById('trend-period').value;
+            console.log(`Updating trend chart for period: ${period}`);
+            // In real app, this would fetch new data and update the chart
+        }
+
+        function updatePerformanceChart() {
+            const metric = document.getElementById('performance-metric').value;
+            console.log(`Updating performance chart for metric: ${metric}`);
+            // In real app, this would fetch new data and update the chart
+        }
+
+        function showGenerateReportModal() {
+            const modal = document.getElementById('generate-report-modal');
+            if (modal) {
+                modal.classList.remove('hidden');
             }
-            
-            // Destroy all chart instances
-            Object.values(chartsInstances).forEach(chart => {
-                if (chart && chart.destroy) {
-                    chart.destroy();
-                }
-            });
-        });
-
-        function showToast(message, type = 'info', title = 'اعلان') {
-            const toastContainer = document.getElementById('toastContainer');
-            if (!toastContainer) return;
-            
-            const toast = document.createElement('div');
-            toast.className = `toast ${type}`;
-            
-            const icons = {
-                success: 'check-circle',
-                error: 'exclamation-triangle',
-                warning: 'exclamation-circle',
-                info: 'info-circle'
-            };
-
-            toast.innerHTML = `
-                <div class="toast-icon">
-                    <i class="fas fa-${icons[type]}"></i>
-                </div>
-                <div class="toast-content">
-                    <div class="toast-title">${title}</div>
-                    <div class="toast-message">${message}</div>
-                </div>
-                <button type="button" class="toast-close" onclick="this.parentElement.remove()">
-                    <i class="fas fa-times"></i>
-                </button>
-            `;
-
-            toastContainer.appendChild(toast);
-
-            // Show toast
-            setTimeout(() => toast.classList.add('show'), 100);
-
-            // Auto remove after 5 seconds
-            setTimeout(() => {
-                if (toast.parentElement) {
-                    toast.classList.remove('show');
-                    setTimeout(() => {
-                        if (toast.parentElement) {
-                            toast.remove();
-                        }
-                    }, 300);
-                }
-            }, 5000);
         }
 
-        console.log('📊 Analytics Page Ready!');
+        function createReport() {
+            const reportType = document.getElementById('report-type').value;
+            const reportPeriod = document.getElementById('report-period').value;
+            const reportFormat = document.getElementById('report-format').value;
+
+            console.log(`Creating report: ${reportType}, ${reportPeriod}, ${reportFormat}`);
+
+            // Close modal
+            const modal = document.getElementById('generate-report-modal');
+            if (modal) {
+                modal.classList.add('hidden');
+            }
+
+            // Show success message
+            showSuccess('گزارش ایجاد شد', 'گزارش جدید با موفقیت ایجاد شد و در حال آماده‌سازی است');
+        }
+
+        function setupRealTimeUpdates() {
+            // Set up periodic updates every 30 seconds
+            setInterval(() => {
+                loadOverviewMetrics();
+            }, 30000);
+        }
+
+        function showLoadingState() {
+            // Add loading indicator
+            const refreshBtn = document.getElementById('refresh-analytics-btn');
+            if (refreshBtn) {
+                refreshBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> در حال بروزرسانی...';
+                refreshBtn.disabled = true;
+            }
+        }
+
+        function hideLoadingState() {
+            // Remove loading indicator
+            const refreshBtn = document.getElementById('refresh-analytics-btn');
+            if (refreshBtn) {
+                refreshBtn.innerHTML = '<i class="fas fa-sync-alt"></i> بروزرسانی';
+                refreshBtn.disabled = false;
+            }
+        }
+
+        function showSuccess(title, message) {
+            if (window.notificationManager) {
+                window.notificationManager.showSuccess(title, message);
+            } else {
+                alert(`${title}: ${message}`);
+            }
+        }
+
+        function showError(title, message) {
+            if (window.notificationManager) {
+                window.notificationManager.showError(title, message);
+            } else {
+                alert(`${title}: ${message}`);
+            }
+        }
     </script>
 </body>
 </html>
