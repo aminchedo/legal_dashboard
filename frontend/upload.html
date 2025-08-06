@@ -3,734 +3,90 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>آپلود فایل | سامانه حقوقی</title>
+    <title>آپلود فایل | سامانه هوشمند</title>
+    
+    <!-- Preconnect for better performance -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preconnect" href="https://cdnjs.cloudflare.com">
+    
+    <!-- فونت و آیکون‌ها -->
     <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@200;300;400;500;600;700;800;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-
-    <!-- Load API Client -->
-    <script src="/static/js/api-client.js"></script>
-    <script src="/static/js/core.js"></script>
     
-    <style>
-        /* استفاده از همان CSS از upload.html قبلی */
-        :root {
-            --text-primary: #0f172a;
-            --text-secondary: #475569;
-            --text-muted: #64748b;
-            --text-light: #ffffff;
-            --body-bg: linear-gradient(135deg, #f1f5f9 0%, #e2e8f0 50%, #cbd5e1 100%);
-            --card-bg: rgba(255, 255, 255, 0.95);
-            --glass-bg: rgba(255, 255, 255, 0.9);
-            --glass-border: rgba(148, 163, 184, 0.2);
-            --primary-gradient: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
-            --secondary-gradient: linear-gradient(135deg, #06b6d4 0%, #0891b2 100%);
-            --success-gradient: linear-gradient(135deg, #10b981 0%, #047857 100%);
-            --warning-gradient: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
-            --danger-gradient: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
-            --shadow-xs: 0 1px 3px rgba(0, 0, 0, 0.05);
-            --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.08);
-            --shadow-md: 0 4px 15px rgba(0, 0, 0, 0.1);
-            --shadow-lg: 0 8px 25px rgba(0, 0, 0, 0.12);
-            --sidebar-width: 260px;
-            --border-radius: 12px;
-            --border-radius-sm: 8px;
-            --transition-smooth: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
-            --transition-fast: all 0.15s ease-in-out;
-            --font-size-xs: 0.7rem;
-            --font-size-sm: 0.8rem;
-            --font-size-base: 0.9rem;
-            --font-size-lg: 1.1rem;
-            --font-size-xl: 1.25rem;
-            --font-size-2xl: 1.5rem;
-        }
-
-        /* Simplified CSS - using key styles only */
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            font-family: 'Vazirmatn', -apple-system, BlinkMacSystemFont, sans-serif;
-            background: var(--body-bg);
-            color: var(--text-primary);
-            line-height: 1.6;
-            overflow-x: hidden;
-            font-size: var(--font-size-base);
-        }
-
-        .dashboard-container {
-            display: flex;
-            min-block-size: 100vh;
-            inline-size: 100%;
-        }
-
-        /* سایدبار کامپکت */
-        .sidebar {
-            inline-size: var(--sidebar-width);
-            background: linear-gradient(135deg,
-                rgba(248, 250, 252, 0.98) 0%,
-                rgba(241, 245, 249, 0.95) 25%,
-                rgba(226, 232, 240, 0.98) 50%,
-                rgba(203, 213, 225, 0.95) 75%,
-                rgba(148, 163, 184, 0.1) 100%);
-            backdrop-filter: blur(25px);
-            padding: 1rem 0;
-            position: fixed;
-            block-size: 100vh;
-            inset-inline-end: 0;
-            inset-block-start: 0;
-            z-index: 1000;
-            overflow-y: auto;
-            box-shadow: -8px 0 32px rgba(59, 130, 246, 0.12);
-            border-inline-start: 1px solid rgba(59, 130, 246, 0.15);
-        }
-
-        .sidebar-header {
-            padding: 0 1rem 1rem;
-            border-block-end: 1px solid rgba(59, 130, 246, 0.12);
-            margin-block-end: 1rem;
-            display: flex;
-            align-items: center;
-            background: linear-gradient(135deg,
-                rgba(255, 255, 255, 0.4) 0%,
-                rgba(248, 250, 252, 0.2) 100%);
-            margin: 0 0.5rem 1rem;
-            border-radius: var(--border-radius);
-            backdrop-filter: blur(10px);
-        }
-
-        .logo {
-            display: flex;
-            align-items: center;
-            gap: 0.6rem;
-            color: var(--text-primary);
-            text-decoration: none;
-        }
-
-        .logo-icon {
-            inline-size: 2rem;
-            block-size: 2rem;
-            background: var(--primary-gradient);
-            border-radius: var(--border-radius-sm);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1rem;
-            color: white;
-        }
-
-        .logo-text {
-            font-size: var(--font-size-lg);
-            font-weight: 700;
-            background: var(--primary-gradient);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-
-        .nav-section {
-            margin-block-end: 1rem;
-        }
-
-        .nav-title {
-            padding: 0 1rem 0.4rem;
-            font-size: var(--font-size-xs);
-            font-weight: 600;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            color: var(--text-secondary);
-        }
-
-        .nav-menu {
-            list-style: none;
-        }
-
-        .nav-item {
-            margin: 0.15rem 0.5rem;
-        }
-
-        .nav-link {
-            display: flex;
-            align-items: center;
-            padding: 0.6rem 0.8rem;
-            color: var(--text-primary);
-            text-decoration: none;
-            border-radius: var(--border-radius-sm);
-            transition: var(--transition-smooth);
-            font-weight: 500;
-            font-size: var(--font-size-sm);
-            cursor: pointer;
-            border: 1px solid transparent;
-        }
-
-        .nav-link:hover {
-            transform: translateX(-2px);
-            border-color: rgba(59, 130, 246, 0.15);
-            background: rgba(59, 130, 246, 0.05);
-        }
-
-        .nav-link.active {
-            background: var(--primary-gradient);
-            color: var(--text-light);
-            box-shadow: var(--shadow-md);
-        }
-
-        .nav-icon {
-            margin-inline-start: 0.6rem;
-            inline-size: 1rem;
-            text-align: center;
-            font-size: 0.9rem;
-        }
-
-        .nav-badge {
-            background: var(--danger-gradient);
-            color: white;
-            padding: 0.15rem 0.4rem;
-            border-radius: 10px;
-            font-size: var(--font-size-xs);
-            font-weight: 600;
-            margin-inline-end: auto;
-            min-inline-size: 1.2rem;
-            text-align: center;
-        }
-
-        /* محتوای اصلی */
-        .main-content {
-            flex: 1;
-            margin-inline-end: var(--sidebar-width);
-            padding: 1rem;
-            min-block-size: 100vh;
-            inline-size: calc(100% - var(--sidebar-width));
-        }
-
-        .page-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-block-end: 2rem;
-            padding: 1rem 0;
-            border-block-end: 1px solid rgba(0, 0, 0, 0.1);
-        }
-
-        .page-title {
-            font-size: var(--font-size-2xl);
-            font-weight: 800;
-            background: var(--primary-gradient);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            display: flex;
-            align-items: center;
-            gap: 0.6rem;
-        }
-
-        .page-actions {
-            display: flex;
-            gap: 0.8rem;
-        }
-
-        .btn {
-            padding: 0.6rem 1.2rem;
-            border: none;
-            border-radius: var(--border-radius-sm);
-            font-family: inherit;
-            font-weight: 600;
-            cursor: pointer;
-            transition: var(--transition-smooth);
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            text-decoration: none;
-            font-size: var(--font-size-sm);
-        }
-
-        .btn-outline {
-            background: transparent;
-            color: var(--text-primary);
-            border: 1px solid rgba(59, 130, 246, 0.2);
-        }
-
-        .btn-outline:hover {
-            background: rgba(59, 130, 246, 0.05);
-            border-color: rgba(59, 130, 246, 0.4);
-        }
-
-        /* آپلود فایل */
-        .upload-section {
-            background: var(--card-bg);
-            backdrop-filter: blur(10px);
-            border-radius: var(--border-radius);
-            padding: 2rem;
-            margin-block-end: 2rem;
-            box-shadow: var(--shadow-md);
-            border: 1px solid rgba(255, 255, 255, 0.3);
-        }
-
-        .upload-area {
-            border: 3px dashed rgba(59, 130, 246, 0.3);
-            border-radius: var(--border-radius);
-            padding: 3rem;
-            text-align: center;
-            background: linear-gradient(135deg, rgba(59, 130, 246, 0.02), rgba(255, 255, 255, 0.1));
-            transition: var(--transition-smooth);
-            cursor: pointer;
-            position: relative;
-        }
-
-        .upload-area:hover,
-        .upload-area.dragover {
-            border-color: rgba(59, 130, 246, 0.6);
-            background: linear-gradient(135deg, rgba(59, 130, 246, 0.05), rgba(255, 255, 255, 0.15));
-            transform: scale(1.01);
-            box-shadow: var(--shadow-lg);
-        }
-
-        .upload-icon {
-            font-size: 4rem;
-            color: rgba(59, 130, 246, 0.6);
-            margin-bottom: 1.5rem;
-            transition: var(--transition-smooth);
-        }
-
-        .upload-area:hover .upload-icon {
-            color: rgba(59, 130, 246, 0.8);
-            transform: scale(1.1);
-        }
-
-        .upload-title {
-            font-size: var(--font-size-xl);
-            font-weight: 700;
-            color: var(--text-primary);
-            margin-bottom: 0.8rem;
-        }
-
-        .upload-description {
-            color: var(--text-secondary);
-            margin-bottom: 1.5rem;
-            font-size: var(--font-size-base);
-            line-height: 1.6;
-        }
-
-        .upload-input {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            opacity: 0;
-            cursor: pointer;
-        }
-
-        .upload-btn {
-            background: var(--primary-gradient);
-            color: white;
-            border: none;
-            padding: 0.8rem 2rem;
-            border-radius: var(--border-radius-sm);
-            font-weight: 600;
-            cursor: pointer;
-            transition: var(--transition-smooth);
-            font-size: var(--font-size-base);
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            margin: 0 auto;
-            box-shadow: var(--shadow-sm);
-        }
-
-        .upload-btn:hover {
-            box-shadow: var(--shadow-lg);
-            transform: translateY(-2px);
-        }
-
-        /* فایل‌های آپلود شده */
-        .upload-files {
-            margin-top: 2rem;
-            display: none;
-        }
-
-        .upload-files.has-files {
-            display: block;
-        }
-
-        .files-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 1rem;
-            padding-bottom: 0.8rem;
-            border-bottom: 1px solid rgba(0, 0, 0, 0.1);
-        }
-
-        .files-title {
-            font-size: var(--font-size-lg);
-            font-weight: 700;
-            color: var(--text-primary);
-        }
-
-        .files-actions {
-            display: flex;
-            gap: 0.6rem;
-        }
-
-        .btn-sm {
-            padding: 0.4rem 0.8rem;
-            font-size: var(--font-size-xs);
-        }
-
-        .btn-success {
-            background: var(--success-gradient);
-            color: white;
-        }
-
-        .btn-danger {
-            background: var(--danger-gradient);
-            color: white;
-        }
-
-        .file-item {
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-            padding: 1rem;
-            background: rgba(255, 255, 255, 0.7);
-            border-radius: var(--border-radius-sm);
-            margin-bottom: 0.8rem;
-            border: 1px solid rgba(0, 0, 0, 0.05);
-            transition: var(--transition-smooth);
-            position: relative;
-            overflow: hidden;
-        }
-
-        .file-item::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            bottom: 0;
-            width: 4px;
-            background: var(--primary-gradient);
-        }
-
-        .file-item:hover {
-            background: rgba(255, 255, 255, 0.9);
-            transform: translateX(-3px);
-            box-shadow: var(--shadow-sm);
-        }
-
-        .file-icon {
-            width: 3rem;
-            height: 3rem;
-            background: var(--danger-gradient);
-            border-radius: var(--border-radius-sm);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            font-size: 1.2rem;
-            flex-shrink: 0;
-            box-shadow: var(--shadow-sm);
-        }
-
-        .file-info {
-            flex: 1;
-        }
-
-        .file-name {
-            font-weight: 600;
-            color: var(--text-primary);
-            font-size: var(--font-size-base);
-            margin-bottom: 0.3rem;
-        }
-
-        .file-details {
-            display: flex;
-            gap: 1rem;
-            font-size: var(--font-size-sm);
-            color: var(--text-secondary);
-        }
-
-        .file-progress {
-            width: 100%;
-            height: 6px;
-            background: rgba(0, 0, 0, 0.08);
-            border-radius: 3px;
-            margin-top: 0.8rem;
-            overflow: hidden;
-        }
-
-        .file-progress-bar {
-            height: 100%;
-            background: var(--success-gradient);
-            border-radius: 3px;
-            transition: width 0.3s ease;
-            position: relative;
-        }
-
-        .file-progress-bar::after {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
-            animation: shimmer 2s infinite;
-        }
-
-        @keyframes shimmer {
-            0% { transform: translateX(-100%); }
-            100% { transform: translateX(100%); }
-        }
-
-        .file-status {
-            font-size: var(--font-size-xs);
-            font-weight: 600;
-            padding: 0.3rem 0.8rem;
-            border-radius: 15px;
-            display: flex;
-            align-items: center;
-            gap: 0.3rem;
-            white-space: nowrap;
-        }
-
-        .file-status.uploading {
-            background: rgba(245, 158, 11, 0.1);
-            color: #b45309;
-        }
-
-        .file-status.processing {
-            background: rgba(59, 130, 246, 0.1);
-            color: #1d4ed8;
-        }
-
-        .file-status.success {
-            background: rgba(16, 185, 129, 0.1);
-            color: #047857;
-        }
-
-        .file-status.error {
-            background: rgba(239, 68, 68, 0.1);
-            color: #b91c1c;
-        }
-
-        .file-actions {
-            display: flex;
-            gap: 0.4rem;
-            flex-shrink: 0;
-        }
-
-        .action-btn {
-            width: 2rem;
-            height: 2rem;
-            border: none;
-            border-radius: var(--border-radius-sm);
-            cursor: pointer;
-            transition: var(--transition-fast);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: var(--font-size-xs);
-        }
-
-        .action-btn.retry {
-            background: rgba(245, 158, 11, 0.1);
-            color: #f59e0b;
-        }
-
-        .action-btn.remove {
-            background: rgba(239, 68, 68, 0.1);
-            color: #ef4444;
-        }
-
-        .action-btn:hover {
-            transform: scale(1.1);
-        }
-
-        /* Toast Notifications */
-        .toast-container {
-            position: fixed;
-            top: 1rem;
-            left: 1rem;
-            z-index: 10001;
-            display: flex;
-            flex-direction: column;
-            gap: 0.5rem;
-        }
-
-        .toast {
-            background: var(--card-bg);
-            border-radius: var(--border-radius-sm);
-            padding: 1rem 1.5rem;
-            box-shadow: var(--shadow-lg);
-            border-left: 4px solid;
-            display: flex;
-            align-items: center;
-            gap: 0.8rem;
-            min-width: 300px;
-            transform: translateX(-100%);
-            transition: all 0.3s ease;
-        }
-
-        .toast.show {
-            transform: translateX(0);
-        }
-
-        .toast.success { border-left-color: #10b981; }
-        .toast.error { border-left-color: #ef4444; }
-        .toast.warning { border-left-color: #f59e0b; }
-        .toast.info { border-left-color: #3b82f6; }
-
-        .toast-icon {
-            font-size: 1.2rem;
-        }
-
-        .toast.success .toast-icon { color: #10b981; }
-        .toast.error .toast-icon { color: #ef4444; }
-        .toast.warning .toast-icon { color: #f59e0b; }
-        .toast.info .toast-icon { color: #3b82f6; }
-
-        .toast-content {
-            flex: 1;
-        }
-
-        .toast-title {
-            font-weight: 600;
-            font-size: var(--font-size-sm);
-            margin-bottom: 0.2rem;
-        }
-
-        .toast-message {
-            font-size: var(--font-size-xs);
-            color: var(--text-secondary);
-        }
-
-        .toast-close {
-            background: none;
-            border: none;
-            color: var(--text-secondary);
-            cursor: pointer;
-            font-size: 1rem;
-            transition: var(--transition-fast);
-        }
-
-        .toast-close:hover {
-            color: var(--text-primary);
-        }
-
-        /* واکنش‌گرایی */
-        @media (max-width: 992px) {
-            .sidebar {
-                transform: translateX(100%);
-                transition: transform 0.3s ease;
-            }
-
-            .sidebar.open {
-                transform: translateX(0);
-            }
-
-            .main-content {
-                margin-right: 0;
-                width: 100%;
-                padding: 1rem;
-            }
-        }
-    </style>
+    <!-- CSS Files -->
+    <link rel="stylesheet" href="css/main.css">
+    <link rel="stylesheet" href="css/components.css">
+    <link rel="stylesheet" href="css/responsive.css">
 </head>
 <body>
     <div class="dashboard-container">
-        <!-- سایدبار -->
         <aside class="sidebar" id="sidebar">
+            <!-- Sidebar Header -->
             <div class="sidebar-header">
-                <a href="/" class="logo">
+                <a href="index.html" class="logo">
                     <div class="logo-icon">
-                        <i class="fas fa-scale-balanced"></i>
+                        <i class="fas fa-gavel"></i>
                     </div>
-                    <div class="logo-text">سامانه حقوقی</div>
+                    <span class="logo-text">داشبورد حقوقی</span>
                 </a>
+                <button class="mobile-menu-toggle" id="mobile-menu-toggle">
+                    <i class="fas fa-bars"></i>
+                </button>
             </div>
 
-            <nav>
+            <!-- Navigation -->
+            <nav class="main-nav">
                 <div class="nav-section">
-                    <h6 class="nav-title">داشبورد</h6>
+                    <h4 class="nav-title">اصلی</h4>
                     <ul class="nav-menu">
                         <li class="nav-item">
-                            <a href="/" class="nav-link">
-                                <i class="fas fa-chart-pie nav-icon"></i>
-                                <span>نمای کلی</span>
+                            <a href="index.html" class="nav-link" data-nav="dashboard">
+                                <span class="nav-icon"><i class="fas fa-tachometer-alt"></i></span>
+                                <span>داشبورد</span>
                             </a>
                         </li>
-                    </ul>
-                </div>
-
-                <div class="nav-section">
-                    <h6 class="nav-title">مدیریت اسناد</h6>
-                    <ul class="nav-menu">
                         <li class="nav-item">
-                            <a href="/static/documents.html" class="nav-link">
-                                <i class="fas fa-file-alt nav-icon"></i>
+                            <a href="documents.html" class="nav-link" data-nav="documents">
+                                <span class="nav-icon"><i class="fas fa-file-alt"></i></span>
                                 <span>مدیریت اسناد</span>
-                                <span class="nav-badge" id="totalDocumentsBadge">6</span>
+                                <span class="nav-badge" data-badge="documents">0</span>
                             </a>
                         </li>
-
                         <li class="nav-item">
-                            <a href="/static/upload.html" class="nav-link active">
-                                <i class="fas fa-cloud-upload-alt nav-icon"></i>
+                            <a href="upload.html" class="nav-link active" data-nav="upload">
+                                <span class="nav-icon"><i class="fas fa-cloud-upload-alt"></i></span>
                                 <span>آپلود فایل</span>
                             </a>
                         </li>
-
                         <li class="nav-item">
-                            <a href="/static/search.html" class="nav-link">
-                                <i class="fas fa-search nav-icon"></i>
+                            <a href="search.html" class="nav-link" data-nav="search">
+                                <span class="nav-icon"><i class="fas fa-search"></i></span>
                                 <span>جستجو</span>
                             </a>
                         </li>
-                    </ul>
-                </div>
-
-                <div class="nav-section">
-                    <h6 class="nav-title">ابزارها</h6>
-                    <ul class="nav-menu">
                         <li class="nav-item">
-                            <a href="/static/scraping.html" class="nav-link">
-                                <i class="fas fa-globe nav-icon"></i>
-                                <span>استخراج محتوا</span>
-                            </a>
-                        </li>
-
-                        <li class="nav-item">
-                            <a href="/static/analytics.html" class="nav-link">
-                                <i class="fas fa-chart-line nav-icon"></i>
-                                <span>آمار و تحلیل</span>
-                            </a>
-                        </li>
-
-                        <li class="nav-item">
-                            <a href="/static/reports.html" class="nav-link">
-                                <i class="fas fa-file-export nav-icon"></i>
-                                <span>گزارش‌ها</span>
+                            <a href="analytics.html" class="nav-link" data-nav="analytics">
+                                <span class="nav-icon"><i class="fas fa-chart-bar"></i></span>
+                                <span>تحلیل و گزارش</span>
                             </a>
                         </li>
                     </ul>
                 </div>
 
                 <div class="nav-section">
-                    <h6 class="nav-title">تنظیمات</h6>
+                    <h4 class="nav-title">سیستم</h4>
                     <ul class="nav-menu">
                         <li class="nav-item">
-                            <a href="/static/settings.html" class="nav-link">
-                                <i class="fas fa-cog nav-icon"></i>
+                            <a href="system-health.html" class="nav-link" data-nav="systemHealth">
+                                <span class="nav-icon"><i class="fas fa-heartbeat"></i></span>
+                                <span>وضعیت سیستم</span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="settings.html" class="nav-link" data-nav="settings">
+                                <span class="nav-icon"><i class="fas fa-cog"></i></span>
                                 <span>تنظیمات</span>
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a href="#" class="nav-link">
-                                <i class="fas fa-sign-out-alt nav-icon"></i>
-                                <span>خروج</span>
                             </a>
                         </li>
                     </ul>
@@ -738,606 +94,627 @@
             </nav>
         </aside>
 
-        <!-- محتوای اصلی -->
         <main class="main-content">
-            <!-- هدر صفحه -->
-            <header class="page-header">
-                <h1 class="page-title">
-                    <i class="fas fa-cloud-upload-alt"></i>
-                    آپلود فایل‌های حقوقی
-                </h1>
-                <div class="page-actions">
-                    <a href="/static/documents.html" class="btn btn-outline">
-                        <i class="fas fa-list"></i>
-                        مشاهده اسناد
-                    </a>
+            <!-- Header -->
+            <header class="header">
+                <h1 class="header-title">آپلود فایل</h1>
+                <div class="header-actions">
+                    <button class="btn-icon" id="user-menu-btn">
+                        <i class="fas fa-user-circle"></i>
+                    </button>
+                    <button class="btn-icon" id="notification-bell">
+                        <i class="fas fa-bell"></i>
+                        <span class="notification-badge" id="notification-badge">0</span>
+                    </button>
                 </div>
             </header>
 
-            <!-- بخش آپلود اصلی -->
+            <!-- Breadcrumbs -->
+            <div class="breadcrumb-container" id="breadcrumb-container">
+                <a href="index.html" class="breadcrumb-item">
+                    <i class="fas fa-home"></i>
+                    <span>خانه</span>
+                </a>
+                <i class="fas fa-angle-left mx-2 text-gray-400"></i>
+                <span class="breadcrumb-item active" aria-current="page">آپلود فایل</span>
+            </div>
+
+            <!-- Upload Section -->
             <section class="upload-section">
-                <div class="upload-area" id="uploadArea">
-                    <div class="upload-icon">
-                        <i class="fas fa-cloud-upload-alt"></i>
+                <!-- Upload Zones -->
+                <div class="upload-zones">
+                    <div class="upload-zone" id="pdf-upload-zone">
+                        <div class="upload-icon">
+                            <i class="fas fa-file-pdf"></i>
+                        </div>
+                        <h3>آپلود فایل PDF</h3>
+                        <p>فایل PDF خود را برای استخراج متن بکشید و رها کنید یا انتخاب کنید</p>
+                        <button class="btn btn-primary" id="pdf-upload-btn">
+                            <i class="fas fa-file-pdf"></i>
+                            انتخاب فایل PDF
+                        </button>
+                        <input type="file" id="pdf-file-input" accept=".pdf" style="display: none;">
                     </div>
-                    <h2 class="upload-title">آپلود اسناد PDF</h2>
-                    <p class="upload-description">
-                        فایل‌های PDF خود را بکشید و اینجا رها کنید یا کلیک کنید تا انتخاب کنید.<br>
-                        چندین فایل را می‌توانید همزمان آپلود کنید.
-                    </p>
-                    <input type="file" class="upload-input" id="fileInput" multiple accept=".pdf">
-                    <button type="button" class="upload-btn" onclick="document.getElementById('fileInput').click()">
-                        <i class="fas fa-folder-open"></i>
-                        انتخاب فایل‌ها
-                    </button>
+
+                    <div class="upload-zone" id="image-upload-zone">
+                        <div class="upload-icon">
+                            <i class="fas fa-image"></i>
+                        </div>
+                        <h3>آپلود تصویر</h3>
+                        <p>تصویر سند را برای OCR بکشید و رها کنید یا انتخاب کنید</p>
+                        <button class="btn btn-primary" id="image-upload-btn">
+                            <i class="fas fa-image"></i>
+                            انتخاب تصویر
+                        </button>
+                        <input type="file" id="image-file-input" accept=".jpg,.jpeg,.png,.bmp,.tiff" style="display: none;">
+                    </div>
+
+                    <div class="upload-zone" id="document-upload-zone">
+                        <div class="upload-icon">
+                            <i class="fas fa-file-word"></i>
+                        </div>
+                        <h3>آپلود سند Word</h3>
+                        <p>فایل Word خود را برای پردازش بکشید و رها کنید یا انتخاب کنید</p>
+                        <button class="btn btn-primary" id="document-upload-btn">
+                            <i class="fas fa-file-word"></i>
+                            انتخاب فایل Word
+                        </button>
+                        <input type="file" id="document-file-input" accept=".doc,.docx" style="display: none;">
+                    </div>
+                </div>
+
+                <!-- Upload Queue -->
+                <div class="upload-queue" id="upload-queue" style="display: none;">
+                    <div class="queue-header">
+                        <h3>صف آپلود</h3>
+                        <button class="btn btn-secondary" id="clear-queue-btn">
+                            <i class="fas fa-trash"></i>
+                            پاک کردن صف
+                        </button>
+                    </div>
+                    <div class="queue-items" id="queue-items">
+                        <!-- Queue items will be added here dynamically -->
+                    </div>
+                </div>
+
+                <!-- Upload Progress -->
+                <div class="upload-progress" id="upload-progress" style="display: none;">
+                    <div class="progress-header">
+                        <h3>در حال آپلود</h3>
+                        <span class="progress-text" id="progress-text">0%</span>
+                    </div>
+                    <div class="progress-bar-container">
+                        <div class="progress-bar" id="progress-bar"></div>
+                    </div>
                 </div>
             </section>
 
-            <!-- فایل‌های آپلود شده -->
-            <section class="upload-files" id="uploadFiles">
-                <div class="files-header">
-                    <h3 class="files-title">فایل‌های آپلود شده</h3>
-                    <div class="files-actions">
-                        <button type="button" class="btn btn-success btn-sm" onclick="processAllFiles()">
-                            <i class="fas fa-play"></i>
-                            پردازش همه
+            <!-- Results Section -->
+            <section class="results-section" id="results-section" style="display: none;">
+                <div class="results-header">
+                    <h3>نتایج پردازش</h3>
+                    <div class="results-actions">
+                        <button class="btn btn-secondary" id="copy-result-btn">
+                            <i class="fas fa-copy"></i>
+                            کپی متن
                         </button>
-                        <button type="button" class="btn btn-danger btn-sm" onclick="clearAllFiles()">
+                        <button class="btn btn-primary" id="download-result-btn">
+                            <i class="fas fa-download"></i>
+                            دانلود نتیجه
+                        </button>
+                        <button class="btn btn-danger" id="clear-result-btn">
                             <i class="fas fa-trash"></i>
-                            پاک کردن همه
+                            پاک کردن
                         </button>
                     </div>
                 </div>
-                <div id="filesContainer">
-                    <!-- فایل‌ها اینجا نمایش داده می‌شوند -->
+                <div class="results-content">
+                    <div class="result-metadata" id="result-metadata">
+                        <!-- Metadata will be displayed here -->
+                    </div>
+                    <div class="result-text" id="result-text">
+                        <!-- Extracted text will be displayed here -->
+                    </div>
+                </div>
+            </section>
+
+            <!-- Instructions Section -->
+            <section class="instructions-section">
+                <div class="instructions-card">
+                    <h3>راهنمای آپلود</h3>
+                    <div class="instructions-content">
+                        <div class="instruction-item">
+                            <i class="fas fa-check-circle"></i>
+                            <div>
+                                <h4>فایل‌های پشتیبانی شده</h4>
+                                <p>PDF، تصاویر (JPG، PNG، BMP، TIFF)، اسناد Word (DOC، DOCX)</p>
+                            </div>
+                        </div>
+                        <div class="instruction-item">
+                            <i class="fas fa-info-circle"></i>
+                            <div>
+                                <h4>حداکثر حجم فایل</h4>
+                                <p>50 مگابایت برای هر فایل</p>
+                            </div>
+                        </div>
+                        <div class="instruction-item">
+                            <i class="fas fa-clock"></i>
+                            <div>
+                                <h4>زمان پردازش</h4>
+                                <p>1-3 دقیقه بسته به حجم و نوع فایل</p>
+                            </div>
+                        </div>
+                        <div class="instruction-item">
+                            <i class="fas fa-shield-alt"></i>
+                            <div>
+                                <h4>امنیت</h4>
+                                <p>فایل‌های شما به صورت امن پردازش و ذخیره می‌شوند</p>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </section>
         </main>
     </div>
 
-    <!-- Toast Container -->
-    <div class="toast-container" id="toastContainer"></div>
+    <!-- Notification Panel -->
+    <div id="notification-panel" class="notification-panel hidden">
+        <div class="notification-header">
+            <h3>اعلان‌ها</h3>
+            <button class="close-btn" id="close-notification-panel">×</button>
+        </div>
+        <div class="notification-list" id="notification-list"></div>
+        <div class="notification-footer">
+            <button class="btn btn-secondary" id="mark-all-read">علامت‌گذاری همه</button>
+            <button class="btn btn-danger" id="clear-all-notifications">پاک کردن همه</button>
+        </div>
+    </div>
 
+    <!-- Mobile Overlay -->
+    <div id="mobile-overlay" class="mobile-overlay hidden"></div>
+
+    <!-- JavaScript Modules -->
+    <script src="js/core.js"></script>
+    <script src="js/api-client.js"></script>
+    <script src="js/state-manager.js"></script>
+    <script src="js/navigation.js"></script>
+    <script src="js/notifications.js"></script>
+    <script src="js/document-manager.js"></script>
+    <script src="js/file-handler.js"></script>
+    <script src="js/search-engine.js"></script>
+    <script src="js/chart-manager.js"></script>
+
+    <!-- Initialize Upload Page -->
     <script>
-        // Global variables
-        let uploadedFiles = new Map();
-        let fileCounter = 0;
-        let isOnline = false;
-
-        // Initialize page
         document.addEventListener('DOMContentLoaded', function() {
-            console.log('📤 Upload page loading...');
+            console.log('🚀 Initializing Upload Page...');
+
+            // Initialize all managers
+            const managers = {
+                core: window.dashboardCore,
+                api: window.apiClient,
+                state: window.stateManager,
+                navigation: window.navigationManager,
+                notifications: window.notificationManager,
+                documents: window.documentManager,
+                files: window.fileHandler,
+                search: window.searchEngine,
+                charts: window.chartManager
+            };
+
+            // Set up cross-component communication
+            managers.core.broadcast('upload:initialized', { managers });
+
+            // Initialize upload page functionality
             initializeUploadPage();
+
+            console.log('✅ Upload page initialized successfully');
         });
 
-        async function initializeUploadPage() {
-            try {
-                // Test backend connection
-                isOnline = await testConnection();
-                
-                // Setup event listeners
-                setupEventListeners();
-                
-                showToast('صفحه آپلود آماده است', 'success', 'آماده');
-                
-            } catch (error) {
-                console.error('Failed to initialize upload page:', error);
-                
-                // Fallback mode
-                isOnline = false;
-                setupEventListeners();
-                
-                showToast('حالت آفلاین فعال است', 'warning', 'اتصال ناموفق');
+        function initializeUploadPage() {
+            // Set up upload zones
+            setupUploadZones();
+
+            // Set up drag and drop
+            setupDragAndDrop();
+
+            // Set up event listeners
+            setupUploadEventListeners();
+
+            // Set up file validation
+            setupFileValidation();
+        }
+
+        function setupUploadZones() {
+            // PDF upload zone
+            const pdfZone = document.getElementById('pdf-upload-zone');
+            const pdfBtn = document.getElementById('pdf-upload-btn');
+            const pdfInput = document.getElementById('pdf-file-input');
+
+            if (pdfBtn && pdfInput) {
+                pdfBtn.addEventListener('click', () => {
+                    pdfInput.click();
+                });
+
+                pdfInput.addEventListener('change', (e) => {
+                    handleFileSelection(e.target.files, 'pdf');
+                });
+            }
+
+            // Image upload zone
+            const imageZone = document.getElementById('image-upload-zone');
+            const imageBtn = document.getElementById('image-upload-btn');
+            const imageInput = document.getElementById('image-file-input');
+
+            if (imageBtn && imageInput) {
+                imageBtn.addEventListener('click', () => {
+                    imageInput.click();
+                });
+
+                imageInput.addEventListener('change', (e) => {
+                    handleFileSelection(e.target.files, 'image');
+                });
+            }
+
+            // Document upload zone
+            const docZone = document.getElementById('document-upload-zone');
+            const docBtn = document.getElementById('document-upload-btn');
+            const docInput = document.getElementById('document-file-input');
+
+            if (docBtn && docInput) {
+                docBtn.addEventListener('click', () => {
+                    docInput.click();
+                });
+
+                docInput.addEventListener('change', (e) => {
+                    handleFileSelection(e.target.files, 'document');
+                });
             }
         }
 
-        async function testConnection() {
-            try {
-                await window.legalAPI.healthCheck();
-                return true;
-            } catch (error) {
-                return false;
-            }
+        function setupDragAndDrop() {
+            const uploadZones = document.querySelectorAll('.upload-zone');
+
+            uploadZones.forEach(zone => {
+                zone.addEventListener('dragover', (e) => {
+                    e.preventDefault();
+                    zone.classList.add('dragover');
+                });
+
+                zone.addEventListener('dragleave', (e) => {
+                    e.preventDefault();
+                    if (!zone.contains(e.relatedTarget)) {
+                        zone.classList.remove('dragover');
+                    }
+                });
+
+                zone.addEventListener('drop', (e) => {
+                    e.preventDefault();
+                    zone.classList.remove('dragover');
+                    
+                    const files = Array.from(e.dataTransfer.files);
+                    const zoneType = zone.id.includes('pdf') ? 'pdf' : 
+                                   zone.id.includes('image') ? 'image' : 'document';
+                    
+                    handleFileSelection(files, zoneType);
+                });
+            });
         }
 
-        // Setup event listeners
-        function setupEventListeners() {
-            const uploadArea = document.getElementById('uploadArea');
-            const fileInput = document.getElementById('fileInput');
+        function handleFileSelection(files, type) {
+            if (!files || files.length === 0) return;
 
-            // Drag and drop events
-            uploadArea.addEventListener('dragover', handleDragOver);
-            uploadArea.addEventListener('dragleave', handleDragLeave);
-            uploadArea.addEventListener('drop', handleDrop);
-
-            // File input change
-            fileInput.addEventListener('change', handleFileSelect);
-
-            // Click to upload
-            uploadArea.addEventListener('click', (e) => {
-                if (!e.target.closest('.upload-btn') && !e.target.classList.contains('upload-input')) {
-                    fileInput.click();
+            Array.from(files).forEach(file => {
+                if (validateFile(file, type)) {
+                    addToUploadQueue(file, type);
+                } else {
+                    showError('فایل نامعتبر', `فایل ${file.name} معتبر نیست یا نوع آن پشتیبانی نمی‌شود.`);
                 }
             });
         }
 
-        // Drag and drop handlers
-        function handleDragOver(e) {
-            e.preventDefault();
-            e.currentTarget.classList.add('dragover');
+        function validateFile(file, type) {
+            const maxSize = 50 * 1024 * 1024; // 50MB
+            const allowedTypes = {
+                pdf: ['application/pdf'],
+                image: ['image/jpeg', 'image/png', 'image/bmp', 'image/tiff'],
+                document: ['application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document']
+            };
+
+            if (file.size > maxSize) {
+                showError('حجم فایل زیاد است', `حجم فایل ${file.name} بیشتر از 50 مگابایت است.`);
+                return false;
+            }
+
+            if (!allowedTypes[type].includes(file.type)) {
+                showError('نوع فایل نامعتبر', `نوع فایل ${file.name} برای این بخش پشتیبانی نمی‌شود.`);
+                return false;
+            }
+
+            return true;
         }
 
-        function handleDragLeave(e) {
-            e.currentTarget.classList.remove('dragover');
-        }
-
-        function handleDrop(e) {
-            e.preventDefault();
-            e.currentTarget.classList.remove('dragover');
+        function addToUploadQueue(file, type) {
+            const queue = document.getElementById('upload-queue');
+            const queueItems = document.getElementById('queue-items');
             
-            const files = Array.from(e.dataTransfer.files).filter(file => 
-                file.type === 'application/pdf'
-            );
+            if (queue) queue.style.display = 'block';
+
+            const queueItem = document.createElement('div');
+            queueItem.className = 'queue-item';
+            queueItem.id = `queue-item-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
             
-            if (files.length > 0) {
-                handleFileUpload(files);
-            } else {
-                showToast('فقط فایل‌های PDF پذیرفته می‌شوند', 'warning', 'هشدار');
-            }
-        }
-
-        // File selection handler
-        function handleFileSelect(e) {
-            const files = Array.from(e.target.files);
-            if (files.length > 0) {
-                handleFileUpload(files);
-            }
-        }
-
-        // File upload processing
-        async function handleFileUpload(files) {
-            const uploadFilesSection = document.getElementById('uploadFiles');
-            const filesContainer = document.getElementById('filesContainer');
-            
-            uploadFilesSection.classList.add('has-files');
-
-            let validFiles = [];
-            let invalidFiles = 0;
-
-            for (const file of files) {
-                // Validate file
-                const validation = validateFile(file);
-                if (!validation.valid) {
-                    showToast(`${file.name}: ${validation.error}`, 'error', 'خطای اعتبارسنجی');
-                    invalidFiles++;
-                    continue;
-                }
-
-                validFiles.push(file);
-                const fileId = generateFileId();
-                const fileItem = createFileItem(file, fileId);
-                filesContainer.appendChild(fileItem);
-
-                // Store file info
-                uploadedFiles.set(fileId, {
-                    file: file,
-                    status: 'ready',
-                    progress: 0
-                });
-            }
-
-            if (validFiles.length > 0) {
-                showToast(`${validFiles.length} فایل آماده پردازش شد`, 'success', 'آپلود موفق');
-                
-                // Start upload to backend if online
-                if (isOnline) {
-                    await uploadFilesToBackend(validFiles);
-                } else {
-                    // Simulate upload in offline mode
-                    validFiles.forEach((file, index) => {
-                        const fileId = Array.from(uploadedFiles.keys())[uploadedFiles.size - validFiles.length + index];
-                        setTimeout(() => {
-                            simulateFileUpload(fileId);
-                        }, Math.random() * 1000);
-                    });
-                }
-            }
-
-            if (invalidFiles > 0) {
-                showToast(`${invalidFiles} فایل نامعتبر حذف شد`, 'warning', 'هشدار');
-            }
-
-            // Clear file input
-            document.getElementById('fileInput').value = '';
-        }
-
-        // Upload files to backend
-        async function uploadFilesToBackend(files) {
-            try {
-                const response = await window.legalAPI.uploadFiles(files);
-                
-                if (response.results) {
-                    response.results.forEach((result, index) => {
-                        const fileId = Array.from(uploadedFiles.keys())[uploadedFiles.size - files.length + index];
-                        const fileData = uploadedFiles.get(fileId);
-                        
-                        if (result.success) {
-                            // Real upload successful - monitor progress
-                            monitorUploadProgress(fileId, result.document_id);
-                        } else {
-                            // Upload failed
-                            updateFileStatus(fileId, 'error', result.error || 'خطا در آپلود');
-                            showFileRetryOption(fileId);
-                        }
-                    });
-                }
-                
-                showToast(`${response.successful_uploads} فایل با موفقیت آپلود شد`, 'success', 'آپلود موفق');
-                
-            } catch (error) {
-                console.error('Upload to backend failed:', error);
-                showToast('خطا در ارسال فایل‌ها به سرور', 'error', 'خطای آپلود');
-                
-                // Fallback to simulation
-                files.forEach((file, index) => {
-                    const fileId = Array.from(uploadedFiles.keys())[uploadedFiles.size - files.length + index];
-                    setTimeout(() => {
-                        simulateFileUpload(fileId);
-                    }, Math.random() * 1000);
-                });
-            }
-        }
-
-        // Monitor upload progress for real backend uploads
-        async function monitorUploadProgress(fileId, documentId) {
-            const fileData = uploadedFiles.get(fileId);
-            if (!fileData) return;
-
-            updateFileStatus(fileId, 'uploading', 'در حال آپلود...');
-            
-            // Simulate upload progress
-            let progress = 0;
-            const uploadInterval = setInterval(() => {
-                progress += Math.random() * 15;
-                if (progress >= 100) {
-                    progress = 100;
-                    clearInterval(uploadInterval);
-                    
-                    // Start monitoring OCR processing
-                    setTimeout(() => {
-                        monitorProcessingStatus(fileId, documentId);
-                    }, 500);
-                }
-                
-                const progressBar = document.querySelector(`#file-${fileId} .file-progress-bar`);
-                if (progressBar) {
-                    progressBar.style.width = `${progress}%`;
-                }
-            }, 200);
-        }
-
-        // Monitor processing status from backend
-        async function monitorProcessingStatus(fileId, documentId) {
-            const fileData = uploadedFiles.get(fileId);
-            if (!fileData) return;
-
-            updateFileStatus(fileId, 'processing', 'در حال پردازش OCR...');
-            
-            // Poll for processing status
-            const pollInterval = setInterval(async () => {
-                try {
-                    const document = await window.legalAPI.getDocument(documentId);
-                    
-                    if (document.status === 'processed') {
-                        clearInterval(pollInterval);
-                        updateFileStatus(fileId, 'success', 'پردازش تکمیل شد');
-                        showToast(`${fileData.file.name} با موفقیت پردازش شد`, 'success', 'پردازش موفق');
-                    } else if (document.status === 'error') {
-                        clearInterval(pollInterval);
-                        updateFileStatus(fileId, 'error', 'خطا در پردازش');
-                        showFileRetryOption(fileId);
-                        showToast(`خطا در پردازش ${fileData.file.name}`, 'error', 'خطای پردازش');
-                    }
-                    // Continue polling for other statuses (processing, pending)
-                    
-                } catch (error) {
-                    console.error('Failed to check processing status:', error);
-                    // Don't clear interval yet, might be temporary network issue
-                }
-            }, 3000); // Poll every 3 seconds
-
-            // Stop polling after 5 minutes
-            setTimeout(() => {
-                clearInterval(pollInterval);
-                if (fileData.status !== 'success' && fileData.status !== 'error') {
-                    updateFileStatus(fileId, 'processing', 'پردازش ادامه دارد...');
-                }
-            }, 300000);
-        }
-
-        // Validate file
-        function validateFile(file) {
-            if (file.type !== 'application/pdf') {
-                return { valid: false, error: 'فقط فایل‌های PDF پذیرفته می‌شوند' };
-            }
-
-            if (file.size > 50 * 1024 * 1024) { // 50MB
-                return { valid: false, error: 'حجم فایل نباید بیشتر از 50 مگابایت باشد' };
-            }
-
-            if (file.size < 1024) { // 1KB
-                return { valid: false, error: 'فایل خیلی کوچک است' };
-            }
-
-            return { valid: true };
-        }
-
-        // Create file item UI
-        function createFileItem(file, fileId) {
-            const fileItem = document.createElement('div');
-            fileItem.className = 'file-item';
-            fileItem.id = `file-${fileId}`;
-            
-            fileItem.innerHTML = `
-                <div class="file-icon">
-                    <i class="fas fa-file-pdf"></i>
-                </div>
-                <div class="file-info">
-                    <div class="file-name">${file.name}</div>
+            queueItem.innerHTML = `
+                <div class="queue-item-info">
+                    <div class="file-icon">
+                        <i class="fas ${getFileIcon(type)}"></i>
+                    </div>
                     <div class="file-details">
-                        <div class="file-size">
-                            <i class="fas fa-weight-hanging"></i>
-                            ${formatFileSize(file.size)}
-                        </div>
-                        <div class="file-type">
-                            <i class="fas fa-file-pdf"></i>
-                            PDF Document
-                        </div>
-                    </div>
-                    <div class="file-progress">
-                        <div class="file-progress-bar" style="width: 0%"></div>
+                        <div class="file-name">${file.name}</div>
+                        <div class="file-size">${formatFileSize(file.size)}</div>
                     </div>
                 </div>
-                <div class="file-status uploading">
-                    <i class="fas fa-clock"></i>
-                    آماده
-                </div>
-                <div class="file-actions">
-                    <button type="button" class="action-btn retry" onclick="retryUpload('${fileId}')" title="تلاش مجدد" style="display: none;">
-                        <i class="fas fa-redo"></i>
-                    </button>
-                    <button type="button" class="action-btn remove" onclick="removeFile('${fileId}')" title="حذف">
+                <div class="queue-item-actions">
+                    <button class="btn-icon remove-btn" onclick="removeFromQueue('${queueItem.id}')">
                         <i class="fas fa-times"></i>
                     </button>
                 </div>
             `;
-            
-            return fileItem;
+
+            queueItems.appendChild(queueItem);
+
+            // Start upload
+            uploadFile(file, type, queueItem.id);
         }
 
-        // Simulate file upload and processing (offline mode)
-        function simulateFileUpload(fileId) {
-            const fileData = uploadedFiles.get(fileId);
-            if (!fileData) return;
+        function uploadFile(file, type, queueItemId) {
+            if (window.fileHandler) {
+                window.fileHandler.uploadFile(file, type, (progress) => {
+                    updateUploadProgress(progress, queueItemId);
+                }).then(result => {
+                    showUploadResult(result, queueItemId);
+                }).catch(error => {
+                    showUploadError(error, queueItemId);
+                });
+            } else {
+                // Fallback upload simulation
+                simulateUpload(file, type, queueItemId);
+            }
+        }
 
-            const fileItem = document.getElementById(`file-${fileId}`);
-            const statusElement = fileItem.querySelector('.file-status');
-            const progressBar = fileItem.querySelector('.file-progress-bar');
-
-            // Phase 1: Uploading
-            updateFileStatus(fileId, 'uploading', 'در حال آپلود...');
+        function simulateUpload(file, type, queueItemId) {
+            const progress = document.getElementById('upload-progress');
+            const progressBar = document.getElementById('progress-bar');
+            const progressText = document.getElementById('progress-text');
             
-            let progress = 0;
-            const uploadInterval = setInterval(() => {
-                progress += Math.random() * 15;
-                if (progress >= 100) {
-                    progress = 100;
-                    clearInterval(uploadInterval);
+            if (progress) progress.style.display = 'block';
+
+            let currentProgress = 0;
+            const interval = setInterval(() => {
+                currentProgress += Math.random() * 10;
+                if (currentProgress >= 100) {
+                    currentProgress = 100;
+                    clearInterval(interval);
                     
-                    // Phase 2: Processing
                     setTimeout(() => {
-                        simulateProcessing(fileId);
+                        if (progress) progress.style.display = 'none';
+                        showUploadResult({
+                            text: `این یک متن نمونه است که به جای پردازش واقعی فایل "${file.name}" نمایش داده می‌شود. در محیط واقعی، متن از فایل شما استخراج خواهد شد.`,
+                            metadata: {
+                                filename: file.name,
+                                size: file.size,
+                                type: type,
+                                processingTime: Math.random() * 2 + 1,
+                                confidence: 0.95
+                            }
+                        }, queueItemId);
                     }, 500);
                 }
                 
-                progressBar.style.width = `${progress}%`;
+                if (progressBar) progressBar.style.width = `${currentProgress}%`;
+                if (progressText) progressText.textContent = `${Math.round(currentProgress)}%`;
             }, 200);
         }
 
-        // Simulate OCR processing (offline mode)
-        function simulateProcessing(fileId) {
-            const fileData = uploadedFiles.get(fileId);
-            if (!fileData) return;
-
-            updateFileStatus(fileId, 'processing', 'در حال پردازش OCR...');
-            
-            // Simulate processing time based on file size
-            const fileSize = fileData.file.size;
-            const processingTime = Math.min(fileSize / (1024 * 1024) * 1000 + 2000, 8000); // 2-8 seconds
-            
-            setTimeout(() => {
-                // Random success/failure (90% success rate)
-                const success = Math.random() > 0.1;
-                
-                if (success) {
-                    updateFileStatus(fileId, 'success', 'پردازش تکمیل شد');
-                    showToast(`${fileData.file.name} با موفقیت پردازش شد`, 'success', 'پردازش موفق');
-                } else {
-                    updateFileStatus(fileId, 'error', 'خطا در پردازش');
-                    showFileRetryOption(fileId);
-                    showToast(`خطا در پردازش ${fileData.file.name}`, 'error', 'خطای پردازش');
+        function updateUploadProgress(progress, queueItemId) {
+            const queueItem = document.getElementById(queueItemId);
+            if (queueItem) {
+                const progressElement = queueItem.querySelector('.upload-progress');
+                if (progressElement) {
+                    progressElement.style.width = `${progress}%`;
                 }
-            }, processingTime);
-        }
-
-        // Update file status
-        function updateFileStatus(fileId, status, message) {
-            const fileData = uploadedFiles.get(fileId);
-            if (!fileData) return;
-
-            fileData.status = status;
-            
-            const fileItem = document.getElementById(`file-${fileId}`);
-            if (!fileItem) return;
-
-            const statusElement = fileItem.querySelector('.file-status');
-            const progressBar = fileItem.querySelector('.file-progress-bar');
-
-            statusElement.className = `file-status ${status}`;
-            
-            const icons = {
-                ready: 'clock',
-                uploading: 'spinner fa-spin',
-                processing: 'cog fa-spin',
-                success: 'check-circle',
-                error: 'exclamation-triangle'
-            };
-
-            statusElement.innerHTML = `
-                <i class="fas fa-${icons[status]}"></i>
-                ${message}
-            `;
-
-            switch (status) {
-                case 'success':
-                    progressBar.style.width = '100%';
-                    progressBar.style.background = 'var(--success-gradient)';
-                    break;
-                case 'error':
-                    progressBar.style.width = '100%';
-                    progressBar.style.background = 'var(--danger-gradient)';
-                    break;
             }
         }
 
-        // Show retry option for failed files
-        function showFileRetryOption(fileId) {
-            const fileItem = document.getElementById(`file-${fileId}`);
-            if (!fileItem) return;
+        function showUploadResult(result, queueItemId) {
+            const resultsSection = document.getElementById('results-section');
+            const resultMetadata = document.getElementById('result-metadata');
+            const resultText = document.getElementById('result-text');
 
-            const retryBtn = fileItem.querySelector('.action-btn.retry');
-            retryBtn.style.display = 'flex';
+            if (resultsSection) resultsSection.style.display = 'block';
+            if (resultMetadata) {
+                resultMetadata.innerHTML = `
+                    <div class="metadata-item">
+                        <span class="metadata-label">نام فایل:</span>
+                        <span class="metadata-value">${result.metadata?.filename || 'نامشخص'}</span>
+                    </div>
+                    <div class="metadata-item">
+                        <span class="metadata-label">حجم:</span>
+                        <span class="metadata-value">${formatFileSize(result.metadata?.size || 0)}</span>
+                    </div>
+                    <div class="metadata-item">
+                        <span class="metadata-label">زمان پردازش:</span>
+                        <span class="metadata-value">${result.metadata?.processingTime?.toFixed(2) || '0'} ثانیه</span>
+                    </div>
+                    <div class="metadata-item">
+                        <span class="metadata-label">دقت:</span>
+                        <span class="metadata-value">${Math.round((result.metadata?.confidence || 0) * 100)}%</span>
+                    </div>
+                `;
+            }
+            if (resultText) {
+                resultText.textContent = result.text || 'متنی استخراج نشد.';
+            }
+
+            // Remove from queue
+            removeFromQueue(queueItemId);
+
+            showSuccess('آپلود موفق', 'فایل با موفقیت پردازش شد.');
         }
 
-        // Retry file upload
-        async function retryUpload(fileId) {
-            const fileData = uploadedFiles.get(fileId);
-            if (!fileData) return;
+        function showUploadError(error, queueItemId) {
+            removeFromQueue(queueItemId);
+            showError('خطا در آپلود', error.message || 'خطا در پردازش فایل');
+        }
 
-            const fileItem = document.getElementById(`file-${fileId}`);
-            const retryBtn = fileItem.querySelector('.action-btn.retry');
-            
-            retryBtn.style.display = 'none';
-            fileData.status = 'ready';
-            
-            // Reset progress bar
-            const progressBar = fileItem.querySelector('.file-progress-bar');
-            progressBar.style.width = '0%';
-            progressBar.style.background = 'var(--success-gradient)';
-            
-            if (isOnline) {
-                // Retry with real backend
-                await uploadFilesToBackend([fileData.file]);
-            } else {
-                // Retry with simulation
-                setTimeout(() => {
-                    simulateFileUpload(fileId);
-                }, 500);
+        function removeFromQueue(queueItemId) {
+            const queueItem = document.getElementById(queueItemId);
+            if (queueItem) {
+                queueItem.remove();
+            }
+
+            const queueItems = document.getElementById('queue-items');
+            if (queueItems && queueItems.children.length === 0) {
+                const queue = document.getElementById('upload-queue');
+                if (queue) queue.style.display = 'none';
             }
         }
 
-        // Remove file
-        function removeFile(fileId) {
-            const fileData = uploadedFiles.get(fileId);
-            if (!fileData) return;
-
-            if (!confirm(`آیا از حذف "${fileData.file.name}" اطمینان دارید؟`)) {
-                return;
-            }
-
-            const fileItem = document.getElementById(`file-${fileId}`);
-            if (fileItem) {
-                fileItem.style.transform = 'translateX(100%)';
-                fileItem.style.opacity = '0';
-                
-                setTimeout(() => {
-                    fileItem.remove();
-                    uploadedFiles.delete(fileId);
-                    
-                    // Hide section if no files
-                    if (uploadedFiles.size === 0) {
-                        document.getElementById('uploadFiles').classList.remove('has-files');
-                    }
-                }, 300);
-            }
-
-            showToast(`${fileData.file.name} حذف شد`, 'info', 'حذف فایل');
-        }
-
-        // Process all files
-        async function processAllFiles() {
-            let readyFiles = [];
-            
-            uploadedFiles.forEach((fileData, fileId) => {
-                if (fileData.status === 'ready') {
-                    readyFiles.push({fileId, file: fileData.file});
-                }
-            });
-
-            if (readyFiles.length === 0) {
-                showToast('هیچ فایل آماده‌ای برای پردازش وجود ندارد', 'warning', 'هشدار');
-                return;
-            }
-
-            if (isOnline) {
-                // Process with real backend
-                const files = readyFiles.map(item => item.file);
-                await uploadFilesToBackend(files);
-            } else {
-                // Process with simulation
-                readyFiles.forEach(({fileId}) => {
-                    setTimeout(() => {
-                        simulateFileUpload(fileId);
-                    }, Math.random() * 1000);
+        function setupUploadEventListeners() {
+            // Clear queue button
+            const clearQueueBtn = document.getElementById('clear-queue-btn');
+            if (clearQueueBtn) {
+                clearQueueBtn.addEventListener('click', () => {
+                    const queueItems = document.getElementById('queue-items');
+                    if (queueItems) queueItems.innerHTML = '';
+                    const queue = document.getElementById('upload-queue');
+                    if (queue) queue.style.display = 'none';
                 });
             }
 
-            showToast(`پردازش ${readyFiles.length} فایل شروع شد`, 'info', 'شروع پردازش');
-        }
-
-        // Clear all files
-        function clearAllFiles() {
-            if (uploadedFiles.size === 0) {
-                showToast('هیچ فایلی برای حذف وجود ندارد', 'warning', 'هشدار');
-                return;
+            // Copy result button
+            const copyResultBtn = document.getElementById('copy-result-btn');
+            if (copyResultBtn) {
+                copyResultBtn.addEventListener('click', () => {
+                    const resultText = document.getElementById('result-text');
+                    if (resultText && resultText.textContent) {
+                        navigator.clipboard.writeText(resultText.textContent).then(() => {
+                            showSuccess('کپی شد', 'متن با موفقیت در کلیپ‌بورد کپی شد.');
+                        }).catch(() => {
+                            showError('خطا در کپی', 'نمی‌توان متن را کپی کرد.');
+                        });
+                    }
+                });
             }
 
-            if (!confirm('آیا از حذف همه فایل‌ها اطمینان دارید؟')) {
-                return;
+            // Download result button
+            const downloadResultBtn = document.getElementById('download-result-btn');
+            if (downloadResultBtn) {
+                downloadResultBtn.addEventListener('click', () => {
+                    const resultText = document.getElementById('result-text');
+                    if (resultText && resultText.textContent) {
+                        const blob = new Blob([resultText.textContent], { type: 'text/plain' });
+                        const url = URL.createObjectURL(blob);
+                        const a = document.createElement('a');
+                        a.href = url;
+                        a.download = 'extracted_text.txt';
+                        a.click();
+                        URL.revokeObjectURL(url);
+                        showSuccess('دانلود شد', 'فایل با موفقیت دانلود شد.');
+                    }
+                });
             }
 
-            const filesContainer = document.getElementById('filesContainer');
-            filesContainer.innerHTML = '';
-            uploadedFiles.clear();
-            
-            document.getElementById('uploadFiles').classList.remove('has-files');
-            showToast('همه فایل‌ها حذف شدند', 'info', 'پاک کردن');
+            // Clear result button
+            const clearResultBtn = document.getElementById('clear-result-btn');
+            if (clearResultBtn) {
+                clearResultBtn.addEventListener('click', () => {
+                    const resultsSection = document.getElementById('results-section');
+                    const resultMetadata = document.getElementById('result-metadata');
+                    const resultText = document.getElementById('result-text');
+                    
+                    if (resultsSection) resultsSection.style.display = 'none';
+                    if (resultMetadata) resultMetadata.innerHTML = '';
+                    if (resultText) resultText.textContent = '';
+                });
+            }
+
+            // Mobile menu toggle
+            const mobileToggle = document.getElementById('mobile-menu-toggle');
+            const sidebar = document.getElementById('sidebar');
+            const overlay = document.getElementById('mobile-overlay');
+
+            if (mobileToggle && sidebar) {
+                mobileToggle.addEventListener('click', () => {
+                    sidebar.classList.toggle('open');
+                    overlay.classList.toggle('hidden');
+                });
+            }
+
+            if (overlay) {
+                overlay.addEventListener('click', () => {
+                    sidebar.classList.remove('open');
+                    overlay.classList.add('hidden');
+                });
+            }
+
+            // Notification panel
+            const notificationBell = document.getElementById('notification-bell');
+            const notificationPanel = document.getElementById('notification-panel');
+            const closePanel = document.getElementById('close-notification-panel');
+
+            if (notificationBell && notificationPanel) {
+                notificationBell.addEventListener('click', () => {
+                    notificationPanel.classList.toggle('hidden');
+                });
+            }
+
+            if (closePanel && notificationPanel) {
+                closePanel.addEventListener('click', () => {
+                    notificationPanel.classList.add('hidden');
+                });
+            }
         }
 
-        // Utility functions
-        function generateFileId() {
-            return `file_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+        function setupFileValidation() {
+            // File validation is handled in handleFileSelection function
+        }
+
+        function getFileIcon(type) {
+            const icons = {
+                pdf: 'fa-file-pdf',
+                image: 'fa-file-image',
+                document: 'fa-file-word'
+            };
+            return icons[type] || 'fa-file';
         }
 
         function formatFileSize(bytes) {
             if (bytes === 0) return '0 بایت';
             const k = 1024;
-            const sizes = ['بایت', 'کیلوبایت', 'مگابایت', 'گیگابایت'];
+            const sizes = ['بایت', 'KB', 'MB', 'GB'];
             const i = Math.floor(Math.log(bytes) / Math.log(k));
             return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
         }
 
-        console.log('📤 Upload Page Ready!');
+        function showSuccess(title, message) {
+            if (window.notificationManager) {
+                window.notificationManager.showSuccess(title, message);
+            } else {
+                alert(`${title}: ${message}`);
+            }
+        }
+
+        function showError(title, message) {
+            if (window.notificationManager) {
+                window.notificationManager.showError(title, message);
+            } else {
+                alert(`${title}: ${message}`);
+            }
+        }
+
+        // Global function for queue removal
+        window.removeFromQueue = removeFromQueue;
     </script>
 </body>
 </html>
