@@ -1,400 +1,256 @@
-# 📊 Legal Dashboard - داشبورد حقوقی
+# Legal Dashboard - AI Document Processing System
 
-[![Python](https://img.shields.io/badge/Python-3.10+-blue.svg)](https://python.org)
-[![FastAPI](https://img.shields.io/badge/FastAPI-Latest-green.svg)](https://fastapi.tiangolo.com)
-[![Gradio](https://img.shields.io/badge/Gradio-Latest-orange.svg)](https://gradio.app)
-[![License](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
+A production-ready FastAPI application for processing and analyzing legal documents with AI-powered insights.
 
-A comprehensive legal document management and analysis system built with FastAPI and Gradio, optimized for multiple deployment environments including Hugging Face Spaces.
+## 🚀 Features
 
-## 🌟 Features
+- **Document Upload**: Support for PDF and TXT files
+- **Text Extraction**: Automatic text extraction from PDF documents
+- **AI Analysis**: Document analysis with language detection and legal term identification
+- **Real-time Dashboard**: Live system status and document processing reports
+- **Responsive UI**: Modern, mobile-friendly interface built with Tailwind CSS
+- **Health Monitoring**: Built-in health checks and system status monitoring
 
-- **📄 Document Management**: Upload, process, and manage legal documents (PDF, DOCX, DOC, TXT)
-- **🤖 AI-Powered Analysis**: Extract key information using advanced NLP models
-- **🔐 Secure Authentication**: JWT-based authentication with role management
-- **📊 Analytics Dashboard**: Real-time analytics and document insights
-- **🌐 Web Scraping**: Extract content from legal websites
-- **🔍 Smart Search**: Advanced search capabilities across documents
-- **📱 Multi-Interface**: Web dashboard + Gradio interface for HF Spaces
-- **🌍 Multi-Language**: Persian/Farsi and English support
-- **☁️ Multi-Platform**: Docker, HF Spaces, Local deployment
+## 🏗️ Architecture
+
+### Backend (FastAPI)
+- **Framework**: FastAPI with Uvicorn server
+- **Database**: SQLite with automatic initialization
+- **File Processing**: PyPDF2 for PDF text extraction
+- **API Endpoints**: RESTful API with comprehensive error handling
+
+### Frontend (HTML/CSS/JS)
+- **Styling**: Tailwind CSS for responsive design
+- **Charts**: Chart.js for data visualization
+- **Icons**: Font Awesome for UI elements
+- **Real-time Updates**: Fetch API for dynamic content
+
+## 📋 Requirements
+
+- Python 3.10+
+- FastAPI
+- Uvicorn
+- PyPDF2
+- SQLite3
 
 ## 🚀 Quick Start
 
-### Option 1: Hugging Face Spaces (Recommended for Demo)
+### Local Development
 
-1. **Fork this Space** or create a new one
-2. **Upload all files** to your space
-3. **Set environment variables** in Space settings:
+1. **Clone the repository**
    ```bash
-   JWT_SECRET_KEY=your-super-secret-key-here
-   DATABASE_DIR=/tmp/legal_dashboard/data
-   LOG_LEVEL=INFO
+   git clone <repository-url>
+   cd legal-dashboard
    ```
-4. **Launch the space** - it will automatically start
 
-**Demo Credentials:**
-- Username: `admin`
-- Password: `admin123`
+2. **Install dependencies**
+   ```bash
+   pip install -r requirements.txt
+   ```
 
-### Option 2: Docker Deployment
+3. **Run the application**
+   ```bash
+   python app.py
+   ```
 
-```bash
-# Clone repository
-git clone <your-repo-url>
-cd legal-dashboard
+4. **Access the dashboard**
+   - Open http://localhost:8000
+   - API docs: http://localhost:8000/api/docs
 
-# Build and run
-docker-compose up --build
+### Docker Deployment
 
-# Or with Docker only
-docker build -t legal-dashboard .
-docker run -p 8000:8000 legal-dashboard
-```
+1. **Build the image**
+   ```bash
+   docker build -t legal-dashboard .
+   ```
 
-### Option 3: Local Development
+2. **Run the container**
+   ```bash
+   docker run -p 8000:8000 legal-dashboard
+   ```
 
-```bash
-# Install dependencies
-pip install -r requirements.txt
+### Hugging Face Spaces Deployment
 
-# Setup environment
-cp .env.example .env
-# Edit .env with your settings
+1. **Create a new Space**
+   - Go to https://huggingface.co/spaces
+   - Create a new Space with "Docker" SDK
 
-# Run application
-python run.py
-# Or specific interfaces:
-python app.py          # Gradio interface
-uvicorn app.main:app   # FastAPI only
-```
+2. **Upload the code**
+   - Upload all project files to your Space
+   - The application will automatically deploy
+
+3. **Access your Space**
+   - Your dashboard will be available at your Space URL
+   - Example: `https://your-username-legal-dashboard.hf.space`
 
 ## 📁 Project Structure
 
 ```
 legal-dashboard/
-├── 🚀 Deployment & Config
-│   ├── run.py                  # Universal runner (All environments)
-│   ├── config.py               # Configuration management
-│   ├── startup_hf.py           # HF Spaces startup
-│   ├── app.py                  # Gradio interface
-│   ├── Dockerfile              # Docker configuration
-│   ├── docker-compose.yml      # Docker Compose
-│   ├── requirements.txt        # Dependencies
-│   └── .env                    # Environment variables
-│
-├── 🏗️ Backend (FastAPI)
-│   ├── app/
-│   │   ├── main.py             # FastAPI application
-│   │   ├── api/                # API endpoints
-│   │   │   ├── auth.py         # Authentication
-│   │   │   ├── documents.py    # Document management
-│   │   │   ├── analytics.py    # Analytics
-│   │   │   ├── scraping.py     # Web scraping
-│   │   │   └── ...
-│   │   ├── services/           # Business logic
-│   │   │   ├── ai_service.py   # AI/ML services
-│   │   │   ├── database_service.py
-│   │   │   ├── ocr_service.py  # OCR processing
-│   │   │   └── ...
-│   │   └── models/             # Data models
-│
-├── 🎨 Frontend
-│   ├── index.html              # Main dashboard
-│   ├── documents.html          # Document management
-│   ├── analytics.html          # Analytics page
-│   ├── upload.html             # File upload
-│   ├── js/                     # JavaScript modules
-│   └── ...
-│
-└── 🧪 Testing & Docs
-    ├── tests/                  # Test suites
-    ├── docs/                   # Documentation
-    └── README.md               # This file
+├── app/
+│   ├── main.py              # FastAPI application
+│   ├── api/                 # API modules (optional)
+│   ├── models/              # Data models (optional)
+│   └── services/            # Business logic (optional)
+├── frontend/
+│   └── index.html           # Main dashboard interface
+├── data/                    # Database and uploaded files
+├── app.py                   # Entry point for HF Spaces
+├── start.sh                 # Startup script
+├── Dockerfile               # Docker configuration
+├── requirements.txt         # Python dependencies
+└── README.md               # This file
 ```
 
-## ⚙️ Configuration
+## 🔧 API Endpoints
 
-### Environment Variables
+### Core Endpoints
 
-| Variable | Default | Description |
-|----------|---------|-------------|
-| `JWT_SECRET_KEY` | `auto-generated` | JWT signing key |
-| `DATABASE_DIR` | `/app/data` | Database directory |
-| `LOG_LEVEL` | `INFO` | Logging level |
-| `ENVIRONMENT` | `production` | Environment type |
-| `HF_HOME` | `/app/cache` | ML models cache |
-| `PORT` | `8000/7860` | Server port |
-| `WORKERS` | `1/4` | Worker processes |
+- `GET /` - Main dashboard interface
+- `GET /api/health` - System health check
+- `POST /api/upload` - Upload and process documents
+- `GET /api/reports` - Get processed reports
+- `DELETE /api/clear` - Clear all data
 
-### Multi-Environment Support
-
-The system automatically detects and optimizes for:
-
-- **🤗 Hugging Face Spaces**: Gradio interface, optimized resources
-- **🐳 Docker**: Full FastAPI with all features
-- **💻 Local**: Development mode with hot reload
-
-## 🔧 Advanced Configuration
-
-### Custom Model Configuration
-
-```python
-# config.py - AI Configuration
-ai_config = {
-    "model_name": "microsoft/trocr-small-stage1",  # HF Spaces
-    "device": "cpu",  # Force CPU for compatibility
-    "max_workers": 1,  # Optimize for environment
-    "batch_size": 1,   # Memory optimization
-}
-```
-
-### Database Optimization
-
-```python
-# Automatic fallback paths for different environments
-database_paths = [
-    "/app/data/legal_documents.db",      # Docker
-    "/tmp/legal_dashboard/data/legal.db", # HF Spaces
-    "./data/legal_documents.db",         # Local
-    ":memory:"                           # Final fallback
-]
-```
-
-## 🐛 Troubleshooting
-
-### Common Issues & Solutions
-
-1. **Permission Denied Error**
-   ```bash
-   PermissionError: [Errno 13] Permission denied: '/app/database'
-   ```
-   **Solution**: System uses automatic fallback directories
-   ```bash
-   # Check logs for actual directory used:
-   grep "📁.*directory" logs/legal_dashboard.log
-   ```
-
-2. **bcrypt Version Error**
-   ```bash
-   (trapped) error reading bcrypt version
-   ```
-   **Solution**: Fixed with bcrypt==4.0.1 in requirements.txt
-
-3. **Redis Connection Failed**
-   ```bash
-   Redis connection failed: Error 111 connecting to localhost:6379
-   ```
-   **Solution**: System automatically falls back to in-memory storage
-
-4. **Model Loading Issues**
-   ```bash
-   OutOfMemoryError or CUDA errors
-   ```
-   **Solution**: System forces CPU mode and optimizes model selection
-
-5. **Port Already in Use**
-   ```bash
-   [Errno 48] Address already in use
-   ```
-   **Solution**: System automatically tries alternative ports
-
-### Debug Mode
-
-```bash
-# Enable debug logging
-export LOG_LEVEL=DEBUG
-python run.py
-
-# Or check specific components
-python -c "from config import config; print(config.get_summary())"
-```
-
-### Health Checks
-
-```bash
-# Check system health
-curl http://localhost:8000/api/health
-
-# Expected response:
+### Health Check Response
+```json
 {
   "status": "healthy",
   "services": {
     "database": "healthy",
-    "ocr": "healthy",
-    "ai": "healthy"
-  }
+    "uploads": "healthy",
+    "api": "healthy"
+  },
+  "version": "1.0.0"
 }
 ```
 
-## 🔒 Security
+### Upload Response
+```json
+{
+  "filename": "document.pdf",
+  "status": "success",
+  "message": "Document uploaded and processed successfully"
+}
+```
 
-### Authentication Flow
+## 🎯 Key Features
 
-1. **Registration**: Create account with email/password
-2. **Login**: JWT access token (30 min) + refresh token (7 days)
-3. **Authorization**: Role-based access control (admin/user)
-4. **Session Management**: Secure token storage and refresh
+### Document Processing
+- **PDF Support**: Extract text from PDF files using PyPDF2
+- **TXT Support**: Direct text file processing
+- **Analysis**: Automatic document analysis including:
+  - Word count and sentence count
+  - Language detection (Persian/English)
+  - Legal term identification
+  - Document type classification
 
-### Security Features
+### Dashboard Features
+- **Real-time Status**: Live system health monitoring
+- **Upload Progress**: Visual progress indicators
+- **Report Management**: View and manage processed documents
+- **Analytics**: Document statistics and charts
+- **Responsive Design**: Works on desktop and mobile
 
-- 🔐 bcrypt password hashing
-- 🎫 JWT token authentication
-- 🛡️ CORS protection
-- 📝 Audit logging
-- 🔒 Role-based permissions
-- 🚫 Rate limiting (planned)
+### System Features
+- **Error Handling**: Comprehensive error handling with user-friendly messages
+- **Logging**: Structured logging for debugging
+- **Health Checks**: Built-in health monitoring
+- **Graceful Fallbacks**: System continues working even if optional services fail
 
-### Default Credentials
+## 🔒 Security Features
 
-⚠️ **Change immediately in production:**
-- Username: `admin`
-- Password: `admin123`
+- **File Validation**: Strict file type checking
+- **Size Limits**: Configurable file size limits
+- **Error Sanitization**: Safe error message handling
+- **CORS Configuration**: Proper CORS setup for web access
 
-## 📊 API Documentation
+## 🚀 Performance Optimizations
 
-### Main Endpoints
+- **Async Processing**: Non-blocking file uploads
+- **Database Optimization**: Efficient SQLite queries
+- **Caching**: Optional Redis caching support
+- **Compression**: GZip middleware for faster responses
+- **Worker Configuration**: Single worker for Hugging Face Spaces compatibility
 
-| Endpoint | Method | Description |
-|----------|--------|-------------|
-| `/api/auth/login` | POST | User authentication |
-| `/api/auth/register` | POST | User registration |
-| `/api/documents` | GET/POST | Document management |
-| `/api/ocr/process` | POST | OCR processing |
-| `/api/analytics/overview` | GET | Analytics data |
-| `/api/scraping/scrape` | POST | Web scraping |
-| `/api/health` | GET | System health |
+## 🐛 Troubleshooting
 
-### Interactive Documentation
+### Common Issues
 
-- **Swagger UI**: `/api/docs`
-- **ReDoc**: `/api/redoc`
-- **OpenAPI JSON**: `/api/openapi.json`
-
-## 🚀 Deployment Guide
-
-### Hugging Face Spaces
-
-1. **Create Space**:
+1. **Port already in use**
    ```bash
-   # Go to https://huggingface.co/spaces
-   # Create new Space with Gradio SDK
+   # Check what's using the port
+   lsof -i :8000
+   # Kill the process or use a different port
+   PORT=8001 python app.py
    ```
 
-2. **Upload Files**:
+2. **Permission errors**
    ```bash
-   git clone https://huggingface.co/spaces/YOUR_USERNAME/YOUR_SPACE
-   cp -r legal-dashboard/* YOUR_SPACE/
-   cd YOUR_SPACE
-   git add .
-   git commit -m "Initial deployment"
-   git push
+   # Ensure proper permissions
+   chmod +x start.sh
+   sudo chown -R $USER:$USER /app/data
    ```
 
-3. **Configure Space**:
-   - Set `JWT_SECRET_KEY` in Space settings
-   - Optional: Set custom domain
+3. **Database errors**
+   ```bash
+   # Reset database
+   rm -rf /app/data/legal_dashboard.db
+   # Restart application
+   ```
 
-### Docker Production
+### Logs
 
+Check application logs for detailed error information:
 ```bash
-# Production docker-compose
-version: "3.8"
-services:
-  legal-dashboard:
-    build: .
-    ports:
-      - "80:8000"
-    environment:
-      - JWT_SECRET_KEY=${JWT_SECRET_KEY}
-      - ENVIRONMENT=production
-    volumes:
-      - ./data:/app/data
-      - ./logs:/app/logs
+# View logs
+tail -f /app/logs/app.log
+
+# Check health endpoint
+curl http://localhost:8000/api/health
 ```
 
-### Kubernetes (Advanced)
+## 🔄 Environment Variables
 
-```yaml
-apiVersion: apps/v1
-kind: Deployment
-metadata:
-  name: legal-dashboard
-spec:
-  replicas: 3
-  selector:
-    matchLabels:
-      app: legal-dashboard
-  template:
-    spec:
-      containers:
-      - name: legal-dashboard
-        image: legal-dashboard:latest
-        ports:
-        - containerPort: 8000
-        env:
-        - name: JWT_SECRET_KEY
-          valueFrom:
-            secretKeyRef:
-              name: legal-dashboard-secrets
-              key: jwt-secret
-```
+| Variable | Default | Description |
+|----------|---------|-------------|
+| `PORT` | `8000` | Application port |
+| `LOG_LEVEL` | `INFO` | Logging level |
+| `ENVIRONMENT` | `production` | Environment mode |
+| `DATABASE_DIR` | `/app/data` | Database directory |
+| `PYTHONUNBUFFERED` | `1` | Python output buffering |
 
 ## 🤝 Contributing
 
-1. **Fork the repository**
-2. **Create feature branch**: `git checkout -b feature/amazing-feature`
-3. **Make changes** and test thoroughly
-4. **Run tests**: `python -m pytest tests/`
-5. **Commit changes**: `git commit -m 'Add amazing feature'`
-6. **Push to branch**: `git push origin feature/amazing-feature`
-7. **Create Pull Request**
-
-### Development Setup
-
-```bash
-# Clone and setup
-git clone <repo-url>
-cd legal-dashboard
-
-# Install development dependencies
-pip install -r requirements.txt
-pip install pytest black isort mypy
-
-# Setup pre-commit hooks
-pre-commit install
-
-# Run tests
-python -m pytest tests/ -v
-
-# Code formatting
-black .
-isort .
-```
+1. Fork the repository
+2. Create a feature branch
+3. Make your changes
+4. Add tests if applicable
+5. Submit a pull request
 
 ## 📄 License
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+This project is licensed under the MIT License - see the LICENSE file for details.
 
-## 🙏 Acknowledgments
+## 🆘 Support
 
-- **FastAPI**: Modern, fast web framework
-- **Gradio**: Easy-to-use ML app interface  
-- **Hugging Face**: Model hosting and Spaces platform
-- **Transformers**: State-of-the-art NLP models
-- **Chart.js**: Beautiful charts and visualizations
+For issues and questions:
+- Check the troubleshooting section
+- Review the API documentation at `/api/docs`
+- Check the health endpoint at `/api/health`
 
-## 📞 Support
+## 🎉 Deployment Status
 
-- **Issues**: [GitHub Issues](../../issues)
-- **Discussions**: [GitHub Discussions](../../discussions)
-- **Email**: Contact maintainers
-- **Documentation**: [Full Docs](./docs/)
+- ✅ Local development
+- ✅ Docker deployment
+- ✅ Hugging Face Spaces
+- ✅ Production ready
+- ✅ Error handling
+- ✅ Health monitoring
+- ✅ Responsive UI
+- ✅ Document processing
+- ✅ Real-time updates
 
 ---
 
-### 🌐 Live Demo
-
-Try the live demo: [Your HF Space URL]
-
-**Made with ❤️ for the legal community**
+**Legal Dashboard** - Making legal document processing simple and efficient! 🏛️
