@@ -81,8 +81,8 @@ huggingface-hub==0.19.4
 gradio==4.8.0
 
 # Additional Persian NLP
-parsivar==0.2.0
-persian==0.1.0
+parsivar
+persian
 
 # Additional ML Libraries
 scikit-learn-extra==0.2.0
