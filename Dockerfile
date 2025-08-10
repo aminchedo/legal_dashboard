@@ -1,32 +1,29 @@
-# استفاده از Python 3.11+ برای سازگاری
+# استفاده از Python 3.11 کاملاً آپدیت
 FROM python:3.11-slim
 
-# نصب dependencies سیستم
+# نصب فقط ضروری‌ترین dependencies
 RUN apt-get update && apt-get install -y \
     gcc \
     g++ \
-    libffi-dev \
-    libssl-dev \
     && rm -rf /var/lib/apt/lists/*
 
 WORKDIR /app
 
-# کپی requirements و نصب packages
+# کپی requirements
 COPY requirements.txt .
 
-# بروزرسانی pip و نصب پکیج‌ها
-RUN pip install --upgrade pip && \
-    pip install --no-cache-dir -r requirements.txt
+# نصب پکیج‌ها بدون cache
+RUN pip install --no-cache-dir --upgrade pip
+RUN pip install --no-cache-dir -r requirements.txt
 
-# کپی کد اپلیکیشن
+# کپی کد
 COPY . .
 
-# تنظیمات environment
+# Environment
 ENV PYTHONDONTWRITEBYTECODE=1
 ENV PYTHONUNBUFFERED=1
 
-# expose port
 EXPOSE 8000
 
-# اجرای اپلیکیشن
+# اجرا
 CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000"]
