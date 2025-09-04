@@ -734,3 +734,41 @@ class RatingService:
         except Exception as e:
             logger.error(f"Error getting low quality items: {e}")
             return []
+
+    async def get_unrated_items(self, limit: int = 50) -> List[Dict[str, Any]]:
+        """Get items that haven't been rated yet"""
+        try:
+            with sqlite3.connect(self.db_path) as conn:
+                cursor = conn.cursor()
+                cursor.execute("""
+                    SELECT id, url, title, content, metadata, timestamp, source_url,
+                           word_count, language, strategy_used, domain, processing_status
+                    FROM scraped_items 
+                    WHERE (rating_score = 0 OR rating_score IS NULL) 
+                    AND processing_status = 'completed'
+                    ORDER BY timestamp DESC
+                    LIMIT ?
+                """, (limit,))
+
+                items = []
+                for row in cursor.fetchall():
+                    items.append({
+                        'id': row[0],
+                        'url': row[1],
+                        'title': row[2],
+                        'content': row[3],
+                        'metadata': json.loads(row[4]) if row[4] else {},
+                        'timestamp': row[5],
+                        'source_url': row[6],
+                        'word_count': row[7],
+                        'language': row[8],
+                        'strategy_used': row[9],
+                        'domain': row[10],
+                        'processing_status': row[11]
+                    })
+
+                return items
+
+        except Exception as e:
+            logger.error(f"Error getting unrated items: {e}")
+            return []
