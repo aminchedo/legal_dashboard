@@ -13,7 +13,8 @@ export const WebSocketProvider = ({ children }) => {
 
   const connect = () => {
     try {
-      const ws = new WebSocket('ws://localhost:8000/ws')
+      const wsUrl = import.meta.env.VITE_WS_URL || 'ws://localhost:8000/ws'
+      const ws = new WebSocket(wsUrl)
       
       ws.onopen = () => {
         console.log('WebSocket connected')
