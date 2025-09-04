@@ -1,0 +1,205 @@
+{
+  "summary": {
+    "passed": 8,
+    "total": 8,
+    "success_rate": 100.0
+  },
+  "tests": [
+    {
+      "test": "Health Check",
+      "success": true,
+      "message": "Health endpoint working",
+      "data": {
+        "status": "healthy",
+        "services": {
+          "database": "healthy",
+          "ocr": "healthy",
+          "ai": "healthy"
+        },
+        "version": "1.0.0",
+        "timestamp": "2025-08-06T18:15:50.432718"
+      },
+      "timestamp": "2025-08-06 18:15:50"
+    },
+    {
+      "test": "Dashboard Summary",
+      "success": true,
+      "message": "Dashboard data retrieved",
+      "data": {
+        "total_documents": 0,
+        "processing_queue": 0,
+        "completed_today": 0,
+        "system_health": "operational",
+        "recent_activity": [
+          {
+            "id": "d988ef0c-04a7-41f5-9f07-5e5e48e1bc35",
+            "action": "document_uploaded",
+            "document_name": "sample.pdf",
+            "timestamp": "2025-08-06T18:15:50.434806"
+          }
+        ]
+      },
+      "timestamp": "2025-08-06 18:15:50"
+    },
+    {
+      "test": "Documents List",
+      "success": true,
+      "message": "Retrieved 2 documents",
+      "data": {
+        "documents": [
+          {
+            "id": "f3d31eb0-b38c-4c75-907d-1a6454a7617c",
+            "filename": "قرارداد_فروش.pdf",
+            "size": 1024000,
+            "upload_date": "2025-08-06T18:15:50.436922",
+            "status": "completed",
+            "category": "contracts",
+            "quality_score": 95,
+            "extracted_text": "این یک نمونه متن استخراج شده است."
+          },
+          {
+            "id": "2c061b78-30f2-41a0-98c1-9b041a44e0be",
+            "filename": "دادخواست_حقوقی.pdf",
+            "size": 2048000,
+            "upload_date": "2025-08-06T16:15:50.436934",
+            "status": "processing",
+            "category": "legal_claims",
+            "quality_score": 87,
+            "extracted_text": "متن استخراج شده از دادخواست"
+          }
+        ],
+        "total": 2,
+        "skip": 0,
+        "limit": 5
+      },
+      "timestamp": "2025-08-06 18:15:50"
+    },
+    {
+      "test": "File Upload",
+      "success": true,
+      "message": "File uploaded successfully",
+      "data": {
+        "documents": [
+          {
+            "document_id": "a806663c-8fc5-410a-86a6-5b1c9db0b33a",
+            "filename": "test_integration.txt",
+            "status": "uploaded",
+            "ocr_task_id": "32e2cc6f-2705-420a-8540-edb103c6908b"
+          }
+        ],
+        "message": "Successfully uploaded 1 files"
+      },
+      "timestamp": "2025-08-06 18:15:50"
+    },
+    {
+      "test": "Chart: Processing Trends",
+      "success": true,
+      "message": "Chart data retrieved",
+      "data": {
+        "labels": [
+          "شنبه",
+          "یکشنبه",
+          "دوشنبه",
+          "سه‌شنبه",
+          "چهارشنبه",
+          "پنج‌شنبه",
+          "جمعه"
+        ],
+        "datasets": [
+          {
+            "label": "اسناد آپلود شده",
+            "data": [
+              12,
+              19,
+              15,
+              25,
+              22,
+              18,
+              14
+            ],
+            "borderColor": "rgb(75, 192, 192)",
+            "backgroundColor": "rgba(75, 192, 192, 0.2)"
+          }
+        ]
+      },
+      "timestamp": "2025-08-06 18:15:50"
+    },
+    {
+      "test": "Chart: Status Distribution",
+      "success": true,
+      "message": "Chart data retrieved",
+      "data": {
+        "labels": [
+          "completed",
+          "processing",
+          "uploaded"
+        ],
+        "datasets": [
+          {
+            "data": [
+              1,
+              1,
+              1
+            ],
+            "backgroundColor": [
+              "rgba(255, 99, 132, 0.8)",
+              "rgba(54, 162, 235, 0.8)",
+              "rgba(255, 205, 86, 0.8)",
+              "rgba(75, 192, 192, 0.8)"
+            ]
+          }
+        ]
+      },
+      "timestamp": "2025-08-06 18:15:50"
+    },
+    {
+      "test": "Chart: Category Distribution",
+      "success": true,
+      "message": "Chart data retrieved",
+      "data": {
+        "labels": [
+          "contracts",
+          "legal_claims",
+          "unknown"
+        ],
+        "datasets": [
+          {
+            "data": [
+              1,
+              1,
+              1
+            ],
+            "backgroundColor": [
+              "rgba(255, 99, 132, 0.8)",
+              "rgba(54, 162, 235, 0.8)",
+              "rgba(255, 205, 86, 0.8)",
+              "rgba(75, 192, 192, 0.8)"
+            ]
+          }
+        ]
+      },
+      "timestamp": "2025-08-06 18:15:50"
+    },
+    {
+      "test": "Frontend Accessibility",
+      "success": true,
+      "message": "Frontend is accessible",
+      "data": null,
+      "timestamp": "2025-08-06 18:15:50"
+    },
+    {
+      "test": "API Documentation",
+      "success": true,
+      "message": "API docs accessible",
+      "data": null,
+      "timestamp": "2025-08-06 18:15:50"
+    },
+    {
+      "test": "CORS Headers",
+      "success": true,
+      "message": "CORS headers present",
+      "data": null,
+      "timestamp": "2025-08-06 18:15:50"
+    }
+  ]
+}
