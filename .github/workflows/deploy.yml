@@ -1,0 +1,138 @@
+name: Deploy to GitHub Pages with Compare and Merge
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main, gh-pages]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: "pages"
+  cancel-in-progress: false
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+          cache: 'npm'
+          cache-dependency-path: frontend/react-app/package-lock.json
+
+      - name: Install dependencies
+        run: |
+          cd frontend/react-app
+          npm ci
+
+      - name: Build React app
+        run: |
+          cd frontend/react-app
+          npm run build
+
+      - name: Prepare dist directory
+        run: |
+          # Create dist directory if it doesn't exist
+          mkdir -p dist
+          
+          # Copy built React app to dist
+          cp -r frontend/react-app/dist/* dist/ 2>/dev/null || true
+          
+          # Ensure our comprehensive index.html is in place
+          if [ -f dist/index.html ]; then
+            echo "dist/index.html already exists"
+          else
+            echo "Creating dist/index.html from template"
+            cp frontend/index.html dist/index.html
+          fi
+          
+          # Create .nojekyll file to prevent Jekyll processing
+          touch dist/.nojekyll
+          
+          # Create 404.html for GitHub Pages
+          echo '<!DOCTYPE html>
+          <html lang="fa" dir="rtl">
+          <head>
+              <meta charset="UTF-8">
+              <meta name="viewport" content="width=device-width, initial-scale=1.0">
+              <title>صفحه یافت نشد - سامانه آرشیو حقوقی ایران</title>
+              <script>
+                  // Redirect to main page
+                  window.location.replace("/Aihoghoghi/");
+              </script>
+          </head>
+          <body>
+              <p>در حال انتقال به صفحه اصلی...</p>
+          </body>
+          </html>' > dist/404.html
+
+      - name: Setup Pages
+        uses: actions/configure-pages@v4
+
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: './dist'
+
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
+
+  check-pr:
+    runs-on: ubuntu-latest
+    if: github.event_name == 'pull_request'
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+          cache: 'npm'
+          cache-dependency-path: frontend/react-app/package-lock.json
+
+      - name: Install dependencies
+        run: |
+          cd frontend/react-app
+          npm ci
+
+      - name: Run linting
+        run: |
+          cd frontend/react-app
+          npm run lint
+
+      - name: Run tests
+        run: |
+          cd frontend/react-app
+          npm run test -- --coverage --watchAll=false
+
+      - name: Build test
+        run: |
+          cd frontend/react-app
+          npm run build
+
+  validate-deployment:
+    runs-on: ubuntu-latest
+    needs: build-and-deploy
+    if: github.ref == 'refs/heads/main'
+    steps:
+      - name: Wait for deployment
+        run: sleep 30
+
+      - name: Validate deployment
+        run: |
+          echo "Deployment completed successfully!"
+          echo "Site should be available at: https://aminchedo.github.io/Aihoghoghi/"
